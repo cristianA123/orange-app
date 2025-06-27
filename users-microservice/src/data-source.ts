@@ -1,6 +1,11 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { User } from './typeorm/entities/User';
-import { Payment } from './typeorm/entities/Payment';
+import { Institute } from './typeorm/entities/Institute';
+import { InstituteModule } from './typeorm/entities/InstituteModule';
+import { UserModule } from './typeorm/entities/UserModule';
+import { Incident } from './typeorm/entities/Incident';
+import { IncidentFile } from './typeorm/entities/IncidentFile';
+import { Module } from './typeorm/entities/Module';
 
 export const databaseConfig = {
   type: 'mysql' as const,
@@ -13,7 +18,15 @@ export const databaseConfig = {
 export const keyDatabase: DataSourceOptions = {
   ...databaseConfig,
   host: 'localhost',
-  entities: [User, Payment],
+  entities: [
+    User,
+    Institute,
+    Module,
+    InstituteModule,
+    UserModule,
+    Incident,
+    IncidentFile,
+  ],
   migrations: [__dirname + '/migrations/*.ts'],
   synchronize: false,
 };

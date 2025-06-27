@@ -1,14 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './User';
+// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'payments' })
-export class Payment {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+// @Entity({ name: 'payments' })
+// export class Payment {
+//   @PrimaryGeneratedColumn('uuid')
+//   id: string;
 
-  @Column('float')
-  amount: number;
-
-  @ManyToOne(() => User, (user) => user.payments)
-  user: User;
-}
+//   @Column('float')
+//   amount: number;
+// }
