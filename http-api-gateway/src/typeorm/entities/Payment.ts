@@ -1,10 +1,10 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-// @Entity({ name: 'payments' })
-// export class Payment {
-//   @PrimaryGeneratedColumn('uuid')
-//   id: string;
+@Entity({ name: 'payments' })
+export class Payment {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-//   @Column('float')
-//   amount: number;
-// }
+  @Column('float')
+  amount: number;
+}
