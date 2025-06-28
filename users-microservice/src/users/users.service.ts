@@ -24,4 +24,10 @@ export class UsersService {
       relations: ['payments'],
     });
   }
+
+  async findByEmail(email: string) {
+    return this.usersRepository.findOne({
+      where: { email: email },
+    });
+  }
 }
