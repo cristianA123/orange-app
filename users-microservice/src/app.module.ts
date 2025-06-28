@@ -9,6 +9,7 @@ import { UserModule } from './typeorm/entities/UserModule';
 import { Incident } from './typeorm/entities/Incident';
 import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { Module as ModuleTypeOrm } from './typeorm/entities/Module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Module as ModuleTypeOrm } from './typeorm/entities/Module';
       migrations: [__dirname + '/migrations/*.ts'],
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
