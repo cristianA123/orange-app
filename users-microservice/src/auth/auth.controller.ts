@@ -11,4 +11,9 @@ export class AuthMicroserviceController {
     const { email, password } = data;
     return this.authService.validateUser(email, password);
   }
+
+  @MessagePattern({ cmd: 'auth_refresh' })
+  async handleRefresh(@Payload() data: { refreshToken: string }) {
+    return this.authService.refresh(data.refreshToken);
+  }
 }
