@@ -17,12 +17,12 @@ import { handleRpcError } from '../exceptions/handle-rpc-error.util';
 export class AuthController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
-  @Post('login')
+  @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'auth_login' }, loginUserDto),
+        this.natsClient.send({ cmd: 'AUTH_LOGIN' }, loginUserDto),
       );
       return AuthResponse(response);
     } catch (error) {
@@ -30,12 +30,12 @@ export class AuthController {
     }
   }
 
-  @Post('refresh')
+  @Post('/refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() dto: RefreshTokenDto) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'auth_refresh' }, dto),
+        this.natsClient.send({ cmd: 'AUTH_REFRESH' }, dto),
       );
       return AuthResponse(response);
     } catch (error) {

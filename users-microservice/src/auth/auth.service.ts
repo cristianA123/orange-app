@@ -26,11 +26,11 @@ export class AuthService {
     try {
       const payload = this.jwtService.verify(refreshToken);
       const user = await this.usersService.getUserById(payload.sub);
-      if (!user) throw new UnauthorizedException();
+      if (!user) throw UnauthorizedRpcException();
 
       return this.generateTokens(user);
     } catch (err) {
-      throw new UnauthorizedException(err);
+      throw UnauthorizedRpcException();
     }
   }
 
