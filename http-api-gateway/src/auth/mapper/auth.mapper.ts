@@ -1,5 +1,6 @@
 export function AuthResponse(response: any) {
   return {
+    success: true,
     data: {
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
