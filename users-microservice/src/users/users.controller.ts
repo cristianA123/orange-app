@@ -8,7 +8,7 @@ export class UsersMicroserviceController {
   constructor(private usersService: UsersService) {}
   @MessagePattern({ cmd: 'createUser' })
   async createUser(@Payload() data: CreateUserDto) {
-    return await this.usersService.createUser(data);
+    return this.usersService.createUser(data);
   }
 
   @MessagePattern({ cmd: 'getUserById' })
@@ -19,6 +19,15 @@ export class UsersMicroserviceController {
 
   @EventPattern('paymentCreated')
   paymentCreated(@Payload() data: any) {
+    console.log('pago');
     console.log(data);
+    console.log('pago');
   }
+
+  // // @Get(':id')
+  // @MessagePattern({ cmd: 'find_one_product' })
+  // findOne(@Payload('id', ParseIntPipe) id: number) {
+  //   // { id: 1
+  //   return this.productsService.findOne(id);
+  // }
 }
