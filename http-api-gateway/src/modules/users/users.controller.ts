@@ -8,11 +8,11 @@ import {
   HttpException,
   HttpCode,
   HttpStatus,
-  // BadRequestException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { lastValueFrom } from 'rxjs';
+import { handleRpcError } from 'src/common/erros/error-handler';
 
 @Controller('users')
 export class UsersController {
@@ -22,10 +22,18 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async createUser(@Body() createUserDto: CreateUserDto) {
     console.log(createUserDto);
-    this.natsClient.send({ cmd: 'createUser' }, createUserDto);
 
-    // throw new BadRequestException('ID no proporcionado');
-    return { success: true, message: 'User created successfully' };
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'createUser' }, createUserDto),
+      );
+
+      return response;
+    } catch (error) {
+      console.log('perrito2');
+      console.error(error);
+      handleRpcError(error);
+    }
   }
 
   @Get(':id')
