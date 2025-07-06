@@ -16,4 +16,9 @@ export class AuthMicroserviceController {
   async handleRefresh(@Payload() data: { refreshToken: string }) {
     return this.authService.refresh(data.refreshToken);
   }
+
+  @MessagePattern('VERIFY_TOKEN')
+  verifyToken(@Payload() token: string) {
+    return this.authService.verifyToken(token);
+  }
 }

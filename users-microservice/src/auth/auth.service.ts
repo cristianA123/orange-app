@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { UnauthorizedRpcException } from '../exceptions/unauthorized.rpc-exception';
 import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -52,7 +53,37 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
+        rol: user.rol,
       },
     };
+  }
+
+  verifyToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET || '123456',
+      });
+
+      const user = {
+        id: payload.sub,
+        email: payload.email,
+      };
+
+      const newAccessToken = this.jwtService.sign(
+        { sub: user.id, email: user.email },
+        { expiresIn: '15m' },
+      );
+
+      return {
+        user,
+        token: newAccessToken,
+      };
+    } catch (err) {
+      console.error('❌ JWT verification failed:', err);
+      throw new RpcException({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'Invalid or expired token',
+      });
+    }
   }
 }

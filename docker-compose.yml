@@ -18,6 +18,11 @@ services:
     volumes:
       - ./payments-microservice/src:/usr/src/app/src
     command: npm run start:dev
+  modules_microservice:
+    build: ./modules-microservice
+    volumes:
+      - ./modules-microservice/src:/usr/src/app/src
+    command: npm run start:dev
   nats:
     image: nats
     ports:
