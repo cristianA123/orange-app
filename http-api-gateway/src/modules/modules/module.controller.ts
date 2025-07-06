@@ -60,7 +60,7 @@ export class ModuleController {
 
   @UseGuards(NatsAuthGuard)
   @Post('/associate')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.ACCEPTED)
   async syncModules(@Body() dto: SyncModuleDto) {
     try {
       const { userId, modulesIds } = dto;
@@ -78,7 +78,6 @@ export class ModuleController {
 
       return {
         success: true,
-        message: 'Modules synchronized successfully',
       };
     } catch (err) {
       handleRpcError(err);
