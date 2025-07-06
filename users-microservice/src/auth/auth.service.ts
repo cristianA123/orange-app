@@ -79,7 +79,6 @@ export class AuthService {
         token: newAccessToken,
       };
     } catch (err) {
-      console.error('❌ JWT verification failed:', err);
       throw new RpcException({
         status: HttpStatus.UNAUTHORIZED,
         message: 'Invalid or expired token',
