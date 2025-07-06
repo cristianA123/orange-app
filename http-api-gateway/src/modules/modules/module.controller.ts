@@ -15,6 +15,7 @@ import { ModuleResponse } from './mapper/module.mapper';
 import { NatsAuthGuard } from '../auth/guards/auth.guards';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { SyncModuleDto } from './dtos/sync.dto';
+import { handleRpcError } from '../users/exceptions/handle-rpc-error.util';
 
 @Controller('modules')
 export class ModuleController {
@@ -26,27 +27,35 @@ export class ModuleController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async getModules() {
-    const modules = await lastValueFrom(
-      this.natsClient.send({ cmd: 'GET_MODULES' }, {}),
-    );
+    try {
+      const modules = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_MODULES' }, {}),
+      );
 
-    return {
-      success: true,
-      data: modules,
-    };
+      return {
+        success: true,
+        data: modules,
+      };
+    } catch (err) {
+      handleRpcError(err);
+    }
   }
 
   @UseGuards(NatsAuthGuard)
   @Get('/me')
   @HttpCode(HttpStatus.OK)
   async getModulesUser(@Req() req: RequestWithUser) {
-    const userId = req.user.id;
+    try {
+      const userId = req.user.id;
 
-    const modules = await lastValueFrom(
-      this.natsClient.send({ cmd: 'GET_USER_MODULES' }, { userId }),
-    );
+      const modules = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_USER_MODULES' }, { userId }),
+      );
 
-    return ModuleResponse(modules);
+      return ModuleResponse(modules);
+    } catch (err) {
+      handleRpcError(err);
+    }
   }
 
   @UseGuards(NatsAuthGuard)
@@ -72,7 +81,7 @@ export class ModuleController {
         message: 'Modules synchronized successfully',
       };
     } catch (err) {
-      console.log(err);
+      handleRpcError(err);
     }
   }
 }
