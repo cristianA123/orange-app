@@ -10,4 +10,16 @@ export class ModuleMicroserviceController {
   async getUserModules(@Payload() data: { userId: string }) {
     return this.moduleService.getUserModules(data.userId);
   }
+
+  @MessagePattern({ cmd: 'SYNC_USER_MODULES' })
+  async syncUserModules(
+    @Payload() data: { userId: string; modulesIds: string[] },
+  ) {
+    return this.moduleService.syncUserModules(data.userId, data.modulesIds);
+  }
+
+  @MessagePattern({ cmd: 'GET_MODULES' })
+  async getModules() {
+    return this.moduleService.getModules();
+  }
 }

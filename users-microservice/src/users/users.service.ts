@@ -7,6 +7,7 @@ import { RpcException } from '@nestjs/microservices';
 import { Institute, User } from 'src/typeorm/entities';
 import * as bcrypt from 'bcrypt';
 import { successResponse } from 'src/common/response/response.util';
+import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
 
 @Injectable()
 export class UsersService {
@@ -67,5 +68,11 @@ export class UsersService {
     return this.usersRepository.findOne({
       where: { email: email },
     });
+  }
+
+  async validateUserById(userId: string): Promise<boolean> {
+    const user = await this.getUserById(userId);
+    if (!user) throw NotFoundRpcException();
+    return true;
   }
 }

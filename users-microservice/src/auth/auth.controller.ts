@@ -9,7 +9,7 @@ export class AuthMicroserviceController {
   @MessagePattern({ cmd: 'AUTH_LOGIN' })
   async handleLogin(@Payload() data: { email: string; password: string }) {
     const { email, password } = data;
-    return this.authService.validateUser(email, password);
+    return this.authService.validateUserByEmail(email, password);
   }
 
   @MessagePattern({ cmd: 'AUTH_REFRESH' })
