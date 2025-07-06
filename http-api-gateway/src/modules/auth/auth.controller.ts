@@ -1,17 +1,22 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { LoginUserDto } from './dtos/LoginUser.dto';
 import { RefreshTokenDto } from './dtos/RefreshToken.dto';
 import { AuthResponse } from './mapper/auth.mapper';
-import { handleRpcError } from '../exceptions/handle-rpc-error.util';
+import { handleRpcError } from '../../exceptions/handle-rpc-error.util';
+import { Token } from './decorators /token.decorator';
+import { UserDecorator } from './decorators /user.decorator';
+import { NatsAuthGuard } from './guards/auth.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -41,5 +46,19 @@ export class AuthController {
     } catch (error) {
       handleRpcError(error);
     }
+  }
+
+  @UseGuards(NatsAuthGuard)
+  @Get('verify')
+  async verifyToken(
+    @UserDecorator()
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    },
+    @Token() token: string,
+  ) {
+    return { user, token };
   }
 }
