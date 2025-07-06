@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Inject,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import { lastValueFrom } from 'rxjs';
 import { ModuleResponse } from './mapper/module.mapper';
 import { NatsAuthGuard } from '../auth/guards/auth.guards';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
+import { SyncModuleDto } from './dtos/sync.dto';
 
 @Controller('modules')
 export class ModuleController {
@@ -20,10 +23,23 @@ export class ModuleController {
     private readonly natsClient: ClientProxy,
   ) {}
 
-  @UseGuards(NatsAuthGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async getModules(@Req() req: RequestWithUser) {
+  async getModules() {
+    const modules = await lastValueFrom(
+      this.natsClient.send({ cmd: 'GET_MODULES' }, {}),
+    );
+
+    return {
+      success: true,
+      data: modules,
+    };
+  }
+
+  @UseGuards(NatsAuthGuard)
+  @Get('/me')
+  @HttpCode(HttpStatus.OK)
+  async getModulesUser(@Req() req: RequestWithUser) {
     const userId = req.user.id;
 
     const modules = await lastValueFrom(
@@ -31,5 +47,32 @@ export class ModuleController {
     );
 
     return ModuleResponse(modules);
+  }
+
+  @UseGuards(NatsAuthGuard)
+  @Post('/associate')
+  @HttpCode(HttpStatus.OK)
+  async syncModules(@Body() dto: SyncModuleDto) {
+    try {
+      const { userId, modulesIds } = dto;
+
+      await lastValueFrom(
+        this.natsClient.send({ cmd: 'VALIDATE_USER_BY_ID' }, { userId }),
+      );
+
+      await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'SYNC_USER_MODULES' },
+          { userId, modulesIds },
+        ),
+      );
+
+      return {
+        success: true,
+        message: 'Modules synchronized successfully',
+      };
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
