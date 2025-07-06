@@ -80,7 +80,7 @@ export class AuthService {
       };
     } catch (err) {
       throw new RpcException({
-        status: HttpStatus.UNAUTHORIZED,
+        statusCode: HttpStatus.UNAUTHORIZED,
         message: 'Invalid or expired token',
       });
     }

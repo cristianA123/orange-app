@@ -8,6 +8,7 @@ import {
 import { Request } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { handleRpcError } from '../../users/exceptions/handle-rpc-error.util';
 
 @Injectable()
 export class NatsAuthGuard implements CanActivate {
@@ -27,8 +28,7 @@ export class NatsAuthGuard implements CanActivate {
       request['user'] = user;
       request['token'] = newToken;
     } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException();
+      handleRpcError(error);
     }
     return true;
   }
