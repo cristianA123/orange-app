@@ -30,4 +30,8 @@ export class UsersMicroserviceController {
   //   // { id: 1
   //   return this.productsService.findOne(id);
   // }
+  @MessagePattern({ cmd: 'VALIDATE_USER_BY_ID' })
+  async validateUserById(@Payload() data: { userId: string }) {
+    return this.usersService.validateUserById(data.userId);
+  }
 }
