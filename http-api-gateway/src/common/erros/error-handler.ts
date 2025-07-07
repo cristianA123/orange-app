@@ -8,6 +8,7 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
+//TODO: AGREGAR INTERFACE DE ERROR
 
 const RPC_ERROR_MAP = {
   400: BadRequestException,
