@@ -6,7 +6,13 @@ import { ModuleModule } from './modules/modules/module.module';
 import { InstituteModule } from './modules/institute/institute.module';
 
 @Module({
-  imports: [UsersModule, PaymentsModule, AuthModule, ModuleModule, InstituteModule],
+  imports: [
+    UsersModule,
+    PaymentsModule,
+    AuthModule,
+    ModuleModule,
+    InstituteModule,
+  ],
   controllers: [],
   providers: [],
 })

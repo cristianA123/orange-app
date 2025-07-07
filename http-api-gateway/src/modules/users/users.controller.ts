@@ -14,11 +14,11 @@ import { CreateUserDto } from './dtos/CreateUser.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 
-@Controller('users')
+@Controller('/users')
 export class UsersController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
-  @Post()
+  @Post('/')
   @HttpCode(HttpStatus.OK)
   async createUser(@Body() createUserDto: CreateUserDto) {
     console.log(createUserDto);
