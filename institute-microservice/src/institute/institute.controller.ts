@@ -12,8 +12,8 @@ export class InstituteController {
 
   @MessagePattern({ cmd: 'CREATE_INSTITUTE' })
   create(@Payload() createInstituteDto: CreateInstituteDto) {
-    return { hola: 1, createInstituteDto };
-    // return this.instituteService.create(createInstituteDto);
+    // return { hola: 1, createInstituteDto };
+    return this.instituteService.create(createInstituteDto);
   }
 
   @MessagePattern('findAllInstitute')

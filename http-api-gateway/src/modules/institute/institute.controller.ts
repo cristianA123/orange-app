@@ -9,25 +9,10 @@ import { lastValueFrom } from 'rxjs';
 export class InstituteController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
-  // @Post()
-  // @HttpCode(HttpStatus.OK)
-  // async createUser(@Body() createUserDto: CreateUserDto) {
-  //   console.log(createUserDto);
+  // const response = await lastValueFrom(
+  //   this.natsClient.send({ cmd: 'createUser' }, createUserDto),
+  // );
 
-  //   try {
-  //     const response = await lastValueFrom(
-  //       this.natsClient.send({ cmd: 'createUser' }, createUserDto),
-  //     );
-
-  //     return response;
-  //   } catch (error) {
-  //     console.log('perrito2');
-  //     console.error(error);
-  //     handleRpcError(error);
-  //   }
-  // }
-
-  // @MessagePattern({ cmd: 'getUserById' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async create(@Payload() createInstituteDto: CreateInstituteDto) {

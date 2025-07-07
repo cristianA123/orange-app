@@ -1,12 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInstituteDto } from './dto/create-institute.dto';
 import { UpdateInstituteDto } from './dto/update-institute.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Institute } from 'src/typeorm/entities';
+import { Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { successResponse } from 'src/common/response/response.util';
 
 @Injectable()
 export class InstituteService {
-  create(createInstituteDto: CreateInstituteDto) {
+  constructor(
+    @InjectRepository(Institute)
+    private instituteRepository: Repository<Institute>,
+  ) {}
+
+  async create(createInstituteDto: CreateInstituteDto) {
     console.log('Creating institute with data:', createInstituteDto);
-    return 'This action adds a new institute';
+    const institute = await this.instituteRepository.save({
+      ...createInstituteDto,
+      id: uuidv4(),
+    });
+
+    return successResponse(institute);
   }
 
   findAll() {
