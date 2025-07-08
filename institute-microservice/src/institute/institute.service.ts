@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateInstituteDto } from './dto/create-institute.dto';
 import { UpdateInstituteDto } from './dto/update-institute.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Institute } from 'src/typeorm/entities';
+import { Institute, InstituteStatus } from 'src/typeorm/entities';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { successResponse } from 'src/common/response/response.util';
@@ -19,6 +19,7 @@ export class InstituteService {
     const institute = await this.instituteRepository.save({
       ...createInstituteDto,
       id: uuidv4(),
+      status: InstituteStatus.ACTIVE,
     });
 
     return successResponse(institute);

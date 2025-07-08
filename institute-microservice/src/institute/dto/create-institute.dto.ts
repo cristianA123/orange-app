@@ -7,5 +7,7 @@ export class CreateInstituteDto {
 
   address: string;
 
+  ruc: string;
+
   status: InstituteStatus;
 }
