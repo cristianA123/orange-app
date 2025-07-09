@@ -23,6 +23,12 @@ services:
     volumes:
       - ./modules-microservice/src:/usr/src/app/src
     command: npm run start:dev
+  
+  institute_microservice:
+    build: ./institute-microservice
+    volumes:
+      - ./institute-microservice/src:/usr/src/app/src
+    command: npm run start:dev
   nats:
     image: nats
     ports:

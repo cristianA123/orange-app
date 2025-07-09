@@ -22,7 +22,7 @@ export enum UserStatus {
 }
 
 export enum UserRole {
-  // SUPERADMIN = 'SUPERADMIN',
+  SUPERADMIN = 'SUPERADMIN',
   ADMIN = 'ADMIN',
   DISPATCHER = 'DISPATCHER',
 }
