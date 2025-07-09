@@ -8,6 +8,7 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { IRpcError } from '../interfaces';
 
 const RPC_ERROR_MAP = {
   400: BadRequestException,
@@ -23,7 +24,7 @@ const RPC_ERROR_MAP = {
   504: GatewayTimeoutException,
 };
 
-export function handleRpcError(error: any): never {
+export function handleRpcError(error: IRpcError): never {
   if (
     error instanceof BadRequestException ||
     error instanceof UnauthorizedException ||

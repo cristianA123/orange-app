@@ -32,6 +32,9 @@ export class Institute {
   @Column()
   address: string;
 
+  @Column({ type: 'varchar', length: 12 })
+  ruc: string;
+
   @Column({
     type: 'enum',
     enum: InstituteStatus,
