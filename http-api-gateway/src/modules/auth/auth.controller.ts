@@ -14,8 +14,8 @@ import { LoginUserDto } from './dtos/LoginUser.dto';
 import { RefreshTokenDto } from './dtos/RefreshToken.dto';
 import { AuthResponse } from './mapper/auth.mapper';
 import { handleRpcError } from '../../exceptions/handle-rpc-error.util';
-import { Token } from './decorators /token.decorator';
-import { UserDecorator } from './decorators /user.decorator';
+import { Token } from './decorators/token.decorator';
+import { UserDecorator } from './decorators/user.decorator';
 import { NatsAuthGuard } from './guards/auth.guards';
 
 @Controller('auth')
