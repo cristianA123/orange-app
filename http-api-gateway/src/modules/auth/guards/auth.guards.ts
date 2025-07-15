@@ -8,7 +8,7 @@ import {
 import { Request } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { handleRpcError } from 'src/common/erros/error-handler';
+import { handleRpcError } from '../../../common/erros/error-handler';
 
 @Injectable()
 export class NatsAuthGuard implements CanActivate {
