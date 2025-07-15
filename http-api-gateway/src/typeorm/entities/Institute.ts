@@ -32,7 +32,7 @@ export class Institute {
   @Column()
   address: string;
 
-  @Column({ type: 'varchar', length: 12 })
+  @Column()
   ruc: string;
 
   @Column({

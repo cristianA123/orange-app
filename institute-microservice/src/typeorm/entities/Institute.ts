@@ -38,6 +38,9 @@ export class Institute {
   })
   status: InstituteStatus;
 
+  @Column()
+  ruc: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

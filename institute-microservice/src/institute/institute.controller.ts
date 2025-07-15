@@ -12,7 +12,7 @@ export class InstituteController {
 
   @MessagePattern({ cmd: 'CREATE_INSTITUTE' })
   create(@Payload() createInstituteDto: CreateInstituteDto) {
-    // return { hola: 1, createInstituteDto };
+    console.log({ hola: 1, createInstituteDto });
     return this.instituteService.create(createInstituteDto);
   }
 
@@ -21,7 +21,7 @@ export class InstituteController {
     return this.instituteService.findAll();
   }
 
-  @MessagePattern('findOneInstitute')
+  @MessagePattern({ cmd: 'GET_INSTITUTE' })
   findOne(@Payload() id: number) {
     return this.instituteService.findOne(id);
   }

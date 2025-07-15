@@ -1,4 +1,11 @@
-import { Controller, HttpCode, HttpStatus, Inject, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Post,
+} from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateInstituteDto } from './dtos/create-institute.dto';
 // import { UpdateInstituteDto } from './dtos/update-institute.dto';
@@ -33,11 +40,15 @@ export class InstituteController {
   // findAll() {
   //   return this.instituteService.findAll();
   // }
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Payload() id: number) {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'GET_INSTITUTE' }, id),
+    );
 
-  // @MessagePattern('findOneInstitute')
-  // findOne(@Payload() id: number) {
-  //   return this.instituteService.findOne(id);
-  // }
+    return response;
+  }
 
   // @MessagePattern('updateInstitute')
   // update(@Payload() updateInstituteDto: UpdateInstituteDto) {
