@@ -15,7 +15,7 @@ import { ModuleResponse } from './mapper/module.mapper';
 import { NatsAuthGuard } from '../auth/guards/auth.guards';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { SyncModuleDto } from './dtos/sync.dto';
-import { handleRpcError } from 'src/common/erros/error-handler';
+import { handleRpcError } from '../../common/erros/error-handler';
 
 @Controller('modules')
 export class ModuleController {
