@@ -20,6 +20,7 @@ export class InstituteService {
       ...createInstituteDto,
       id: uuidv4(),
       status: InstituteStatus.ACTIVE,
+      ruc: 'ssss',
     });
 
     return successResponse(institute);
@@ -29,8 +30,13 @@ export class InstituteService {
     return `This action returns all institute`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} institute`;
+  async findOne(id: number) {
+    console.log(id);
+    const institute = await this.instituteRepository.find();
+    console.log('perrito');
+    console.log(institute);
+    console.log('perrito');
+    return institute;
   }
 
   update(id: number, updateInstituteDto: UpdateInstituteDto) {
