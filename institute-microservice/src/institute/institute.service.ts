@@ -44,15 +44,23 @@ export class InstituteService {
     return successResponse(institute);
   }
 
-  update(id: number, updateInstituteDto: UpdateInstituteDto) {
-    const institute = this.instituteRepository.update(
+  async update(id: number, updateInstituteDto: UpdateInstituteDto) {
+    await this.instituteRepository.update(
       { id: id.toString() },
       { ...updateInstituteDto, id: id.toString() },
     );
-    return successResponse(institute);
+    return successResponse({});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} institute`;
+  async remove(id: string) {
+    console.log('delete');
+    console.log(id);
+    console.log('delete');
+    const institute = await this.instituteRepository.update(
+      { id: id.toString() },
+      { status: InstituteStatus.DELETED, deletedAt: new Date() },
+    );
+    console.log('deeeeeee');
+    return successResponse(institute);
   }
 }
