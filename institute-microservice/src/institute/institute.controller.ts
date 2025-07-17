@@ -34,8 +34,8 @@ export class InstituteController {
     );
   }
 
-  @MessagePattern('removeInstitute')
-  remove(@Payload() id: number) {
+  @MessagePattern({ cmd: 'DELETE_INSTITUTE' })
+  remove(@Payload() id: string) {
     return this.instituteService.remove(id);
   }
 }

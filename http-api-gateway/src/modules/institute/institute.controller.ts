@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -77,8 +78,12 @@ export class InstituteController {
     return response;
   }
 
-  // @MessagePattern('removeInstitute')
-  // remove(@Payload() id: number) {
-  //   return this.instituteService.remove(id);
-  // }
+  @Delete('/:id')
+  async remove(@Param('id') id: string) {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'DELETE_INSTITUTE' }, id),
+    );
+
+    return response;
+  }
 }
