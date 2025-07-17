@@ -26,27 +26,30 @@ export class InstituteService {
     return successResponse(institute);
   }
 
-  findAll() {
-    return `This action returns all institute`;
+  async findAll() {
+    const institute = await this.instituteRepository.find();
+
+    return successResponse(institute);
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     console.log(id);
-    const institute = await this.instituteRepository.find();
+    const institute = await this.instituteRepository.findOne({
+      where: { id },
+    });
     console.log('perrito');
     console.log(institute);
     console.log('perrito');
-    return institute;
+
+    return successResponse(institute);
   }
 
   update(id: number, updateInstituteDto: UpdateInstituteDto) {
-    console.log(
-      'Updating institute with ID:',
-      id,
-      'and data:',
-      updateInstituteDto,
+    const institute = this.instituteRepository.update(
+      { id: id.toString() },
+      { ...updateInstituteDto, id: id.toString() },
     );
-    return `This action updates a #${id} institute`;
+    return successResponse(institute);
   }
 
   remove(id: number) {
