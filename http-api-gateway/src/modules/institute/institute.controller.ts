@@ -4,13 +4,15 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateInstituteDto } from './dtos/create-institute.dto';
-// import { UpdateInstituteDto } from './dtos/update-institute.dto';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { lastValueFrom } from 'rxjs';
+import { UpdateInstituteDto } from './dtos/update-institute.dto';
 
 @Controller('institute')
 export class InstituteController {
@@ -37,12 +39,19 @@ export class InstituteController {
   }
 
   // @MessagePattern('findAllInstitute')
-  // findAll() {
-  //   return this.instituteService.findAll();
-  // }
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll() {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'GET_INSTITUTES' }, {}),
+    );
+
+    return response;
+  }
+
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Payload() id: number) {
+  async findOne(@Param('id') id: string) {
     const response = await lastValueFrom(
       this.natsClient.send({ cmd: 'GET_INSTITUTE' }, id),
     );
@@ -51,12 +60,22 @@ export class InstituteController {
   }
 
   // @MessagePattern('updateInstitute')
-  // update(@Payload() updateInstituteDto: UpdateInstituteDto) {
-  //   return this.instituteService.update(
-  //     updateInstituteDto.id,
-  //     updateInstituteDto,
-  //   );
-  // }
+  @Patch('/:id')
+  async update(
+    @Param('id') id: string,
+    @Payload() updateInstituteDto: UpdateInstituteDto,
+  ) {
+    console.log(id);
+    console.log(updateInstituteDto);
+    const response = await lastValueFrom(
+      this.natsClient.send(
+        { cmd: 'UPDATE_INSTITUTE' },
+        { ...updateInstituteDto, id },
+      ),
+    );
+
+    return response;
+  }
 
   // @MessagePattern('removeInstitute')
   // remove(@Payload() id: number) {

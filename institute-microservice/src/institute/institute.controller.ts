@@ -16,17 +16,17 @@ export class InstituteController {
     return this.instituteService.create(createInstituteDto);
   }
 
-  @MessagePattern('findAllInstitute')
+  @MessagePattern({ cmd: 'GET_INSTITUTES' })
   findAll() {
     return this.instituteService.findAll();
   }
 
   @MessagePattern({ cmd: 'GET_INSTITUTE' })
-  findOne(@Payload() id: number) {
+  findOne(@Payload() id: string) {
     return this.instituteService.findOne(id);
   }
 
-  @MessagePattern('updateInstitute')
+  @MessagePattern({ cmd: 'UPDATE_INSTITUTE' })
   update(@Payload() updateInstituteDto: UpdateInstituteDto) {
     return this.instituteService.update(
       updateInstituteDto.id,
