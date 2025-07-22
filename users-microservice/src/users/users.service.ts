@@ -6,7 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { RpcException } from '@nestjs/microservices';
 import { Institute, User } from 'src/typeorm/entities';
 import * as bcrypt from 'bcrypt';
-import { successResponse } from 'src/common/response/response.util';
+import {
+  errorResponse,
+  successResponse,
+} from 'src/common/response/response.util';
 import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
 
 @Injectable()
@@ -58,10 +61,16 @@ export class UsersService {
     return successResponse(user, 'Usuario creado exitosamente');
   }
 
-  getUserById(userId: string) {
-    return this.usersRepository.findOne({
+  async getUserById(userId: string) {
+    const user = await this.usersRepository.findOne({
       where: { id: userId },
     });
+
+    if (!user) {
+      return errorResponse('Usuario no encontrado');
+    }
+
+    return successResponse(user, 'Usuario encontrado');
   }
 
   async findByEmail(email: string) {
