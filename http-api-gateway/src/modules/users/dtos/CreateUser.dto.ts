@@ -5,6 +5,7 @@ import {
   IsUUID,
   IsEmail,
   MinLength,
+  IsOptional,
 } from 'class-validator';
 import { UserRole, UserStatus } from 'src/typeorm/entities/User';
 
@@ -37,4 +38,31 @@ export class CreateUserDto {
   @IsEnum(UserRole)
   @IsNotEmpty()
   rol: UserRole;
+
+  @IsString()
+  @IsOptional()
+  lastName: string;
+  @IsString()
+  @IsOptional()
+  documentType: string;
+  @IsString()
+  @IsOptional()
+  documentNumber: string;
+
+  @IsString()
+  @IsOptional()
+  jobLevel: string;
+
+  @IsString()
+  @IsOptional()
+  area: string;
+  @IsString()
+  @IsOptional()
+  areaGroup: string;
+  @IsString()
+  @IsOptional()
+  entryDate: Date;
+  @IsString()
+  @IsOptional()
+  contractType: string;
 }

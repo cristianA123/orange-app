@@ -4,13 +4,14 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { RpcException } from '@nestjs/microservices';
-import { Institute, User } from 'src/typeorm/entities';
+import { Institute, User, UserStatus } from 'src/typeorm/entities';
 import * as bcrypt from 'bcrypt';
 import {
   errorResponse,
   successResponse,
 } from 'src/common/response/response.util';
 import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
+import { UpdateUserDTO } from './dtos/UpdateUser.dto';
 
 @Injectable()
 export class UsersService {
@@ -50,6 +51,7 @@ export class UsersService {
       ...createUserDto,
       password: hashedPassword,
     });
+
     const user = await this.usersRepository.save(newUser);
     if (!user) {
       throw new RpcException({
@@ -73,6 +75,12 @@ export class UsersService {
     return successResponse(user, 'Usuario encontrado');
   }
 
+  async findAll() {
+    const users = await this.usersRepository.find();
+
+    return successResponse(users);
+  }
+
   async findByEmail(email: string) {
     return this.usersRepository.findOne({
       where: { email: email },
@@ -83,5 +91,62 @@ export class UsersService {
     const user = await this.getUserById(userId);
     if (!user) throw NotFoundRpcException();
     return true;
+  }
+  async update(id: string, updateInstituteDto: UpdateUserDTO) {
+    const user = await this.usersRepository.findOne({
+      where: { id: id.toString() },
+    });
+    if (!user) {
+      throw new RpcException({
+        message: `No se puedo actualizar usuario`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    if (updateInstituteDto.institute_id) {
+      const institute = await this.instituteRepository.findOne({
+        where: { id: updateInstituteDto.institute_id },
+      });
+      if (!institute) {
+        throw new RpcException({
+          message: `No se puedo actualizar usuario, Instituto no existe.`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: updateInstituteDto.email },
+    });
+    if (existingUser && existingUser.id !== id) {
+      throw new RpcException({
+        message: `El correo ${updateInstituteDto.email} ya está en uso`,
+        status: HttpStatus.CONFLICT,
+      });
+    }
+
+    if (updateInstituteDto.password) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(
+        updateInstituteDto.password,
+        salt,
+      );
+      updateInstituteDto.password = hashedPassword;
+    }
+
+    await this.usersRepository.update(
+      { id: id.toString() },
+      { ...updateInstituteDto, id: id.toString() },
+    );
+    return successResponse({});
+  }
+
+  async remove(id: string) {
+    const institute = await this.usersRepository.update(
+      { id: id.toString() },
+      { status: UserStatus.DELETED, deletedAt: new Date() },
+    );
+
+    return successResponse(institute);
   }
 }

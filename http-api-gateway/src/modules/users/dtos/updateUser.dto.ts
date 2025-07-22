@@ -45,4 +45,31 @@ export class UpdateUserDTO {
   @IsNotEmpty()
   @IsOptional()
   rol: UserRole;
+
+  @IsString()
+  @IsOptional()
+  lastName: string;
+  @IsString()
+  @IsOptional()
+  documentType: string;
+  @IsString()
+  @IsOptional()
+  documentNumber: string;
+
+  @IsString()
+  @IsOptional()
+  jobLevel: string;
+
+  @IsString()
+  @IsOptional()
+  area: string;
+  @IsString()
+  @IsOptional()
+  areaGroup: string;
+  @IsString()
+  @IsOptional()
+  entryDate: Date;
+  @IsString()
+  @IsOptional()
+  contractType: string;
 }

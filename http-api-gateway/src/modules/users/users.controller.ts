@@ -17,7 +17,7 @@ import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateUserDTO } from './dtos/updateUser.dto';
 
-@Controller('/users')
+@Controller('/user')
 export class UsersController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
@@ -38,7 +38,19 @@ export class UsersController {
     }
   }
 
-  @Get(':id')
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findOne() {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'GET_USERS' }, {}),
+    );
+
+    console.log(1);
+
+    return response;
+  }
+
+  @Get('/:id')
   async getUserById(@Param('id') id: string) {
     try {
       const response = await lastValueFrom(
@@ -53,39 +65,37 @@ export class UsersController {
     }
   }
 
-  // @Get('/:id')
-  // @HttpCode(HttpStatus.OK)
-  // async findOne(@Param('id') id: string) {
-  //   const response = await lastValueFrom(
-  //     this.natsClient.send({ cmd: 'GET_INSTITUTE' }, id),
-  //   );
-
-  //   return response;
-  // }
-
   @Patch('/:id')
   async update(
     @Param('id') id: string,
-    @Payload() updateInstituteDto: UpdateUserDTO,
+    @Payload() updateUserDto: UpdateUserDTO,
   ) {
-    console.log(id);
-    console.log(updateInstituteDto);
-    const response = await lastValueFrom(
-      this.natsClient.send(
-        { cmd: 'UPDATE_INSTITUTE' },
-        { ...updateInstituteDto, id },
-      ),
-    );
+    try {
+      console.log(1);
+      console.log(updateUserDto);
+      console.log(1);
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'UPDATE_USER' }, { ...updateUserDto, id }),
+      );
 
-    return response;
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
   }
 
   @Delete('/:id')
   async remove(@Param('id') id: string) {
-    const response = await lastValueFrom(
-      this.natsClient.send({ cmd: 'DELETE_INSTITUTE' }, id),
-    );
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'DELETE_USER' }, id),
+      );
 
-    return response;
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
   }
 }

@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UsersService } from './users.service';
+import { UpdateUserDTO } from './dtos/UpdateUser.dto';
 
 @Controller()
 export class UsersMicroserviceController {
@@ -9,6 +10,11 @@ export class UsersMicroserviceController {
   @MessagePattern({ cmd: 'createUser' })
   async createUser(@Payload() data: CreateUserDto) {
     return this.usersService.createUser(data);
+  }
+
+  @MessagePattern({ cmd: 'GET_USERS' })
+  getUsers() {
+    return this.usersService.findAll();
   }
 
   @MessagePattern({ cmd: 'GET_USER' })
@@ -24,14 +30,18 @@ export class UsersMicroserviceController {
     console.log('pago');
   }
 
-  // // @Get(':id')
-  // @MessagePattern({ cmd: 'find_one_product' })
-  // findOne(@Payload('id', ParseIntPipe) id: number) {
-  //   // { id: 1
-  //   return this.productsService.findOne(id);
-  // }
   @MessagePattern({ cmd: 'VALIDATE_USER_BY_ID' })
   async validateUserById(@Payload() data: { userId: string }) {
     return this.usersService.validateUserById(data.userId);
+  }
+
+  @MessagePattern({ cmd: 'UPDATE_USER' })
+  update(@Payload() updateUserDTO: UpdateUserDTO) {
+    return this.usersService.update(updateUserDTO.id, updateUserDTO);
+  }
+
+  @MessagePattern({ cmd: 'DELETE_USER' })
+  remove(@Payload() id: string) {
+    return this.usersService.remove(id);
   }
 }
