@@ -26,6 +26,11 @@ export class InstituteController {
     return this.instituteService.findOne(id);
   }
 
+  @MessagePattern({ cmd: 'GET_INSTITUTE_USERS' })
+  findUsersByInstituteId(@Payload() id: string) {
+    return this.instituteService.findUsersByInstituteId(id);
+  }
+
   @MessagePattern({ cmd: 'UPDATE_INSTITUTE' })
   update(@Payload() updateInstituteDto: UpdateInstituteDto) {
     return this.instituteService.update(

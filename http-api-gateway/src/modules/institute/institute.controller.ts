@@ -39,13 +39,24 @@ export class InstituteController {
     }
   }
 
-  // @MessagePattern('findAllInstitute')
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {
     const response = await lastValueFrom(
       this.natsClient.send({ cmd: 'GET_INSTITUTES' }, {}),
     );
+
+    return response;
+  }
+
+  @Get('/:id/users')
+  @HttpCode(HttpStatus.OK)
+  async findUsersByInstituteId(@Param('id') id: string) {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'GET_INSTITUTE_USERS' }, id),
+    );
+
+    console.log(1);
 
     return response;
   }
@@ -60,7 +71,6 @@ export class InstituteController {
     return response;
   }
 
-  // @MessagePattern('updateInstitute')
   @Patch('/:id')
   async update(
     @Param('id') id: string,

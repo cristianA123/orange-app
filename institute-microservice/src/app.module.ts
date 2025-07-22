@@ -1,6 +1,5 @@
 import { databaseConfig } from './data-source';
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { Institute } from './typeorm/entities/Institute';
@@ -28,7 +27,6 @@ import { InstituteModule as InstituteModule2 } from './institute/institute.modul
       synchronize: false,
       migrations: [__dirname + '/migrations/*.ts'],
     }),
-    UsersModule,
     InstituteModule2,
   ],
   controllers: [],
