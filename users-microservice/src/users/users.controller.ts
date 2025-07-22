@@ -11,7 +11,7 @@ export class UsersMicroserviceController {
     return this.usersService.createUser(data);
   }
 
-  @MessagePattern({ cmd: 'getUserById' })
+  @MessagePattern({ cmd: 'GET_USER' })
   getUserById(@Payload() data) {
     const { userId } = data;
     return this.usersService.getUserById(userId);

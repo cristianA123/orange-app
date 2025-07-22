@@ -5,14 +5,17 @@ import {
   Body,
   Get,
   Param,
-  HttpException,
+  // HttpException,
   HttpCode,
   HttpStatus,
+  Patch,
+  Delete,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
+import { UpdateUserDTO } from './dtos/updateUser.dto';
 
 @Controller('/users')
 export class UsersController {
@@ -30,7 +33,6 @@ export class UsersController {
 
       return response;
     } catch (error) {
-      console.log('perrito2');
       console.error(error);
       handleRpcError(error);
     }
@@ -38,10 +40,52 @@ export class UsersController {
 
   @Get(':id')
   async getUserById(@Param('id') id: string) {
-    const user = await lastValueFrom(
-      this.natsClient.send({ cmd: 'getUserById' }, { userId: id }),
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_USER' }, { userId: id }),
+      );
+      // if (user) return user;
+      // else throw new HttpException('User Not Found', 404);
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  // @Get('/:id')
+  // @HttpCode(HttpStatus.OK)
+  // async findOne(@Param('id') id: string) {
+  //   const response = await lastValueFrom(
+  //     this.natsClient.send({ cmd: 'GET_INSTITUTE' }, id),
+  //   );
+
+  //   return response;
+  // }
+
+  @Patch('/:id')
+  async update(
+    @Param('id') id: string,
+    @Payload() updateInstituteDto: UpdateUserDTO,
+  ) {
+    console.log(id);
+    console.log(updateInstituteDto);
+    const response = await lastValueFrom(
+      this.natsClient.send(
+        { cmd: 'UPDATE_INSTITUTE' },
+        { ...updateInstituteDto, id },
+      ),
     );
-    if (user) return user;
-    else throw new HttpException('User Not Found', 404);
+
+    return response;
+  }
+
+  @Delete('/:id')
+  async remove(@Param('id') id: string) {
+    const response = await lastValueFrom(
+      this.natsClient.send({ cmd: 'DELETE_INSTITUTE' }, id),
+    );
+
+    return response;
   }
 }
