@@ -18,6 +18,16 @@ export class ModuleMicroserviceController {
     return this.moduleService.syncUserModules(data.userId, data.modulesIds);
   }
 
+  @MessagePattern({ cmd: 'SYNC_INSTITUTE_MODULES' })
+  async syncInstituteModules(
+    @Payload() data: { instituteId: string; modulesIds: string[] },
+  ) {
+    return this.moduleService.syncInstituteModules(
+      data.instituteId,
+      data.modulesIds,
+    );
+  }
+
   @MessagePattern({ cmd: 'GET_MODULES' })
   async getModules() {
     return this.moduleService.getModules();
