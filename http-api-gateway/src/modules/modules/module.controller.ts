@@ -14,7 +14,7 @@ import { lastValueFrom } from 'rxjs';
 import { ModuleResponse } from './mapper/module.mapper';
 import { NatsAuthGuard } from '../auth/guards/auth.guards';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
-import { SyncModuleDto } from './dtos/sync.dto';
+import { SyncModuleInstituteDto, SyncModuleUserDto } from './dtos/sync.dto';
 import { handleRpcError } from '../../common/erros/error-handler';
 
 @Controller('modules')
@@ -59,9 +59,9 @@ export class ModuleController {
   }
 
   @UseGuards(NatsAuthGuard)
-  @Post('/associate')
+  @Post('/associate/user')
   @HttpCode(HttpStatus.ACCEPTED)
-  async syncModules(@Body() dto: SyncModuleDto) {
+  async syncModulesForUser(@Body() dto: SyncModuleUserDto) {
     try {
       const { userId, modulesIds } = dto;
 
@@ -73,6 +73,32 @@ export class ModuleController {
         this.natsClient.send(
           { cmd: 'SYNC_USER_MODULES' },
           { userId, modulesIds },
+        ),
+      );
+
+      return {
+        success: true,
+      };
+    } catch (err) {
+      handleRpcError(err);
+    }
+  }
+
+  @UseGuards(NatsAuthGuard)
+  @Post('/associate/institute')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async syncModulesForInstitute(@Body() dto: SyncModuleInstituteDto) {
+    try {
+      const { instituteId, modulesIds } = dto;
+
+      await lastValueFrom(
+        this.natsClient.send({ cmd: 'VALIDATE_INSTITUTE_BY_ID' }, instituteId),
+      );
+
+      await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'SYNC_INSTITUTE_MODULES' },
+          { instituteId, modulesIds },
         ),
       );
 

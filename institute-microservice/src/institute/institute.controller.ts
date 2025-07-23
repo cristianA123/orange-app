@@ -39,8 +39,8 @@ export class InstituteController {
     );
   }
 
-  @MessagePattern({ cmd: 'DELETE_INSTITUTE' })
-  remove(@Payload() id: string) {
-    return this.instituteService.remove(id);
+  @MessagePattern({ cmd: 'VALIDATE_INSTITUTE_BY_ID' })
+  validateInstituteById(@Payload() id: string) {
+    return this.instituteService.validateInstituteById(id);
   }
 }
