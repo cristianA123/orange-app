@@ -77,4 +77,19 @@ export class InstituteService {
 
     return successResponse(institute);
   }
+
+  async validateInstituteById(id: string) {
+    const institute = await this.instituteRepository.findOne({
+      where: { id },
+    });
+
+    if (!institute) {
+      throw new RpcException({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: 'Instituto inválido.',
+      });
+    }
+
+    return { success: true };
+  }
 }
