@@ -26,6 +26,19 @@ export class UsersService {
       where: { email: createUserDto.email },
     });
 
+    if (createUserDto.documentNumber) {
+      const existingUserWtihDNI = await this.usersRepository.findOne({
+        where: { documentNumber: createUserDto.documentNumber },
+      });
+
+      if (existingUserWtihDNI) {
+        throw new RpcException({
+          message: `El documento de identidad ${createUserDto.documentNumber} ya está en uso`,
+          status: HttpStatus.CONFLICT,
+        });
+      }
+    }
+
     if (existingUser) {
       throw new RpcException({
         message: `El correo ${createUserDto.email} ya está en uso`,
@@ -53,6 +66,11 @@ export class UsersService {
     });
 
     const user = await this.usersRepository.save(newUser);
+
+    if (user) {
+      delete user.password;
+    }
+
     if (!user) {
       throw new RpcException({
         message: `No se puedo crear usuario`,
@@ -72,11 +90,19 @@ export class UsersService {
       return errorResponse('Usuario no encontrado');
     }
 
+    //delete password
+    delete user.password;
+
     return successResponse(user, 'Usuario encontrado');
   }
 
   async findAll() {
     const users = await this.usersRepository.find();
+
+    // delete password
+    users.forEach((user) => {
+      delete user.password;
+    });
 
     return successResponse(users);
   }
@@ -101,7 +127,7 @@ export class UsersService {
     });
     if (!user) {
       throw new RpcException({
-        message: `No se puedo actualizar usuario`,
+        message: `No se pudo actualizar usuario`,
         status: HttpStatus.BAD_REQUEST,
       });
     }
@@ -112,20 +138,22 @@ export class UsersService {
       });
       if (!institute) {
         throw new RpcException({
-          message: `No se puedo actualizar usuario, Instituto no existe.`,
+          message: `No se pudo actualizar usuario, Instituto no existe.`,
           status: HttpStatus.BAD_REQUEST,
         });
       }
     }
 
-    const existingUser = await this.usersRepository.findOne({
-      where: { email: updateInstituteDto.email },
-    });
-    if (existingUser && existingUser.id !== id) {
-      throw new RpcException({
-        message: `El correo ${updateInstituteDto.email} ya está en uso`,
-        status: HttpStatus.CONFLICT,
+    if (updateInstituteDto.email) {
+      const existingUser = await this.usersRepository.findOne({
+        where: { email: updateInstituteDto.email },
       });
+      if (existingUser && existingUser.id !== id) {
+        throw new RpcException({
+          message: `El correo ${updateInstituteDto.email} ya está en uso`,
+          status: HttpStatus.CONFLICT,
+        });
+      }
     }
 
     if (updateInstituteDto.password) {
@@ -139,9 +167,24 @@ export class UsersService {
 
     await this.usersRepository.update(
       { id: id.toString() },
-      { ...updateInstituteDto, id: id.toString() },
+      { ...updateInstituteDto },
     );
-    return successResponse({});
+
+    const updatedUser = await this.usersRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    // Eliminar el campo password del usuario antes de retornar
+    if (updatedUser) {
+      delete updatedUser.password;
+
+      return successResponse(updatedUser, 'Usuario actualizado exitosamente');
+    }
+
+    throw new RpcException({
+      message: `Error al obtener el usuario actualizado`,
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+    });
   }
 
   async remove(id: string) {
