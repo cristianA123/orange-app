@@ -53,20 +53,50 @@ export class InstituteService {
   }
 
   async findUsersByInstituteId(id: string) {
-    const instituteWithUsers = await this.instituteRepository.findOne({
-      where: { id },
-      relations: ['users'],
+    const users = await this.userRepository.find({
+      where: { institute_id: id },
     });
 
-    return successResponse(instituteWithUsers?.users || []);
+    // eliminar el campo password de cada usuario
+    users.forEach((user) => {
+      delete user.password;
+    });
+
+    return successResponse(users || []);
   }
 
   async update(id: number, updateInstituteDto: UpdateInstituteDto) {
+    const institute = await this.instituteRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    if (!institute) {
+      throw new RpcException({
+        message: `No se pudo actualizar instituto`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     await this.instituteRepository.update(
       { id: id.toString() },
       { ...updateInstituteDto, id: id.toString() },
     );
-    return successResponse({});
+
+    const updatedInstitute = await this.instituteRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    if (!updatedInstitute) {
+      throw new RpcException({
+        message: `No se pudo obtener el instituto actualizado`,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+
+    return successResponse(
+      updatedInstitute,
+      'Instituto actualizado exitosamente',
+    );
   }
 
   async remove(id: string) {
