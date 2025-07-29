@@ -127,4 +127,38 @@ export class ModuleService {
       relations: ['children'],
     });
   }
+
+  async getModulesByUserId(userId: string) {
+    const modulesInstitute = await this.userModulesRepo.find({
+      where: { user: { id: userId } },
+      relations: ['module'],
+    });
+
+    const moduleIds = modulesInstitute.map((im) => im.module.id);
+
+    return await this.modulesRepo.find({
+      where: {
+        id: In(moduleIds),
+        isMainModule: true,
+      },
+      relations: ['children'],
+    });
+  }
+
+  async getModulesByInstituteId(instituteId: string) {
+    const modulesInstitute = await this.instituteModulesRepo.find({
+      where: { institute: { id: instituteId } },
+      relations: ['module'],
+    });
+
+    const moduleIds = modulesInstitute.map((im) => im.module.id);
+
+    return await this.modulesRepo.find({
+      where: {
+        id: In(moduleIds),
+        isMainModule: true,
+      },
+      relations: ['children'],
+    });
+  }
 }

@@ -32,4 +32,14 @@ export class ModuleMicroserviceController {
   async getModules() {
     return this.moduleService.getModules();
   }
+
+  @MessagePattern({ cmd: 'GET_MODULES_BY_USER' })
+  async getModulesByUserId(@Payload() userId: string) {
+    return this.moduleService.getModulesByUserId(userId);
+  }
+
+  @MessagePattern({ cmd: 'GET_MODULES_BY_INSTITUTE' })
+  async getModulesByInstituteId(@Payload() instituteId: string) {
+    return this.moduleService.getModulesByInstituteId(instituteId);
+  }
 }

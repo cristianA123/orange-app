@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -30,6 +31,40 @@ export class ModuleController {
     try {
       const modules = await lastValueFrom(
         this.natsClient.send({ cmd: 'GET_MODULES' }, {}),
+      );
+
+      return {
+        success: true,
+        data: modules,
+      };
+    } catch (err) {
+      handleRpcError(err);
+    }
+  }
+
+  @Get('/user/:id')
+  @HttpCode(HttpStatus.OK)
+  async getModulesByUserId(@Param('id') id: string) {
+    try {
+      const modules = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_MODULES_BY_USER' }, id),
+      );
+
+      return {
+        success: true,
+        data: modules,
+      };
+    } catch (err) {
+      handleRpcError(err);
+    }
+  }
+
+  @Get('/institute/:id')
+  @HttpCode(HttpStatus.OK)
+  async getModulesByInstituteId(@Param('id') id: string) {
+    try {
+      const modules = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_MODULES_BY_INSTITUTE' }, id),
       );
 
       return {
