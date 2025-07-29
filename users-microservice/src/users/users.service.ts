@@ -88,10 +88,13 @@ export class UsersService {
   }
 
   async validateUserById(userId: string): Promise<boolean> {
-    const user = await this.getUserById(userId);
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
     if (!user) throw NotFoundRpcException();
     return true;
   }
+
   async update(id: string, updateInstituteDto: UpdateUserDTO) {
     const user = await this.usersRepository.findOne({
       where: { id: id.toString() },
