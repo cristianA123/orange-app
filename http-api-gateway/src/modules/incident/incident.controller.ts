@@ -12,10 +12,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
-import { CreateUserDto } from './dtos/CreateUser.dto';
+import { CreateIncidentDto } from './dtos/createIncident.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
-import { UpdateUserDTO } from './dtos/updateUser.dto';
+import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
 
 @Controller('/incident')
 export class IncidentController {
@@ -23,15 +23,15 @@ export class IncidentController {
 
   @Post('/')
   @HttpCode(HttpStatus.OK)
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
+  async createIncident(@Body() createIncidentDto: CreateIncidentDto) {
+    console.log(createIncidentDto);
 
     try {
-      const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'createUser' }, createUserDto),
-      );
+      // const response = await lastValueFrom(
+      //   this.natsClient.send({ cmd: 'createUser' }, createIncidentDto),
+      // );
 
-      return response;
+      return { a: 'a' };
     } catch (error) {
       console.error(error);
       handleRpcError(error);
@@ -68,7 +68,7 @@ export class IncidentController {
   @Patch('/:id')
   async update(
     @Param('id') id: string,
-    @Payload() updateUserDto: UpdateUserDTO,
+    @Payload() updateUserDto: UpdateIncidentDTO,
   ) {
     try {
       console.log(1);
