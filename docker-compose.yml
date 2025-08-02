@@ -13,11 +13,6 @@ services:
     volumes:
       - ./users-microservice/src:/usr/src/app/src
     command: npm run start:dev
-  payments_microservice:
-    build: ./payments-microservice
-    volumes:
-      - ./payments-microservice/src:/usr/src/app/src
-    command: npm run start:dev
   modules_microservice:
     build: ./modules-microservice
     volumes:
@@ -29,6 +24,13 @@ services:
     volumes:
       - ./institute-microservice/src:/usr/src/app/src
     command: npm run start:dev
+
+  incident_microservice:
+    build: ./incident-microservice
+    volumes:
+      - ./incident-microservice/src:/usr/src/app/src
+    command: npm run start:dev
+  
   nats:
     image: nats
     ports:
