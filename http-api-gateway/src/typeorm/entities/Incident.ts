@@ -30,7 +30,7 @@ export class Incident {
   type: string;
 
   @Column()
-  subtype: string;
+  subType: string;
 
   @Column({ type: 'text' })
   description: string;
