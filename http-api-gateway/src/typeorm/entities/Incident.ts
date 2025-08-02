@@ -45,7 +45,7 @@ export class Incident {
   location_lng: number;
 
   @Column()
-  source: string;
+  form_type: string;
 
   @Column({ nullable: true })
   officer_name?: string;
@@ -70,6 +70,9 @@ export class Incident {
 
   @Column()
   is_relevant: boolean;
+
+  @Column()
+  status: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
