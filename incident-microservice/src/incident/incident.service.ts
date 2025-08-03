@@ -62,8 +62,34 @@ export class IncidentService {
     return successResponse(newIncident, 'Incidencia creado exitosamente');
   }
 
-  findAll() {
-    return `This action returns all incident`;
+  async findAllIncidentByInstituteId(id: string) {
+    console.log(id);
+    // validar que el id del instituto exista en la base de datos
+    const existInstitute = await this.instituteRepository.findOneBy({
+      id,
+    });
+    if (!existInstitute) {
+      throw new RpcException({
+        message: `No existe el instituto`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const incidents = await this.incidentRepository.find({
+      where: {
+        institute: {
+          id,
+        },
+      },
+    });
+
+    if (!incidents) {
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return successResponse(incidents, 'Incidentes encontrados');
   }
 
   findOne(id: number) {
