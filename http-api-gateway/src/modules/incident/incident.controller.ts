@@ -36,16 +36,19 @@ export class IncidentController {
     }
   }
 
-  @Get('/')
+  @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findOne() {
-    const response = await lastValueFrom(
-      this.natsClient.send({ cmd: 'GET_USERS' }, {}),
-    );
+  async findAllIncidentByInstituteId(@Param('id') id: string) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_INCIDENT' }, id),
+      );
 
-    console.log(1);
-
-    return response;
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
   }
 
   @Get('/:id')

@@ -13,9 +13,9 @@ export class IncidentController {
     return this.incidentService.create(createIncidentDto);
   }
 
-  @MessagePattern('findAllIncident')
-  findAll() {
-    return this.incidentService.findAll();
+  @MessagePattern({ cmd: 'GET_INCIDENT' })
+  findAll(@Payload() id: string) {
+    return this.incidentService.findAllIncidentByInstituteId(id);
   }
 
   @MessagePattern('findOneIncident')
