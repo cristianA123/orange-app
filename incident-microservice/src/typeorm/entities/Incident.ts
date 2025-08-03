@@ -30,7 +30,7 @@ export class Incident {
   type: string;
 
   @Column()
-  subtype: string;
+  subType: string;
 
   @Column({ type: 'text' })
   description: string;
@@ -39,37 +39,37 @@ export class Incident {
   address: string;
 
   @Column('decimal', { precision: 10, scale: 6 })
-  location_lat: number;
+  locationLat: number;
 
   @Column('decimal', { precision: 10, scale: 6 })
-  location_lng: number;
+  locationLng: number;
 
   @Column()
-  form_type: string;
+  formType: string;
 
   @Column({ nullable: true })
-  officer_name?: string;
+  officerName?: string;
 
   @Column({ nullable: true })
-  phone_number?: string;
+  phoneNumber?: string;
 
   @Column({ nullable: true })
-  sender_name?: string;
+  senderName?: string;
 
   @Column({ nullable: true })
-  camera_number?: string;
+  cameraNumber?: string;
 
   @Column({ nullable: true })
-  document_number?: string;
+  documentNumber?: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  attention_date?: Date;
+  attentionDate?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  closing_date?: Date;
+  closingDate?: Date;
 
   @Column()
-  is_relevant: boolean;
+  isRelevant: boolean;
 
   @Column()
   status: number;

@@ -8,10 +8,10 @@ import { IncidentModule } from './modules/incident/incident.module';
 @Module({
   imports: [
     UsersModule,
-    IncidentModule,
     AuthModule,
     ModuleModule,
     InstituteModule,
+    IncidentModule,
   ],
   controllers: [],
   providers: [],
