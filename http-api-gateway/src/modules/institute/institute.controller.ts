@@ -19,10 +19,6 @@ import { UpdateInstituteDto } from './dtos/update-institute.dto';
 export class InstituteController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
-  // const response = await lastValueFrom(
-  //   this.natsClient.send({ cmd: 'createUser' }, createUserDto),
-  // );
-
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async create(@Payload() createInstituteDto: CreateInstituteDto) {

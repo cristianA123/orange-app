@@ -82,7 +82,8 @@ export class CreateIncidentDto {
   @Type(() => Boolean)
   isRelevant: boolean;
 
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  status: number;
+  status?: number;
 }

@@ -24,14 +24,12 @@ export class IncidentController {
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async createIncident(@Body() createIncidentDto: CreateIncidentDto) {
-    console.log(createIncidentDto);
-
     try {
-      // const response = await lastValueFrom(
-      //   this.natsClient.send({ cmd: 'createUser' }, createIncidentDto),
-      // );
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'CREATE_INCIDENT' }, createIncidentDto),
+      );
 
-      return { a: 'a' };
+      return response;
     } catch (error) {
       console.error(error);
       handleRpcError(error);
