@@ -50,10 +50,7 @@ export class ModuleController {
         this.natsClient.send({ cmd: 'GET_MODULES_BY_USER' }, id),
       );
 
-      return {
-        success: true,
-        data: modules,
-      };
+      return ModuleResponse(modules);
     } catch (err) {
       handleRpcError(err);
     }
@@ -67,10 +64,7 @@ export class ModuleController {
         this.natsClient.send({ cmd: 'GET_MODULES_BY_INSTITUTE' }, id),
       );
 
-      return {
-        success: true,
-        data: modules,
-      };
+      return ModuleResponse(modules);
     } catch (err) {
       handleRpcError(err);
     }

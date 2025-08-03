@@ -129,36 +129,16 @@ export class ModuleService {
   }
 
   async getModulesByUserId(userId: string) {
-    const modulesInstitute = await this.userModulesRepo.find({
+    return  await this.userModulesRepo.find({
       where: { user: { id: userId } },
-      relations: ['module'],
-    });
-
-    const moduleIds = modulesInstitute.map((im) => im.module.id);
-
-    return await this.modulesRepo.find({
-      where: {
-        id: In(moduleIds),
-        isMainModule: true,
-      },
-      relations: ['children'],
+      relations: ['module', 'module.parent'],
     });
   }
 
   async getModulesByInstituteId(instituteId: string) {
-    const modulesInstitute = await this.instituteModulesRepo.find({
+    return  await this.instituteModulesRepo.find({
       where: { institute: { id: instituteId } },
-      relations: ['module'],
-    });
-
-    const moduleIds = modulesInstitute.map((im) => im.module.id);
-
-    return await this.modulesRepo.find({
-      where: {
-        id: In(moduleIds),
-        isMainModule: true,
-      },
-      relations: ['children'],
+      relations: ['module', 'module.parent'],
     });
   }
 }
