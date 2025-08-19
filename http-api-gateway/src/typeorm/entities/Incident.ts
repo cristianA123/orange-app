@@ -13,6 +13,15 @@ import { User } from './User';
 import { Institute } from './Institute';
 import { IncidentFile } from './IncidentFile';
 
+export enum IncidentStatus {
+  OPEN = '1', // Abierto
+  IN_PROGRESS = '2', // En proceso
+  ATTENDED = '3', // Atendido
+  CLOSED = '4', // Cerrado
+  CANCELED = '5', // Cancelado
+  DELETED = '6', // Eliminado
+}
+
 @Entity('incidents')
 export class Incident {
   @PrimaryColumn('uuid')
@@ -72,7 +81,7 @@ export class Incident {
   isRelevant: boolean;
 
   @Column()
-  status: number;
+  status: IncidentStatus;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

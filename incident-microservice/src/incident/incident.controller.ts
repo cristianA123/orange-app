@@ -18,18 +18,18 @@ export class IncidentController {
     return this.incidentService.findAllIncidentByInstituteId(id);
   }
 
-  @MessagePattern('findOneIncident')
-  findOne(@Payload() id: number) {
-    return this.incidentService.findOne(id);
+  @MessagePattern({ cmd: 'GET_INCIDENT_BY_ID' })
+  getIncidentById(@Payload() id: string) {
+    return this.incidentService.getIncidentById(id);
   }
 
-  @MessagePattern('updateIncident')
+  @MessagePattern({ cmd: 'UPDATE_INCIDENT' })
   update(@Payload() updateIncidentDto: UpdateIncidentDto) {
     return this.incidentService.update(updateIncidentDto.id, updateIncidentDto);
   }
 
-  @MessagePattern('removeIncident')
-  remove(@Payload() id: number) {
+  @MessagePattern({ cmd: 'DELETE_INCIDENT' })
+  remove(@Payload() id: string) {
     return this.incidentService.remove(id);
   }
 }
