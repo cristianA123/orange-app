@@ -17,11 +17,11 @@ import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
 
-@Controller('/incident')
+@Controller()
 export class IncidentController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
-  @Post('/')
+  @Post('/incident')
   @HttpCode(HttpStatus.OK)
   async createIncident(@Body() createIncidentDto: CreateIncidentDto) {
     try {
@@ -36,7 +36,7 @@ export class IncidentController {
     }
   }
 
-  @Get('/:id')
+  @Get('/institute/:id/incident')
   @HttpCode(HttpStatus.OK)
   async findAllIncidentByInstituteId(@Param('id') id: string) {
     try {
@@ -51,14 +51,12 @@ export class IncidentController {
     }
   }
 
-  @Get('/:id')
-  async getUserById(@Param('id') id: string) {
+  @Get('/incident/:id')
+  async getIncidentById(@Param('id') id: string) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'GET_USER' }, { userId: id }),
+        this.natsClient.send({ cmd: 'GET_INCIDENT_BY_ID' }, id),
       );
-      // if (user) return user;
-      // else throw new HttpException('User Not Found', 404);
       return response;
     } catch (error) {
       console.error(error);
@@ -66,17 +64,20 @@ export class IncidentController {
     }
   }
 
-  @Patch('/:id')
+  @Patch('/incident/:id')
   async update(
     @Param('id') id: string,
-    @Payload() updateUserDto: UpdateIncidentDTO,
+    @Payload() updateIncidentDTO: UpdateIncidentDTO,
   ) {
     try {
       console.log(1);
-      console.log(updateUserDto);
+      console.log(updateIncidentDTO);
       console.log(1);
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'UPDATE_USER' }, { ...updateUserDto, id }),
+        this.natsClient.send(
+          { cmd: 'UPDATE_INCIDENT' },
+          { ...updateIncidentDTO, id },
+        ),
       );
 
       return response;
@@ -86,11 +87,11 @@ export class IncidentController {
     }
   }
 
-  @Delete('/:id')
+  @Delete('/incident/:id')
   async remove(@Param('id') id: string) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'DELETE_USER' }, id),
+        this.natsClient.send({ cmd: 'DELETE_INCIDENT' }, id),
       );
 
       return response;

@@ -4,7 +4,12 @@ import { UpdateIncidentDto } from './dto/update-incident.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { Incident, Institute, User } from 'src/typeorm/entities';
+import {
+  Incident,
+  IncidentStatus,
+  Institute,
+  User,
+} from 'src/typeorm/entities';
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 
@@ -44,7 +49,7 @@ export class IncidentService {
     const incident = this.incidentRepository.create({
       id: uuidv4(),
       ...createIncidentDto,
-      status: 1,
+      status: IncidentStatus.OPEN,
       user: existUser,
       institute: existInstitute,
       createdAt: new Date(),
@@ -92,16 +97,80 @@ export class IncidentService {
     return successResponse(incidents, 'Incidentes encontrados');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} incident`;
+  async getIncidentById(id: string) {
+    const incident = await this.incidentRepository.findOneBy({
+      id,
+    });
+    if (!incident) {
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return successResponse(incident, 'Incidente encontrado');
   }
 
-  update(id: string, updateIncidentDto: UpdateIncidentDto) {
-    console.log(updateIncidentDto);
-    return `This action updates a #${id} incident`;
+  async update(id: string, updateIncidentDto: UpdateIncidentDto) {
+    console.log('holis');
+    console.log(id);
+    console.log('holis');
+
+    const existUser = await this.usersRepository.findOneBy({
+      id: updateIncidentDto.userId,
+    });
+
+    if (!existUser) {
+      throw new RpcException({
+        message: `No existe el usuario`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    const existInstitute = await this.instituteRepository.findOneBy({
+      id: updateIncidentDto.instituteId,
+    });
+    if (!existInstitute) {
+      throw new RpcException({
+        message: `No existe el instituto`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    console.log('se llego aqui');
+
+    delete updateIncidentDto.userId;
+    delete updateIncidentDto.instituteId;
+
+    const incident = await this.incidentRepository.update(id, {
+      ...updateIncidentDto,
+      user: existUser,
+      institute: existInstitute,
+      status: updateIncidentDto.status as unknown as IncidentStatus,
+    });
+    if (!incident) {
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const incidentUpdated = await this.incidentRepository.findOneBy({
+      id,
+    });
+
+    return successResponse(incidentUpdated, 'Incidente actualizado');
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} incident`;
+  async remove(id: string) {
+    const incident = await this.incidentRepository.update(id, {
+      status: IncidentStatus.DELETED,
+      deletedAt: new Date(),
+    });
+    if (!incident) {
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return successResponse(incident, 'Incidente eliminado');
   }
 }

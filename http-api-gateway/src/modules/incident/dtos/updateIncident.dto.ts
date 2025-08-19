@@ -12,6 +12,7 @@ import { Type } from 'class-transformer';
 export class UpdateIncidentDTO {
   @IsUUID()
   @IsNotEmpty()
+  @IsOptional()
   id: string;
 
   @IsUUID()
@@ -24,69 +25,86 @@ export class UpdateIncidentDTO {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   type: string;
 
   @IsString()
   @IsNotEmpty()
-  subtype: string;
+  @IsOptional()
+  subType: string;
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   description: string;
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   address: string;
 
   @IsNumber({ maxDecimalPlaces: 6 })
   @Type(() => Number)
   @IsNotEmpty()
-  location_lat: number;
+  @IsOptional()
+  locationLat: number;
 
   @IsNumber({ maxDecimalPlaces: 6 })
   @Type(() => Number)
   @IsNotEmpty()
-  location_lng: number;
+  @IsOptional()
+  locationLng: number;
 
   @IsString()
   @IsNotEmpty()
-  form_type: string;
+  @IsOptional()
+  formType: string;
 
   @IsOptional()
   @IsString()
-  officer_name?: string;
+  @IsOptional()
+  officerName?: string;
 
   @IsOptional()
   @IsString()
-  phone_number?: string;
+  @IsOptional()
+  phoneNumber?: string;
 
   @IsOptional()
   @IsString()
-  sender_name?: string;
+  @IsOptional()
+  senderName?: string;
 
   @IsOptional()
   @IsString()
-  camera_number?: string;
+  @IsOptional()
+  cameraNumber?: string;
 
   @IsOptional()
   @IsString()
-  document_number?: string;
+  @IsOptional()
+  documentNumber?: string;
 
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-  attention_date?: Date;
+  @IsOptional()
+  attentionDate?: Date;
 
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-  closing_date?: Date;
+  @IsOptional()
+  closingDate?: Date;
 
   @IsBoolean()
   @Type(() => Boolean)
-  is_relevant: boolean;
+  @IsOptional()
+  isRelevant: boolean;
 
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  status: number;
+  @IsOptional()
+  status?: number;
 }
