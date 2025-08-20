@@ -32,4 +32,14 @@ export class IncidentController {
   remove(@Payload() id: string) {
     return this.incidentService.remove(id);
   }
+
+  @MessagePattern({ cmd: 'GET_INCIDENT_TYPE' })
+  getIncidentType() {
+    return this.incidentService.getIncidentType();
+  }
+
+  @MessagePattern({ cmd: 'GET_INCIDENT_SUB_TYPE' })
+  getIncidentSubType(@Payload() id: number) {
+    return this.incidentService.getIncidentSubType(id);
+  }
 }

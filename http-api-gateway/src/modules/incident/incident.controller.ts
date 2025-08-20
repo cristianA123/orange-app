@@ -5,7 +5,6 @@ import {
   Body,
   Get,
   Param,
-  // HttpException,
   HttpCode,
   HttpStatus,
   Patch,
@@ -44,6 +43,32 @@ export class IncidentController {
         this.natsClient.send({ cmd: 'GET_INCIDENT' }, id),
       );
 
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/incident-type')
+  async getIncidentType() {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_INCIDENT_TYPE' }, {}),
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/incident-type/:id')
+  async getIncidentSubType(@Param('id') id: number) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_INCIDENT_SUB_TYPE' }, id),
+      );
       return response;
     } catch (error) {
       console.error(error);

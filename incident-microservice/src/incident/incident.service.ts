@@ -12,6 +12,7 @@ import {
 } from 'src/typeorm/entities';
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
+import { incidentSubTypes, incidentTypes } from 'src/constants';
 
 @Injectable()
 export class IncidentService {
@@ -69,7 +70,6 @@ export class IncidentService {
 
   async findAllIncidentByInstituteId(id: string) {
     console.log(id);
-    // validar que el id del instituto exista en la base de datos
     const existInstitute = await this.instituteRepository.findOneBy({
       id,
     });
@@ -172,5 +172,15 @@ export class IncidentService {
       });
     }
     return successResponse(incident, 'Incidente eliminado');
+  }
+
+  async getIncidentType() {
+    const type = incidentTypes;
+    return successResponse(type, 'Tipos de incidentes encontrados');
+  }
+
+  async getIncidentSubType(id: number) {
+    const subType = incidentSubTypes[id - 1];
+    return successResponse(subType, 'Subtipos de incidentes encontrados');
   }
 }
