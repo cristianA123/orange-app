@@ -15,6 +15,7 @@ import { CreateIncidentDto } from './dtos/createIncident.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
+import { UpdateIncidentStatusDTO } from './dtos/updateIncidentStatus.dto';
 
 @Controller()
 export class IncidentController {
@@ -119,6 +120,26 @@ export class IncidentController {
         this.natsClient.send({ cmd: 'DELETE_INCIDENT' }, id),
       );
 
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Patch('/incident/status/:id')
+  async updateStatus(
+    @Param('id') id: string,
+    @Payload() updateIncidentStatusDTO: UpdateIncidentStatusDTO,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'UPDATE_INCIDENT_STATUS' },
+          { ...updateIncidentStatusDTO, id },
+        ),
+      );
+      console.log('paso');
       return response;
     } catch (error) {
       console.error(error);

@@ -13,6 +13,7 @@ import {
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 import { incidentSubTypes, incidentTypes } from 'src/constants';
+import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
 
 @Injectable()
 export class IncidentService {
@@ -182,5 +183,68 @@ export class IncidentService {
   async getIncidentSubType(id: number) {
     const subType = incidentSubTypes[id - 1];
     return successResponse(subType, 'Subtipos de incidentes encontrados');
+  }
+
+  async updateStatus(
+    id: string,
+    updateIncidentStatusDTO: updateIncidentStatusDTO,
+  ) {
+    const existIncident = await this.incidentRepository.findOneBy({ id });
+    if (!existIncident) {
+      throw new RpcException({
+        message: `No existe el incidente`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const currentStatus = existIncident.status;
+    const newStatusValue = updateIncidentStatusDTO.status;
+
+    if (currentStatus === IncidentStatus.OPEN) {
+      // Solo permite pasar de OPEN (1) a IN_PROGRESS (2)
+      if (newStatusValue !== 2) {
+        throw new RpcException({
+          message: `Solo se permite cambiar de OPEN a IN_PROGRESS`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    } else if (currentStatus === IncidentStatus.IN_PROGRESS) {
+      // Permite cambiar a ATTENDED (3), CLOSED (4) o CANCELED (5)
+      if (![3, 4, 5].includes(newStatusValue)) {
+        throw new RpcException({
+          message: `Estado inválido para transición desde IN_PROGRESS`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    } else {
+      // No permite cambios desde otros estados
+      throw new RpcException({
+        message: `No se puede modificar el estado actual`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    // Mapear el valor numérico al enum
+    const statusMap = {
+      1: IncidentStatus.OPEN,
+      2: IncidentStatus.IN_PROGRESS,
+      3: IncidentStatus.ATTENDED,
+      4: IncidentStatus.CLOSED,
+      5: IncidentStatus.CANCELED,
+    };
+
+    const incident = await this.incidentRepository.update(id, {
+      status: statusMap[newStatusValue],
+    });
+
+    if (!incident) {
+      throw new RpcException({
+        message: `Error al actualizar el incidente`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const incidentUpdated = await this.incidentRepository.findOneBy({ id });
+    return successResponse(incidentUpdated, 'Incidente actualizado');
   }
 }
