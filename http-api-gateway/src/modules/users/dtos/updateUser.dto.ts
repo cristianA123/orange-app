@@ -62,6 +62,10 @@ export class UpdateUserDTO {
 
   @IsString()
   @IsOptional()
+  gender: string;
+
+  @IsString()
+  @IsOptional()
   area: string;
   @IsString()
   @IsOptional()

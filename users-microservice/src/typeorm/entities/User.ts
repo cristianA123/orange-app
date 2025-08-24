@@ -75,6 +75,9 @@ export class User {
   @Column({ nullable: true })
   identifier: string;
 
+  @Column({ nullable: true })
+  gender: string;
+
   @Column({
     type: 'enum',
     enum: UserStatus,

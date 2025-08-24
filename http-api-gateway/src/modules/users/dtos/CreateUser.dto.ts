@@ -51,6 +51,10 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
+  gender: string;
+
+  @IsString()
+  @IsOptional()
   jobLevel: string;
 
   @IsString()
