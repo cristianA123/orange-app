@@ -18,4 +18,6 @@ export class UpdateUserDTO {
   areaGroup: string;
   entryDate: Date;
   contractType: string;
+
+  gender: string;
 }

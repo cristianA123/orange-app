@@ -18,4 +18,6 @@ export class CreateUserDto {
   areaGroup: string;
   entryDate: Date;
   contractType: string;
+
+  gender: string;
 }
