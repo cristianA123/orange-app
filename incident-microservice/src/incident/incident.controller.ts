@@ -42,4 +42,12 @@ export class IncidentController {
   getIncidentSubType(@Payload() id: number) {
     return this.incidentService.getIncidentSubType(id);
   }
+
+  @MessagePattern({ cmd: 'UPDATE_INCIDENT_STATUS' })
+  updateStatus(@Payload() updateIncidentDto: UpdateIncidentDto) {
+    return this.incidentService.updateStatus(
+      updateIncidentDto.id,
+      updateIncidentDto,
+    );
+  }
 }
