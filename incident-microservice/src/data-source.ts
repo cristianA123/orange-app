@@ -18,7 +18,6 @@ export const databaseConfig = {
 
 export const keyDatabase: DataSourceOptions = {
   ...databaseConfig,
-  host: process.env.DB_HOST,
   entities: [
     User,
     Institute,
