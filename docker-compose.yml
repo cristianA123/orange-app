@@ -8,28 +8,37 @@ services:
     command: npm run start:dev
     environment:
       - PORT=3000
+      - NATS_URL=nats://nats:4222
   users_microservice:
     build: ./users-microservice
     volumes:
       - ./users-microservice/src:/usr/src/app/src
     command: npm run start:dev
+    environment:
+      - NATS_HOST=nats://nats:4222
   modules_microservice:
     build: ./modules-microservice
     volumes:
       - ./modules-microservice/src:/usr/src/app/src
     command: npm run start:dev
+    environment:
+      - NATS_HOST=nats://nats:4222
   
   institute_microservice:
     build: ./institute-microservice
     volumes:
       - ./institute-microservice/src:/usr/src/app/src
     command: npm run start:dev
+    environment:
+      - NATS_HOST=nats://nats:4222
 
   incident_microservice:
     build: ./incident-microservice
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
     command: npm run start:dev
+    environment:
+      - NATS_HOST=nats://nats:4222
   
   nats:
     image: nats
