@@ -9,6 +9,12 @@ services:
     environment:
       - PORT=3000
       - NATS_URL=nats://nats:4222
+      - DB_TYPE=mysql
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - DB_USERNAME=testuser
+      - DB_PASSWORD=testuser123
+      - DB_DATABASE=nestjs_db
   users_microservice:
     build: ./users-microservice
     volumes:
@@ -16,6 +22,12 @@ services:
     command: npm run start:dev
     environment:
       - NATS_HOST=nats://nats:4222
+      - DB_TYPE=mysql
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - DB_USERNAME=testuser
+      - DB_PASSWORD=testuser123
+      - DB_DATABASE=nestjs_db
   modules_microservice:
     build: ./modules-microservice
     volumes:
@@ -23,6 +35,12 @@ services:
     command: npm run start:dev
     environment:
       - NATS_HOST=nats://nats:4222
+      - DB_TYPE=mysql
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - DB_USERNAME=testuser
+      - DB_PASSWORD=testuser123
+      - DB_DATABASE=nestjs_db
   
   institute_microservice:
     build: ./institute-microservice
@@ -31,6 +49,12 @@ services:
     command: npm run start:dev
     environment:
       - NATS_HOST=nats://nats:4222
+      - DB_TYPE=mysql
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - DB_USERNAME=testuser
+      - DB_PASSWORD=testuser123
+      - DB_DATABASE=nestjs_db
 
   incident_microservice:
     build: ./incident-microservice
@@ -39,6 +63,12 @@ services:
     command: npm run start:dev
     environment:
       - NATS_HOST=nats://nats:4222
+      - DB_TYPE=mysql
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - DB_USERNAME=testuser
+      - DB_PASSWORD=testuser123
+      - DB_DATABASE=nestjs_db
   
   nats:
     image: nats
