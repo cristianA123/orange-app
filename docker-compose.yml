@@ -2,73 +2,93 @@ services:
   api_gateway:
     build: ./http-api-gateway
     ports:
-      - "3000:3000"
+      - "${PORT}:3000"
     volumes:
       - ./http-api-gateway/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env 
     command: npm run start:dev
     environment:
-      - PORT=3000
-      - NATS_URL=nats://nats:4222
-      - DB_TYPE=mysql
-      - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=testuser
-      - DB_PASSWORD=testuser123
-      - DB_DATABASE=nestjs_db
+      - PORT=${PORT}
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+
   users_microservice:
     build: ./users-microservice
     volumes:
       - ./users-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
     command: npm run start:dev
     environment:
-      - NATS_HOST=nats://nats:4222
-      - DB_TYPE=mysql
-      - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=testuser
-      - DB_PASSWORD=testuser123
-      - DB_DATABASE=nestjs_db
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+      - mysql_db
   modules_microservice:
     build: ./modules-microservice
     volumes:
       - ./modules-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env 
     command: npm run start:dev
     environment:
-      - NATS_HOST=nats://nats:4222
-      - DB_TYPE=mysql
-      - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=testuser
-      - DB_PASSWORD=testuser123
-      - DB_DATABASE=nestjs_db
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+      - mysql_db
   
   institute_microservice:
     build: ./institute-microservice
     volumes:
       - ./institute-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
     command: npm run start:dev
     environment:
-      - NATS_HOST=nats://nats:4222
-      - DB_TYPE=mysql
-      - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=testuser
-      - DB_PASSWORD=testuser123
-      - DB_DATABASE=nestjs_db
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+      - mysql_db
 
   incident_microservice:
     build: ./incident-microservice
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env 
     command: npm run start:dev
     environment:
-      - NATS_HOST=nats://nats:4222
-      - DB_TYPE=mysql
-      - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=testuser
-      - DB_PASSWORD=testuser123
-      - DB_DATABASE=nestjs_db
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+      - mysql_db
   
   nats:
     image: nats
