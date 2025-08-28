@@ -8,11 +8,12 @@ import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { Module } from './typeorm/entities/Module';
 
 export const databaseConfig = {
-  type: 'mysql' as const,
-  port: 3306,
-  username: 'testuser',
-  password: 'testuser123',
-  database: 'nestjs_db',
+  type: process.env.DB_TYPE as any,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 };
 
 export const keyDatabase: DataSourceOptions = {
