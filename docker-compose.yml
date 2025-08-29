@@ -30,6 +30,12 @@ services:
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
     command: npm run start:dev
+
+  dashboard_microservice:
+    build: ./dashboard-microservice
+    volumes:
+      - ./dashboard-microservice/src:/usr/src/app/src
+    command: npm run start:dev
   
   nats:
     image: nats
