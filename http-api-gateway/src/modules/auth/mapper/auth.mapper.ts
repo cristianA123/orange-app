@@ -9,6 +9,7 @@ export function AuthResponse(response: any) {
         email: response.user.email,
         name: response.user.name,
         rol: response.user.rol,
+        instituteId: response.user.instituteId,
       },
     },
   };
