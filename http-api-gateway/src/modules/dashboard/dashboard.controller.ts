@@ -1,19 +1,18 @@
 import {
     Controller,
-    Delete,
     Get,
     HttpCode,
     HttpStatus,
     Inject,
-    Param,
-    Patch,
-    Post, Req, UseGuards,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { lastValueFrom } from 'rxjs';
 import {NatsAuthGuard} from "../auth/guards/auth.guards";
 import {RequestWithUser} from "../modules/interfaces/request-with-user.interface";
+import { successResponse } from 'src/common/response/response.util';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -29,7 +28,7 @@ export class DashboardController {
                 this.natsClient.send({ cmd: 'GET_DASHBOARD_INCIDENTS' }, { instituteId }),
             );
 
-            return response;
+            return successResponse(response);
         } catch (error) {
             console.error(error);
             handleRpcError(error);
@@ -46,7 +45,7 @@ export class DashboardController {
                 this.natsClient.send({ cmd: 'GET_DASHBOARD_KPIS' }, { instituteId }),
             );
 
-            return response;
+            return successResponse(response);
         } catch (error) {
             console.error(error);
             handleRpcError(error);
@@ -63,7 +62,7 @@ export class DashboardController {
                 this.natsClient.send({ cmd: 'GET_DASHBOARD_TOP' }, { instituteId }),
             );
 
-            return response;
+            return successResponse(response);
         } catch (error) {
             console.error(error);
             handleRpcError(error);
@@ -80,7 +79,7 @@ export class DashboardController {
                 this.natsClient.send({ cmd: 'GET_DASHBOARD_WORK' }, { instituteId }),
             );
 
-            return response;
+            return successResponse(response);
         } catch (error) {
             console.error(error);
             handleRpcError(error);
