@@ -29,6 +29,7 @@ services:
     build: ./incident-microservice
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
+      - ./incident-microservice/fonts:/usr/src/app/fonts
     command: npm run start:dev
 
   dashboard_microservice:
