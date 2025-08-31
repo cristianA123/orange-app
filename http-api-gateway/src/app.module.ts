@@ -4,6 +4,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ModuleModule } from './modules/modules/module.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { IncidentModule } from './modules/incident/incident.module';
+import {DashboardModule} from "./modules/dashboard/dashboard.module";
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { IncidentModule } from './modules/incident/incident.module';
     AuthModule,
     ModuleModule,
     InstituteModule,
+      DashboardModule,
     IncidentModule,
   ],
   controllers: [],

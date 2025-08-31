@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   private generateTokens(user: any) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, instituteId: user.institute_id };
 
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: '15m',
@@ -54,6 +54,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         rol: user.rol,
+        instituteId: user.institute_id,
       },
     };
   }
@@ -67,6 +68,7 @@ export class AuthService {
       const user = {
         id: payload.sub,
         email: payload.email,
+        instituteId: payload.instituteId
       };
 
       const newAccessToken = this.jwtService.sign(
