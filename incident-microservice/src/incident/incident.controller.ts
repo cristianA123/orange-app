@@ -23,6 +23,11 @@ export class IncidentController {
     return this.incidentService.getIncidentById(id);
   }
 
+    @MessagePattern({ cmd: 'GET_INCIDENT_PDF_BY_ID' })
+    getIncidentPdfById(@Payload() id: string) {
+        return this.incidentService.getIncidentPdfById(id);
+    }
+
   @MessagePattern({ cmd: 'UPDATE_INCIDENT' })
   update(@Payload() updateIncidentDto: UpdateIncidentDto) {
     return this.incidentService.update(updateIncidentDto.id, updateIncidentDto);

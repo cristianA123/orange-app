@@ -1,14 +1,14 @@
 import {
-  Controller,
-  Inject,
-  Post,
-  Body,
-  Get,
-  Param,
-  HttpCode,
-  HttpStatus,
-  Patch,
-  Delete,
+    Controller,
+    Inject,
+    Post,
+    Body,
+    Get,
+    Param,
+    HttpCode,
+    HttpStatus,
+    Patch,
+    Delete, Res,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
@@ -16,6 +16,7 @@ import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
 import { UpdateIncidentStatusDTO } from './dtos/updateIncidentStatus.dto';
+import { Response } from 'express';
 
 @Controller()
 export class IncidentController {
@@ -87,6 +88,26 @@ export class IncidentController {
     } catch (error) {
       console.error(error);
       handleRpcError(error);
+    }
+  }
+
+  @Get('/incident/:id/pdf')
+  async getIncidentPdfById(@Param('id') id: string, @Res() res: Response) {
+    try {
+        const base64 = await lastValueFrom(
+            this.natsClient.send({ cmd: 'GET_INCIDENT_PDF_BY_ID' }, id),
+        );
+
+        const pdfBuffer = Buffer.from(base64, 'base64');
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader(
+            'Content-Disposition',
+            `inline; filename="reporte-${id}.pdf"`
+        );
+        res.end(pdfBuffer);
+    } catch (error) {
+        handleRpcError(error);
     }
   }
 
