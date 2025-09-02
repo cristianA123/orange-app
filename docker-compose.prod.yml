@@ -7,7 +7,6 @@ services:
     ports:
       - "${PORT}:3000"
     volumes:
-      - ./http-api-gateway/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     environment:
       - PORT=${PORT:-3000}
@@ -27,7 +26,6 @@ services:
       dockerfile: ./users-microservice/Dockerfile.prod
     image: users_microservice-prod
     volumes:
-      - ./users-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     environment:
       - NATS_HOST=${NATS_HOST:-nats://nats:4222}
@@ -46,7 +44,6 @@ services:
       dockerfile: ./modules-microservice/Dockerfile.prod
     image: modules_microservice-prod
     volumes:
-      - ./modules-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     environment:
       - NATS_HOST=${NATS_HOST:-nats://nats:4222}
@@ -65,7 +62,6 @@ services:
       dockerfile: ./institute-microservice/Dockerfile.prod
     image: institute_microservice-prod
     volumes:
-      - ./institute-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     environment:
       - NATS_HOST=${NATS_HOST:-nats://nats:4222}
@@ -83,7 +79,6 @@ services:
       context: .
       dockerfile: ./incident-microservice/Dockerfile.prod
     volumes:
-      - ./incident-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     image: incident_microservice-prod
     environment:
@@ -103,7 +98,6 @@ services:
       dockerfile: ./dashboard-microservice/Dockerfile.prod
     image: dashboard_microservice-prod
     volumes:
-      - ./dashboard-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
     environment:
       - NATS_HOST=${NATS_HOST}
