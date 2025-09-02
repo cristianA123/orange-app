@@ -101,6 +101,7 @@ services:
     build:
       context: .
       dockerfile: ./dashboard-microservice/Dockerfile.prod
+    image: dashboard_microservice-prod
     volumes:
       - ./dashboard-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
