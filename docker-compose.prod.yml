@@ -1,0 +1,116 @@
+services:
+  api_gateway:
+    build:
+      context: .
+      dockerfile: ./http-api-gateway/Dockerfile.prod
+    image: api_gateway-prod
+    ports:
+      - "${PORT}:3000"
+    volumes:
+      - ./http-api-gateway/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    environment:
+      - PORT=${PORT:-3000}
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    depends_on:
+      - nats
+
+  users_microservice:
+    build:
+      context: .
+      dockerfile: ./users-microservice/Dockerfile.prod
+    image: users_microservice-prod
+    volumes:
+      - ./users-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    environment:
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    depends_on:
+      - nats
+      - mysql_db
+  modules_microservice:
+    build:
+      context: .
+      dockerfile: ./modules-microservice/Dockerfile.prod
+    image: modules_microservice-prod
+    volumes:
+      - ./modules-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    environment:
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    depends_on:
+      - nats
+      - mysql_db
+
+  institute_microservice:
+    build:
+      context: .
+      dockerfile: ./institute-microservice/Dockerfile.prod
+    image: institute_microservice-prod
+    volumes:
+      - ./institute-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    environment:
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    depends_on:
+      - nats
+      - mysql_db
+
+  incident_microservice:
+    build:
+      context: .
+      dockerfile: ./incident-microservice/Dockerfile.prod
+    volumes:
+      - ./incident-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    image: incident_microservice-prod
+    environment:
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    depends_on:
+      - nats
+      - mysql_db
+
+  nats:
+    image: nats
+    ports:
+      - 4222:4222
+  mysql_db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password_123
+      - MYSQL_DATABASE=nestjs_db
+      - MYSQL_USER=testuser
+      - MYSQL_PASSWORD=testuser123
+      - MYSQL_TCP_PORT=3306

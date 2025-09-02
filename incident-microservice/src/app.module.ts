@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { databaseConfig } from './data-source';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,12 +10,16 @@ import { Incident } from './typeorm/entities/Incident';
 import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { Module as ModuleTypeOrm } from './typeorm/entities/Module';
 import { IncidentModule } from './incident/incident.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     TypeOrmModule.forRoot({
       ...databaseConfig,
-      host: 'mysql_db',
       entities: [
         User,
         Institute,
