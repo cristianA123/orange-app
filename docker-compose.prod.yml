@@ -105,7 +105,6 @@ services:
     volumes:
       - ./dashboard-microservice/src:/usr/src/app/src
       - ./.env:/usr/src/app/.env
-    command: npm run start:dev
     environment:
       - NATS_HOST=${NATS_HOST}
       - DB_TYPE=${DB_TYPE}
