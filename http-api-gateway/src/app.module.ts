@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ModuleModule } from './modules/modules/module.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { IncidentModule } from './modules/incident/incident.module';
+import {DashboardModule} from "./modules/dashboard/dashboard.module";
 import configuration from './config/configuration';
 
 @Module({
@@ -17,6 +18,7 @@ import configuration from './config/configuration';
     AuthModule,
     ModuleModule,
     InstituteModule,
+    DashboardModule,
     IncidentModule,
   ],
   controllers: [],

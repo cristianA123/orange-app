@@ -76,7 +76,25 @@ services:
     build: ./incident-microservice
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env 
+      - ./incident-microservice/fonts:/usr/src/app/fonts
+    command: npm run start:dev
+    environment:
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+      - mysql_db
+
+  dashboard_microservice:
+    build: ./dashboard-microservice
+    volumes:
+      - ./dashboard-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
     command: npm run start:dev
     environment:
       - NATS_HOST=${NATS_HOST}
