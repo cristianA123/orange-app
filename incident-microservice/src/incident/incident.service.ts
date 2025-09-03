@@ -14,7 +14,7 @@ import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 import { incidentSubTypes, incidentTypes } from 'src/constants';
 import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
-import {ReportService} from "./report.service";
+import { ReportService } from './report.service';
 
 @Injectable()
 export class IncidentService {
@@ -68,6 +68,9 @@ export class IncidentService {
       });
     }
 
+    delete newIncident.user;
+    delete newIncident.institute;
+
     return successResponse(newIncident, 'Incidencia creado exitosamente');
   }
 
@@ -115,24 +118,20 @@ export class IncidentService {
 
   async getIncidentPdfById(id: string): Promise<Buffer> {
     const incident = await this.incidentRepository.findOne({
-          where: { id },
-          relations: ['user', 'institute'],
+      where: { id },
+      relations: ['user', 'institute'],
     });
     if (!incident) {
-        throw new RpcException({
-            message: `No se encontraron incidentes`,
-            status: HttpStatus.BAD_REQUEST,
-        });
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
     }
 
     return this.reportService.generateIncidentPdf(incident);
   }
 
   async update(id: string, updateIncidentDto: UpdateIncidentDto) {
-    console.log('holis');
-    console.log(id);
-    console.log('holis');
-
     const existUser = await this.usersRepository.findOneBy({
       id: updateIncidentDto.userId,
     });
@@ -153,8 +152,6 @@ export class IncidentService {
       });
     }
 
-    console.log('se llego aqui');
-
     delete updateIncidentDto.userId;
     delete updateIncidentDto.instituteId;
 
@@ -174,6 +171,9 @@ export class IncidentService {
     const incidentUpdated = await this.incidentRepository.findOneBy({
       id,
     });
+
+    delete incidentUpdated.user;
+    delete incidentUpdated.institute;
 
     return successResponse(incidentUpdated, 'Incidente actualizado');
   }
