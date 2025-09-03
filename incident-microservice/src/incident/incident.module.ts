@@ -3,7 +3,7 @@ import { IncidentService } from './incident.service';
 import { IncidentController } from './incident.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Incident, Institute, User } from 'src/typeorm/entities';
-import {ReportService} from "./report.service";
+import { ReportService } from './report.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Incident, User, Institute])],
