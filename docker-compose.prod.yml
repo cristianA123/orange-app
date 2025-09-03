@@ -80,6 +80,7 @@ services:
       dockerfile: ./incident-microservice/Dockerfile.prod
     volumes:
       - ./.env:/usr/src/app/.env
+      - ./incident-microservice/fonts:/usr/src/app/fonts
     image: incident_microservice-prod
     environment:
       - NATS_HOST=${NATS_HOST:-nats://nats:4222}
@@ -100,13 +101,13 @@ services:
     volumes:
       - ./.env:/usr/src/app/.env
     environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
     depends_on:
       - nats
 

@@ -31,8 +31,6 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.1",
     "bcrypt": "^6.0.0",
-    "canvas": "^3.2.0",
-    "chartjs-node-canvas": "^5.0.0",
     "mysql2": "^3.6.5",
     "nats": "^2.18.0",
     "pdfmake": "^0.2.20",

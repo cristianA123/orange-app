@@ -1,9 +1,6 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
-import { ChartConfiguration } from 'chart.js';
-import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import { Injectable } from '@nestjs/common';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { RpcException } from '@nestjs/microservices';
 import { Incident } from 'src/typeorm/entities';
 import path from "node:path";
 
@@ -16,7 +13,6 @@ const fonts = {
 
 @Injectable()
 export class ReportService {
-    private chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 600 });
     private printer= new PdfPrinter(fonts);
 
     async generateIncidentPdf(incident: Incident): Promise<Buffer> {
