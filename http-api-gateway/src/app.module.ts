@@ -5,8 +5,11 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ModuleModule } from './modules/modules/module.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { IncidentModule } from './modules/incident/incident.module';
-import {DashboardModule} from "./modules/dashboard/dashboard.module";
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import configuration from './config/configuration';
+import { NatsAuthGuard } from './common/guards/auth.guards';
+import { APP_GUARD } from '@nestjs/core';
+import { NatsClientModule } from './nats-client/nats-client.module';
 
 @Module({
   imports: [
@@ -14,6 +17,7 @@ import configuration from './config/configuration';
       isGlobal: true,
       load: [configuration], // carga el archivo configuration.ts
     }),
+    NatsClientModule,
     UsersModule,
     AuthModule,
     ModuleModule,
@@ -21,7 +25,11 @@ import configuration from './config/configuration';
     DashboardModule,
     IncidentModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: NatsAuthGuard, // Guardia global
+    },
+  ],
 })
 export class AppModule {}

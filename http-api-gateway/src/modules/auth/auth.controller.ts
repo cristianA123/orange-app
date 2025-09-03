@@ -17,12 +17,14 @@ import { handleRpcError } from '../../exceptions/handle-rpc-error.util';
 import { Token } from './decorators/token.decorator';
 import { UserDecorator } from './decorators/user.decorator';
 import { NatsAuthGuard } from './guards/auth.guards';
+import { Public } from 'src/common/decorators';
 
 @Controller('auth')
 export class AuthController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
   @Post('/login')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {
     try {
@@ -36,6 +38,7 @@ export class AuthController {
   }
 
   @Post('/refresh')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() dto: RefreshTokenDto) {
     try {
