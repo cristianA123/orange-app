@@ -1,14 +1,15 @@
 import {
-    Controller,
-    Inject,
-    Post,
-    Body,
-    Get,
-    Param,
-    HttpCode,
-    HttpStatus,
-    Patch,
-    Delete, Res,
+  Controller,
+  Inject,
+  Post,
+  Body,
+  Get,
+  Param,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Delete,
+  Res,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
@@ -17,6 +18,8 @@ import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
 import { UpdateIncidentStatusDTO } from './dtos/updateIncidentStatus.dto';
 import { Response } from 'express';
+import { UserDecorator } from 'src/common/decorators';
+import { IUser } from 'src/common/interfaces';
 
 @Controller()
 export class IncidentController {
@@ -24,10 +27,20 @@ export class IncidentController {
 
   @Post('/incident')
   @HttpCode(HttpStatus.OK)
-  async createIncident(@Body() createIncidentDto: CreateIncidentDto) {
+  async createIncident(
+    @UserDecorator() user: IUser,
+    @Body() createIncidentDto: CreateIncidentDto,
+  ) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'CREATE_INCIDENT' }, createIncidentDto),
+        this.natsClient.send(
+          { cmd: 'CREATE_INCIDENT' },
+          {
+            ...createIncidentDto,
+            userId: user.id,
+            instituteId: user.instituteId,
+          },
+        ),
       );
 
       return response;
@@ -37,12 +50,12 @@ export class IncidentController {
     }
   }
 
-  @Get('/institute/:id/incident')
+  @Get('/institute-incidents')
   @HttpCode(HttpStatus.OK)
-  async findAllIncidentByInstituteId(@Param('id') id: string) {
+  async findAllIncidentByInstituteId(@UserDecorator() user: IUser) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'GET_INCIDENT' }, id),
+        this.natsClient.send({ cmd: 'GET_INCIDENT' }, user.instituteId),
       );
 
       return response;
@@ -94,36 +107,39 @@ export class IncidentController {
   @Get('/incident/:id/pdf')
   async getIncidentPdfById(@Param('id') id: string, @Res() res: Response) {
     try {
-        const base64 = await lastValueFrom(
-            this.natsClient.send({ cmd: 'GET_INCIDENT_PDF_BY_ID' }, id),
-        );
+      const base64 = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_INCIDENT_PDF_BY_ID' }, id),
+      );
 
-        const pdfBuffer = Buffer.from(base64, 'base64');
+      const pdfBuffer = Buffer.from(base64, 'base64');
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader(
-            'Content-Disposition',
-            `inline; filename="reporte-${id}.pdf"`
-        );
-        res.end(pdfBuffer);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="reporte-${id}.pdf"`,
+      );
+      res.end(pdfBuffer);
     } catch (error) {
-        handleRpcError(error);
+      handleRpcError(error);
     }
   }
 
   @Patch('/incident/:id')
   async update(
     @Param('id') id: string,
+    @UserDecorator() user: IUser,
     @Payload() updateIncidentDTO: UpdateIncidentDTO,
   ) {
     try {
-      console.log(1);
-      console.log(updateIncidentDTO);
-      console.log(1);
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'UPDATE_INCIDENT' },
-          { ...updateIncidentDTO, id },
+          {
+            ...updateIncidentDTO,
+            id,
+            userId: user.id,
+            instituteId: user.instituteId,
+          },
         ),
       );
 
@@ -160,7 +176,6 @@ export class IncidentController {
           { ...updateIncidentStatusDTO, id },
         ),
       );
-      console.log('paso');
       return response;
     } catch (error) {
       console.error(error);

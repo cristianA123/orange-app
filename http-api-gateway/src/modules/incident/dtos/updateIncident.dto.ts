@@ -15,14 +15,6 @@ export class UpdateIncidentDTO {
   @IsOptional()
   id: string;
 
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  instituteId: string;
-
   @IsString()
   @IsNotEmpty()
   @IsOptional()

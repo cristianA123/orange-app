@@ -4,3 +4,6 @@ node_modules
 .idea/php.xml
 
 .env
+.env.dev
+.env.qa
+.env.prod
