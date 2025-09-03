@@ -2,7 +2,6 @@ import {
   IsString,
   IsNotEmpty,
   IsOptional,
-  IsUUID,
   IsNumber,
   IsBoolean,
   IsDate,
@@ -10,14 +9,6 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateIncidentDto {
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  instituteId: string;
-
   @IsString()
   @IsNotEmpty()
   type: string;

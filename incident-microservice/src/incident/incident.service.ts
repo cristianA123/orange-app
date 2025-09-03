@@ -68,6 +68,9 @@ export class IncidentService {
       });
     }
 
+    delete newIncident.user;
+    delete newIncident.institute;
+
     return successResponse(newIncident, 'Incidencia creado exitosamente');
   }
 
@@ -129,10 +132,6 @@ export class IncidentService {
   }
 
   async update(id: string, updateIncidentDto: UpdateIncidentDto) {
-    console.log('holis');
-    console.log(id);
-    console.log('holis');
-
     const existUser = await this.usersRepository.findOneBy({
       id: updateIncidentDto.userId,
     });
@@ -153,8 +152,6 @@ export class IncidentService {
       });
     }
 
-    console.log('se llego aqui');
-
     delete updateIncidentDto.userId;
     delete updateIncidentDto.instituteId;
 
@@ -174,6 +171,9 @@ export class IncidentService {
     const incidentUpdated = await this.incidentRepository.findOneBy({
       id,
     });
+
+    delete incidentUpdated.user;
+    delete incidentUpdated.institute;
 
     return successResponse(incidentUpdated, 'Incidente actualizado');
   }
