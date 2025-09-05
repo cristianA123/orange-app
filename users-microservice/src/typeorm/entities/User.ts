@@ -23,8 +23,8 @@ export enum UserStatus {
 
 export enum UserRole {
   SUPERADMIN = 'SUPERADMIN',
-  ADMIN = 'ADMIN',
-  DISPATCHER = 'DISPATCHER',
+  USER = 'USER',
+  EMPLOYEE = 'EMPLOYEE',
 }
 
 @Entity('users')
