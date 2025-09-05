@@ -3,6 +3,8 @@ import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dtos/UpdateUser.dto';
+import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
+import { UpdateUserStaffDTO } from './dtos/UpdateUserStaff.dto';
 
 @Controller()
 export class UsersMicroserviceController {
@@ -51,5 +53,13 @@ export class UsersMicroserviceController {
   @MessagePattern({ cmd: 'GET_USER_SECURITY_BY_INSTITUTE_ID' })
   getUsersSecurityByInstituteId(@Payload() payload: { instituteId: string }) {
     return this.usersService.getUsersSecurityByInstituteId(payload.instituteId);
+  }
+  @MessagePattern({ cmd: 'CREATE_USER_STAFF' })
+  createUserStaff(@Payload() createUserStaffDTO: CreateUserStaffDTO) {
+    return this.usersService.createUserStaff(createUserStaffDTO);
+  }
+  @MessagePattern({ cmd: 'UPDATE_USER_STAFF' })
+  updateUserStaff(@Payload() updateUserStaffDTO: UpdateUserStaffDTO) {
+    return this.usersService.updateUserStaff(updateUserStaffDTO);
   }
 }

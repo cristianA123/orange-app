@@ -12,6 +12,8 @@ import {
 } from 'src/common/response/response.util';
 import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
 import { UpdateUserDTO } from './dtos/UpdateUser.dto';
+import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
+import { UpdateUserStaffDTO } from './dtos/UpdateUserStaff.dto';
 
 @Injectable()
 export class UsersService {
@@ -127,7 +129,7 @@ export class UsersService {
     });
     if (!user) {
       throw new RpcException({
-        message: `No se pudo actualizar usuario`,
+        message: `No se encontro usuario con ese ID para actualizar`,
         status: HttpStatus.BAD_REQUEST,
       });
     }
@@ -151,6 +153,18 @@ export class UsersService {
       if (existingUser && existingUser.id !== id) {
         throw new RpcException({
           message: `El correo ${updateInstituteDto.email} ya está en uso`,
+          status: HttpStatus.CONFLICT,
+        });
+      }
+    }
+
+    if (updateInstituteDto.documentNumber) {
+      const existingUser = await this.usersRepository.findOne({
+        where: { documentNumber: updateInstituteDto.documentNumber },
+      });
+      if (existingUser && existingUser.id !== id) {
+        throw new RpcException({
+          message: `El documento ${updateInstituteDto.documentNumber} ya está en uso`,
           status: HttpStatus.CONFLICT,
         });
       }
@@ -217,5 +231,117 @@ export class UsersService {
     });
 
     return successResponse(users);
+  }
+
+  async createUserStaff(createUserStaffDTO: CreateUserStaffDTO) {
+    const user = await this.usersRepository.findOne({
+      where: { email: createUserStaffDTO.email },
+    });
+
+    if (user) {
+      throw new RpcException({
+        message: `El correo ${createUserStaffDTO.email} ya está en uso`,
+        status: HttpStatus.CONFLICT,
+      });
+    }
+
+    const existingUser = await this.usersRepository.findOne({
+      where: { documentNumber: createUserStaffDTO.documentNumber },
+    });
+    if (existingUser) {
+      throw new RpcException({
+        message: `El documento ${createUserStaffDTO.documentNumber} ya está en uso`,
+        status: HttpStatus.CONFLICT,
+      });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(createUserStaffDTO.password, salt);
+    createUserStaffDTO.password = hashedPassword;
+
+    const newUser = this.usersRepository.create({
+      id: uuidv4(),
+      ...createUserStaffDTO,
+    });
+
+    const userCreated = await this.usersRepository.save(newUser);
+
+    if (userCreated) {
+      delete userCreated.password;
+    }
+
+    if (!userCreated) {
+      throw new RpcException({
+        message: `No se puedo crear usuario`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    return successResponse(userCreated, 'Usuario creado exitosamente');
+  }
+  async updateUserStaff(updateUserStaffDTO: UpdateUserStaffDTO) {
+    const user = await this.usersRepository.findOne({
+      where: { id: updateUserStaffDTO.id },
+    });
+
+    if (!user) {
+      throw new RpcException({
+        message: `No se encontro usuario con ese ID para actualizar`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    if (updateUserStaffDTO.email) {
+      const existingUser = await this.usersRepository.findOne({
+        where: { email: updateUserStaffDTO.email },
+      });
+      if (existingUser && existingUser.id !== updateUserStaffDTO.id) {
+        throw new RpcException({
+          message: `El correo ${updateUserStaffDTO.email} ya está en uso`,
+          status: HttpStatus.CONFLICT,
+        });
+      }
+    }
+
+    if (updateUserStaffDTO.documentNumber) {
+      const existingUser = await this.usersRepository.findOne({
+        where: { documentNumber: updateUserStaffDTO.documentNumber },
+      });
+      if (existingUser && existingUser.id !== updateUserStaffDTO.id) {
+        throw new RpcException({
+          message: `El documento ${updateUserStaffDTO.documentNumber} ya está en uso`,
+          status: HttpStatus.CONFLICT,
+        });
+      }
+    }
+
+    if (updateUserStaffDTO.password) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(
+        updateUserStaffDTO.password,
+        salt,
+      );
+      updateUserStaffDTO.password = hashedPassword;
+    }
+
+    await this.usersRepository.update(
+      { id: updateUserStaffDTO.id },
+      { ...updateUserStaffDTO },
+    );
+
+    const updatedUser = await this.usersRepository.findOne({
+      where: { id: updateUserStaffDTO.id },
+    });
+
+    if (updatedUser) {
+      delete updatedUser.password;
+
+      return successResponse(updatedUser, 'Usuario actualizado exitosamente');
+    }
+
+    throw new RpcException({
+      message: `Error al obtener el usuario actualizado`,
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+    });
   }
 }

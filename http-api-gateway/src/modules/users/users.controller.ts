@@ -18,6 +18,8 @@ import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateUserDTO } from './dtos/updateUser.dto';
 import { UserDecorator } from '../auth/decorators';
 import { IUser } from 'src/common/interfaces';
+import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
+import { UpdateUserStaffDTO } from './dtos/updateUserStaff.dto';
 
 @Controller('/user')
 export class UsersController {
@@ -31,6 +33,30 @@ export class UsersController {
     try {
       const response = await lastValueFrom(
         this.natsClient.send({ cmd: 'createUser' }, createUserDto),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Post('/staff')
+  @HttpCode(HttpStatus.OK)
+  async createUserStaff(
+    @UserDecorator() user: IUser,
+    @Body() createUserStaffDTO: CreateUserStaffDTO,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'CREATE_USER_STAFF' },
+          {
+            ...createUserStaffDTO,
+            institute_id: user.instituteId,
+          },
+        ),
       );
 
       return response;
@@ -55,8 +81,6 @@ export class UsersController {
   @Get('/institute')
   @HttpCode(HttpStatus.OK)
   async getUsersByInstituteId(@UserDecorator() user: IUser) {
-    console.log(user);
-
     try {
       const response = await lastValueFrom(
         this.natsClient.send(
@@ -116,6 +140,27 @@ export class UsersController {
       console.log(1);
       const response = await lastValueFrom(
         this.natsClient.send({ cmd: 'UPDATE_USER' }, { ...updateUserDto, id }),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Patch('/staff/:id')
+  async updateUserStaff(
+    @UserDecorator() user: IUser,
+    @Param('id') id: string,
+    @Payload() updateUserDto: UpdateUserStaffDTO,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'UPDATE_USER_STAFF' },
+          { ...updateUserDto, id, institute_id: user.instituteId },
+        ),
       );
 
       return response;
