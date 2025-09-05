@@ -2,19 +2,13 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
-  IsUUID,
   IsEmail,
   MinLength,
   IsOptional,
 } from 'class-validator';
 import { UserRole, UserStatus } from 'src/typeorm/entities/User';
 
-export class UpdateUserDTO {
-  @IsUUID()
-  @IsNotEmpty()
-  @IsOptional()
-  institute_id: string;
-
+export class UpdateUserStaffDTO {
   @IsString()
   @IsNotEmpty()
   @IsOptional()

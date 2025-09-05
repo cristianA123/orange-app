@@ -1,6 +1,6 @@
 import { UserRole, UserStatus } from 'src/typeorm/entities/User';
 
-export class CreateUserDto {
+export class CreateUserStaffDTO {
   id: string;
   institute_id: string;
   name: string;

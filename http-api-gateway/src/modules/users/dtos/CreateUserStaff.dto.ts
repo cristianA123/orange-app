@@ -2,43 +2,32 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
-  IsUUID,
   IsEmail,
   MinLength,
   IsOptional,
 } from 'class-validator';
 import { UserRole, UserStatus } from 'src/typeorm/entities/User';
 
-export class UpdateUserDTO {
-  @IsUUID()
-  @IsNotEmpty()
-  @IsOptional()
-  institute_id: string;
-
+export class CreateUserStaffDTO {
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
   name: string;
 
   @IsEmail()
   @IsNotEmpty()
-  @IsOptional()
   email: string;
 
   @IsString()
   @MinLength(6)
   @IsNotEmpty()
-  @IsOptional()
   password: string;
 
   @IsEnum(UserStatus)
   @IsNotEmpty()
-  @IsOptional()
   status: UserStatus;
 
   @IsEnum(UserRole)
   @IsNotEmpty()
-  @IsOptional()
   rol: UserRole;
 
   @IsString()
@@ -53,11 +42,11 @@ export class UpdateUserDTO {
 
   @IsString()
   @IsOptional()
-  jobLevel: string;
+  gender: string;
 
   @IsString()
   @IsOptional()
-  gender: string;
+  jobLevel: string;
 
   @IsString()
   @IsOptional()
