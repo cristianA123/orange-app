@@ -195,4 +195,27 @@ export class UsersService {
 
     return successResponse(institute);
   }
+  async getUserByInstituteId(instituteId: string) {
+    const users = await this.usersRepository.find({
+      where: { institute_id: instituteId },
+    });
+
+    users.forEach((user) => {
+      delete user.password;
+    });
+
+    return successResponse(users);
+  }
+
+  async getUsersSecurityByInstituteId(instituteId: string) {
+    const users = await this.usersRepository.find({
+      where: { institute_id: instituteId, area: 'security' },
+    });
+
+    users.forEach((user) => {
+      delete user.password;
+    });
+
+    return successResponse(users);
+  }
 }

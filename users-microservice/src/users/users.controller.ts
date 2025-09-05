@@ -44,4 +44,12 @@ export class UsersMicroserviceController {
   remove(@Payload() id: string) {
     return this.usersService.remove(id);
   }
+  @MessagePattern({ cmd: 'GET_USER_BY_INSTITUTE_ID' })
+  getUserByInstituteId(@Payload() payload: { instituteId: string }) {
+    return this.usersService.getUserByInstituteId(payload.instituteId);
+  }
+  @MessagePattern({ cmd: 'GET_USER_SECURITY_BY_INSTITUTE_ID' })
+  getUsersSecurityByInstituteId(@Payload() payload: { instituteId: string }) {
+    return this.usersService.getUsersSecurityByInstituteId(payload.instituteId);
+  }
 }
