@@ -16,6 +16,8 @@ import { CreateUserDto } from './dtos/CreateUser.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateUserDTO } from './dtos/updateUser.dto';
+import { UserDecorator } from '../auth/decorators';
+import { IUser } from 'src/common/interfaces';
 
 @Controller('/user')
 export class UsersController {
@@ -48,6 +50,44 @@ export class UsersController {
     console.log(1);
 
     return response;
+  }
+
+  @Get('/institute')
+  @HttpCode(HttpStatus.OK)
+  async getUsersByInstituteId(@UserDecorator() user: IUser) {
+    console.log(user);
+
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_USER_BY_INSTITUTE_ID' },
+          { instituteId: user.instituteId },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/institute-security')
+  @HttpCode(HttpStatus.OK)
+  async getUsersSecurityByInstituteId(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_USER_SECURITY_BY_INSTITUTE_ID' },
+          { instituteId: user.instituteId },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
   }
 
   @Get('/:id')
