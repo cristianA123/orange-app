@@ -32,6 +32,7 @@ export class IncidentController {
   getReportIncidents(
     @Payload()
     payload: {
+        instituteId: string;
         from?: string;
         to?: string;
         status?: string;
