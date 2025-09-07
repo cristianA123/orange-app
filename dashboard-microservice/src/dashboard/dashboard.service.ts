@@ -24,7 +24,7 @@ export class DashboardService {
             this.incidentRepository
                 .createQueryBuilder('incident')
                 .select("DATE_FORMAT(incident.attentionDate, '%Y-%m')", 'month')
-                .addSelect('SUM(TIMESTAMPDIFF(HOUR, incident.attentionDate, incident.closingDate))', 'total')
+                .addSelect('SUM(TIMESTAMPDIFF(HOUR, incident.created_at, incident.attentionDate))', 'total')
                 .where('incident.institute_id = :instituteId', { instituteId })
                 .andWhere('incident.closingDate IS NOT NULL')
                 .groupBy("DATE_FORMAT(incident.attentionDate, '%Y-%m')")
@@ -70,7 +70,7 @@ export class DashboardService {
                 .getRawOne(),
 
             this.baseIncidentQuery(instituteId)
-                .select('AVG(TIMESTAMPDIFF(HOUR, incident.attentionDate, incident.closingDate))', 'avg_hours')
+                .select('AVG(TIMESTAMPDIFF(HOUR, incident.created_at, incident.attentionDate))', 'avg_hours')
                 .andWhere('incident.closingDate IS NOT NULL')
                 .getRawOne(),
 

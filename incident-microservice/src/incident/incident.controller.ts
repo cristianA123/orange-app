@@ -28,6 +28,22 @@ export class IncidentController {
     return this.incidentService.getIncidentPdfById(id);
   }
 
+  @MessagePattern({ cmd: 'GET_REPORTS_INCIDENT' })
+  getReportIncidents(
+    @Payload()
+    payload: {
+        from?: string;
+        to?: string;
+        status?: string;
+        isRelevant?: boolean;
+        limit?: number;
+        page?: number;
+    },
+  ) {
+    const { instituteId, from, to, status,isRelevant, limit, page } = payload;
+    return this.incidentService.getReportIncidents(instituteId, from, to, status, isRelevant, limit, page);
+  }
+
   @MessagePattern({ cmd: 'UPDATE_INCIDENT' })
   update(@Payload() updateIncidentDto: UpdateIncidentDto) {
     return this.incidentService.update(updateIncidentDto.id, updateIncidentDto);

@@ -264,4 +264,46 @@ export class IncidentService {
     const incidentUpdated = await this.incidentRepository.findOneBy({ id });
     return successResponse(incidentUpdated, 'Incidente actualizado');
   }
+
+  async getReportIncidents(
+    instituteId: string,
+    from?: string,
+    to?: string,
+    status?: string,
+    isRelevant?: boolean,
+    limit = 10,
+    page = 1,
+  ) {
+    const query = this.incidentRepository.createQueryBuilder('incident')
+        .where('incident.institute_id = :instituteId', { instituteId });
+
+    if (from && to) {
+        query.andWhere('incident.created_at BETWEEN :from AND :to', { from, to });
+    } else if (from) {
+        query.andWhere('incident.created_at >= :from', { from });
+    } else if (to) {
+        query.andWhere('incident.created_at <= :to', { to });
+    }
+
+    if (status) {
+        query.andWhere('incident.status = :status', { status });
+    }
+
+    if (typeof isRelevant === 'boolean') {
+        query.andWhere('incident.isRelevant = :isRelevant', { isRelevant });
+    }
+
+    query.take(limit)
+        .skip((page - 1) * limit)
+        .orderBy('incident.created_at', 'DESC');
+
+    const [rows, total] = await query.getManyAndCount();
+
+    return {
+        total,
+        limit,
+        page,
+        data: rows,
+    };
+  }
 }
