@@ -62,4 +62,8 @@ export class UsersMicroserviceController {
   updateUserStaff(@Payload() updateUserStaffDTO: UpdateUserStaffDTO) {
     return this.usersService.updateUserStaff(updateUserStaffDTO);
   }
+  @MessagePattern({ cmd: 'FIND_USER_ID_NAME_DNI' })
+  findUserIdNameDni(@Payload() payload: { instituteId: string }) {
+    return this.usersService.findUserIdNameDni(payload.instituteId);
+  }
 }
