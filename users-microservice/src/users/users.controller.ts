@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dtos/UpdateUser.dto';
 import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
 import { UpdateUserStaffDTO } from './dtos/UpdateUserStaff.dto';
+import { ChangePasswordDto } from './dtos/ChangePassword.dto';
 
 @Controller()
 export class UsersMicroserviceController {
@@ -65,5 +66,20 @@ export class UsersMicroserviceController {
   @MessagePattern({ cmd: 'FIND_USER_ID_NAME_DNI' })
   findUserIdNameDni(@Payload() payload: { instituteId: string }) {
     return this.usersService.findUserIdNameDni(payload.instituteId);
+  }
+
+  @MessagePattern({ cmd: 'CHANGE_PASSWORD' })
+  changePassword(
+    @Payload()
+    payload: {
+      user_id: string;
+      changePasswordDTO: ChangePasswordDto;
+    },
+  ) {
+    console.log(payload);
+    return this.usersService.changePassword(
+      payload.changePasswordDTO,
+      payload.user_id,
+    );
   }
 }
