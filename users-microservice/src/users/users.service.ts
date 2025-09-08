@@ -344,4 +344,13 @@ export class UsersService {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
     });
   }
+
+  async findUserIdNameDni(instituteId: string) {
+    const users = await this.usersRepository.find({
+      where: { institute_id: instituteId },
+      select: ['id', 'name', 'documentNumber'],
+    });
+
+    return successResponse(users);
+  }
 }

@@ -114,6 +114,24 @@ export class UsersController {
     }
   }
 
+  @Get('/summary')
+  @HttpCode(HttpStatus.OK)
+  async findUserIdNameDni(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'FIND_USER_ID_NAME_DNI' },
+          { instituteId: user.instituteId },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
   @Get('/:id')
   async getUserById(@Param('id') id: string) {
     try {
