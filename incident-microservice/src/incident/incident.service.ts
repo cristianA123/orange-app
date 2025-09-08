@@ -50,15 +50,27 @@ export class IncidentService {
       });
     }
 
+    const existOfficer = await this.usersRepository.findOneBy({
+      id: createIncidentDto.officerId,
+    });
+    if (!existOfficer) {
+      throw new RpcException({
+        message: `No existe el oficial`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     const incident = this.incidentRepository.create({
       id: uuidv4(),
       ...createIncidentDto,
       status: IncidentStatus.OPEN,
       user: existUser,
+      officer: existOfficer,
       institute: existInstitute,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+
     const newIncident = await this.incidentRepository.save(incident);
 
     if (!newIncident) {
@@ -70,6 +82,7 @@ export class IncidentService {
 
     delete newIncident.user;
     delete newIncident.institute;
+    delete newIncident.officer;
 
     return successResponse(newIncident, 'Incidencia creado exitosamente');
   }
@@ -151,14 +164,29 @@ export class IncidentService {
         status: HttpStatus.BAD_REQUEST,
       });
     }
+    let existOfficer = null;
+    if (updateIncidentDto.officerId) {
+      existOfficer = await this.usersRepository.findOneBy({
+        id: updateIncidentDto.officerId,
+      });
+      console.log(existOfficer);
+      if (!existOfficer) {
+        throw new RpcException({
+          message: `No existe el oficial`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
 
     delete updateIncidentDto.userId;
     delete updateIncidentDto.instituteId;
+    delete updateIncidentDto.officerId;
 
     const incident = await this.incidentRepository.update(id, {
       ...updateIncidentDto,
       user: existUser,
       institute: existInstitute,
+      officer: existOfficer ? existOfficer : null,
       status: updateIncidentDto.status as unknown as IncidentStatus,
     });
     if (!incident) {
@@ -174,6 +202,7 @@ export class IncidentService {
 
     delete incidentUpdated.user;
     delete incidentUpdated.institute;
+    delete incidentUpdated.officer;
 
     return successResponse(incidentUpdated, 'Incidente actualizado');
   }
