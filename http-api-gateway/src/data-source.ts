@@ -12,13 +12,13 @@ export const databaseConfig = {
   type: process.env.DB_TYPE as any,
   port: parseInt(process.env.DB_PORT, 10),
   username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
+  password: '#!123456!#',
   database: process.env.DB_DATABASE,
 };
 
 export const keyDatabase: DataSourceOptions = {
   ...databaseConfig,
-  // host: process.env.DB_HOST,
+  host: process.env.DB_HOST,
   // host: 'localhost',
   entities: [
     User,
