@@ -31,6 +31,10 @@ export class Incident {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @ManyToOne(() => User, (user) => user.incidents, { nullable: true })
+  @JoinColumn({ name: 'officer_id' })
+  officer: User;
+
   @ManyToOne(() => Institute, (institute) => institute.incidents)
   @JoinColumn({ name: 'institute_id' })
   institute: Institute;
