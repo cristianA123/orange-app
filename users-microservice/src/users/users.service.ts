@@ -14,6 +14,7 @@ import { NotFoundRpcException } from '../exceptions/not-found.rpc-exception';
 import { UpdateUserDTO } from './dtos/UpdateUser.dto';
 import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
 import { UpdateUserStaffDTO } from './dtos/UpdateUserStaff.dto';
+import { ChangePasswordDto } from './dtos/ChangePassword.dto';
 
 @Injectable()
 export class UsersService {
@@ -352,5 +353,46 @@ export class UsersService {
     });
 
     return successResponse(users);
+  }
+  async changePassword(changePasswordDTO: ChangePasswordDto, userId: string) {
+    console.log('Iniciando cambio de contraseña para usuario ID:', userId);
+    console.log('Datos recibidos:', JSON.stringify(changePasswordDTO));
+
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new RpcException({
+        message: `No se encontro usuario con ese ID para actualizar`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      changePasswordDTO.oldPassword,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      console.log('Validación de contraseña fallida');
+      throw new RpcException({
+        message: `La contraseña actual es incorrecta`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(
+      changePasswordDTO.newPassword,
+      salt,
+    );
+
+    await this.usersRepository.update(
+      { id: userId },
+      { password: hashedPassword },
+    );
+
+    return successResponse('Contraseña actualizada exitosamente');
   }
 }
