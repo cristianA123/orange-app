@@ -35,6 +35,12 @@ export class UpdateIncidentDTO {
   @IsOptional()
   address: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  @IsOptional()
+  officerId?: string;
+
   @IsNumber({ maxDecimalPlaces: 6 })
   @Type(() => Number)
   @IsNotEmpty()

@@ -17,4 +17,5 @@ export class CreateIncidentDto {
   closingDate?: Date;
   isRelevant: boolean;
   status?: number;
+  officerId: string;
 }

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsBoolean,
   IsDate,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -24,6 +25,11 @@ export class CreateIncidentDto {
   @IsString()
   @IsNotEmpty()
   address: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  officerId: string;
 
   @IsNumber({ maxDecimalPlaces: 6 })
   @Type(() => Number)

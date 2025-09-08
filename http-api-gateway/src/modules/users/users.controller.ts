@@ -5,7 +5,6 @@ import {
   Body,
   Get,
   Param,
-  // HttpException,
   HttpCode,
   HttpStatus,
   Patch,
@@ -20,6 +19,7 @@ import { UserDecorator } from '../auth/decorators';
 import { IUser } from 'src/common/interfaces';
 import { CreateUserStaffDTO } from './dtos/CreateUserStaff.dto';
 import { UpdateUserStaffDTO } from './dtos/updateUserStaff.dto';
+import { ChangePasswordDTO } from './dtos/ChangePassword.dto';
 
 @Controller('/user')
 export class UsersController {
@@ -55,6 +55,32 @@ export class UsersController {
           {
             ...createUserStaffDTO,
             institute_id: user.instituteId,
+          },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Post('/change-password')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @UserDecorator() user: IUser,
+    @Body() changePasswordDTO: ChangePasswordDTO,
+  ) {
+    try {
+      console.log('changePasswordDTO', changePasswordDTO);
+      console.log('user.id', user.id);
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'CHANGE_PASSWORD' },
+          {
+            changePasswordDTO,
+            user_id: user.id,
           },
         ),
       );
@@ -103,6 +129,24 @@ export class UsersController {
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'GET_USER_SECURITY_BY_INSTITUTE_ID' },
+          { instituteId: user.instituteId },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/summary')
+  @HttpCode(HttpStatus.OK)
+  async findUserIdNameDni(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'FIND_USER_ID_NAME_DNI' },
           { instituteId: user.instituteId },
         ),
       );
