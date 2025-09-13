@@ -117,8 +117,12 @@ export class IncidentService {
   }
 
   async getIncidentById(id: string) {
-    const incident = await this.incidentRepository.findOneBy({
-      id,
+    // quiero agregar los datos del officer y solo sus id y name y documentType y documentNumber
+    const incident = await this.incidentRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['officer'],
     });
     if (!incident) {
       throw new RpcException({
@@ -126,6 +130,14 @@ export class IncidentService {
         status: HttpStatus.BAD_REQUEST,
       });
     }
+    delete incident.officer.password;
+    delete incident.officer.rol;
+    delete incident.officer.institute_id;
+    delete incident.officer.email;
+    delete incident.officer.createdAt;
+    delete incident.officer.updatedAt;
+    delete incident.officer.deletedAt;
+    delete incident.officer.status;
     return successResponse(incident, 'Incidente encontrado');
   }
 
@@ -303,36 +315,38 @@ export class IncidentService {
     limit = 10,
     page = 1,
   ) {
-    const query = this.incidentRepository.createQueryBuilder('incident')
-        .where('incident.institute_id = :instituteId', { instituteId });
+    const query = this.incidentRepository
+      .createQueryBuilder('incident')
+      .where('incident.institute_id = :instituteId', { instituteId });
 
     if (from && to) {
-        query.andWhere('incident.created_at BETWEEN :from AND :to', { from, to });
+      query.andWhere('incident.created_at BETWEEN :from AND :to', { from, to });
     } else if (from) {
-        query.andWhere('incident.created_at >= :from', { from });
+      query.andWhere('incident.created_at >= :from', { from });
     } else if (to) {
-        query.andWhere('incident.created_at <= :to', { to });
+      query.andWhere('incident.created_at <= :to', { to });
     }
 
     if (status) {
-        query.andWhere('incident.status = :status', { status });
+      query.andWhere('incident.status = :status', { status });
     }
 
     if (typeof isRelevant === 'boolean') {
-        query.andWhere('incident.isRelevant = :isRelevant', { isRelevant });
+      query.andWhere('incident.isRelevant = :isRelevant', { isRelevant });
     }
 
-    query.take(limit)
-        .skip((page - 1) * limit)
-        .orderBy('incident.created_at', 'DESC');
+    query
+      .take(limit)
+      .skip((page - 1) * limit)
+      .orderBy('incident.created_at', 'DESC');
 
     const [rows, total] = await query.getManyAndCount();
 
     return {
-        total,
-        limit,
-        page,
-        data: rows,
+      total,
+      limit,
+      page,
+      data: rows,
     };
   }
 }
