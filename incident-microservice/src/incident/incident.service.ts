@@ -258,6 +258,15 @@ export class IncidentService {
     const currentStatus = existIncident.status;
     const newStatusValue = updateIncidentStatusDTO.status;
 
+    // cuando se modifique de estado 1 a 2, agregar la fecha de inicio
+    if (currentStatus == IncidentStatus.OPEN && newStatusValue === 2) {
+      existIncident.attentionDate = new Date();
+    }
+    // cuando se modifique de estado 2 a 3 o a otro estado, agregar la fecha de finalización
+    if (currentStatus == IncidentStatus.IN_PROGRESS && newStatusValue !== 2) {
+      existIncident.closingDate = new Date();
+    }
+
     if (currentStatus === IncidentStatus.OPEN) {
       // Solo permite pasar de OPEN (1) a IN_PROGRESS (2)
       if (newStatusValue !== 2) {
@@ -293,6 +302,8 @@ export class IncidentService {
 
     const incident = await this.incidentRepository.update(id, {
       status: statusMap[newStatusValue],
+      attentionDate: existIncident.attentionDate ?? existIncident.attentionDate,
+      closingDate: existIncident.closingDate ?? existIncident.closingDate,
     });
 
     if (!incident) {
