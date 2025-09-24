@@ -32,17 +32,25 @@ export class IncidentController {
   getReportIncidents(
     @Payload()
     payload: {
-        instituteId: string;
-        from?: string;
-        to?: string;
-        status?: string;
-        isRelevant?: boolean;
-        limit?: number;
-        page?: number;
+      instituteId: string;
+      from?: string;
+      to?: string;
+      status?: string;
+      isRelevant?: boolean;
+      limit?: number;
+      page?: number;
     },
   ) {
-    const { instituteId, from, to, status,isRelevant, limit, page } = payload;
-    return this.incidentService.getReportIncidents(instituteId, from, to, status, isRelevant, limit, page);
+    const { instituteId, from, to, status, isRelevant, limit, page } = payload;
+    return this.incidentService.getReportIncidents(
+      instituteId,
+      from,
+      to,
+      status,
+      isRelevant,
+      limit,
+      page,
+    );
   }
 
   @MessagePattern({ cmd: 'UPDATE_INCIDENT' })

@@ -1,15 +1,16 @@
 import {
-    Controller,
-    Inject,
-    Post,
-    Body,
-    Get,
-    Param,
-    HttpCode,
-    HttpStatus,
-    Patch,
-    Delete,
-    Res, Query,
+  Controller,
+  Inject,
+  Post,
+  Body,
+  Get,
+  Param,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Delete,
+  Res,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
@@ -18,9 +19,9 @@ import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
 import { UpdateIncidentStatusDTO } from './dtos/updateIncidentStatus.dto';
 import { Response } from 'express';
-import {Public, UserDecorator} from 'src/common/decorators';
+import { Public, UserDecorator } from 'src/common/decorators';
 import { IUser } from 'src/common/interfaces';
-import {GetReportIncidentDto} from "./dtos/getReportIncident.dto";
+import { GetReportIncidentDto } from './dtos/getReportIncident.dto';
 
 @Controller()
 export class IncidentController {
@@ -93,18 +94,21 @@ export class IncidentController {
   }
 
   @Get('/incident/report')
-  async getReportIncidents(@Query() query: GetReportIncidentDto, @UserDecorator() user: IUser) {
+  async getReportIncidents(
+    @Query() query: GetReportIncidentDto,
+    @UserDecorator() user: IUser,
+  ) {
     try {
-        const data = await lastValueFrom(
-            this.natsClient.send(
-                { cmd: 'GET_REPORTS_INCIDENT' },
-                { ...query, instituteId: user.instituteId },
-            ),
-        );
+      const data = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_REPORTS_INCIDENT' },
+          { ...query, instituteId: user.instituteId },
+        ),
+      );
 
-        return data;
+      return data;
     } catch (error) {
-        handleRpcError(error);
+      handleRpcError(error);
     }
   }
 
