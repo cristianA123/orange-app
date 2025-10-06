@@ -33,8 +33,8 @@ export class IncidentFile {
   @Column()
   url: string;
 
-  // @Column()
-  // fileName: string;
+  @Column()
+  fileName: string;
 
   @Column({
     type: 'enum',
