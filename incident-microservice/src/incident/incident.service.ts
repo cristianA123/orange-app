@@ -385,7 +385,15 @@ export class IncidentService {
   //   return result.Location;
   // }
 
-  async uploadIncidentFile(payload: any) {
-    return this.s3Service.uploadFile(payload);
+  // async uploadIncidentFile(payload: any) {
+  //   return this.s3Service.uploadFile(payload);
+  // }
+
+  async generatePresignedUrl(payload: any) {
+    return this.s3Service.generatePresignedUrl(payload);
+  }
+
+  async confirmUpload(payload: any) {
+    return this.s3Service.confirmUpload(payload);
   }
 }

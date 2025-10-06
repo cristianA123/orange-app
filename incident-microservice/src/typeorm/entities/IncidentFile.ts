@@ -14,7 +14,14 @@ export enum FileType {
   IMAGE = 'IMAGE',
   VIDEO = 'VIDEO',
   DOCUMENT = 'DOCUMENT',
+  PDF = 'PDF',
   OTHER = 'OTHER',
+}
+
+export enum FileStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
 }
 
 @Entity('incident_files')
@@ -32,6 +39,13 @@ export class IncidentFile {
 
   @Column()
   url: string;
+
+  @Column({
+    type: 'enum',
+    enum: FileStatus,
+    default: FileStatus.PENDING,
+  })
+  status: FileStatus;
 
   @Column()
   fileName: string;

@@ -231,4 +231,48 @@ export class IncidentController {
       handleRpcError(error);
     }
   }
+
+  @Post('/incident/:id/presigned-url')
+  @HttpCode(HttpStatus.OK)
+  async generatePresignedUrl(
+    @Body() body: { filename: string; mimetype: string },
+    @Param('id') id: string,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GENERATE_PRESIGNED_URL' },
+          {
+            filename: body.filename,
+            mimetype: body.mimetype,
+            id,
+          },
+        ),
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Post('/incident/confirm-upload')
+  @HttpCode(HttpStatus.OK)
+  async confirmUpload(@Body() body: { fileId: string; fileSize: number }) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'CONFIRM_UPLOAD' },
+          {
+            fileId: body.fileId,
+            fileSize: body.fileSize,
+          },
+        ),
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
 }

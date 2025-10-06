@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
-import { FileType, Incident, IncidentFile } from 'src/typeorm/entities';
+import {
+  FileStatus,
+  FileType,
+  Incident,
+  IncidentFile,
+} from 'src/typeorm/entities';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { successResponse } from 'src/common/response/response.util';
@@ -71,19 +76,85 @@ export class S3Service {
     }
   }
 
-  async getSignedUrl(fileName: string, contentType: string): Promise<string> {
+  // 🔹 NUEVO MÉTODO: Generar URL pre-firmada
+  async generatePresignedUrl(payload: any) {
+    const { filename, mimetype, id } = payload;
+
+    const newFileNameUudi = `${randomUUID()}-${filename}`;
+
     const params = {
       Bucket: this.configService.get('s3.bucket'),
-      Key: `${Date.now()}-${fileName}`,
-      Expires: 60, // válido por 60 segundos
-      ContentType: contentType,
+      Key: newFileNameUudi,
+      Expires: 3600, // 1 hora en segundos
+      ContentType: mimetype,
     };
 
     try {
       const signedUrl = await this.s3.getSignedUrlPromise('putObject', params);
-      return signedUrl;
+
+      // Guardar metadata ANTES de la subida
+      const incident = await this.incidentRepository.findOne({
+        where: { id },
+      });
+
+      const incidentFile = this.incidentFilesRepository.create({
+        fileName: newFileNameUudi,
+        id: randomUUID(),
+        url: `https://${params.Bucket}.s3.${this.configService.get(
+          's3.region',
+        )}.amazonaws.com/${newFileNameUudi}`,
+        file_type: this.getFileType(mimetype),
+        size: 0, // Se actualizará después con confirmUpload
+        mime_type: mimetype,
+        incident: incident,
+        status: FileStatus.PENDING, // NUEVO CAMPO
+      });
+
+      const savedIncidentFile =
+        await this.incidentFilesRepository.save(incidentFile);
+
+      return successResponse(
+        {
+          signedUrl,
+          fileId: savedIncidentFile.id,
+          id: newFileNameUudi,
+          requiredHeaders: {
+            // 👈 INFORMAR al frontend los headers requeridos
+            'Content-Type': mimetype,
+          },
+        },
+        'URL pre-firmada generada',
+      );
     } catch (error) {
-      throw new Error(`Failed to generate signed URL: ${error.message}`);
+      throw new Error(`Failed to generate presigned URL: ${error.message}`);
     }
+  }
+
+  // 🔹 NUEVO MÉTODO: Confirmar subida exitosa
+  async confirmUpload(payload: any) {
+    const { fileId, fileSize } = payload;
+
+    try {
+      await this.incidentFilesRepository.update(fileId, {
+        size: fileSize,
+        status: FileStatus.COMPLETED,
+      });
+
+      return successResponse(null, 'Archivo subido y confirmado exitosamente');
+    } catch (error) {
+      // Marcar como fallado en caso de error
+      await this.incidentFilesRepository.update(fileId, {
+        status: FileStatus.FAILED,
+      });
+      throw new Error(`Failed to confirm upload: ${error.message}`);
+    }
+  }
+
+  // 🔹 MÉTODO AUXILIAR: Determinar tipo de archivo
+  public getFileType(mimetype: string): FileType {
+    if (mimetype.startsWith('video/')) return FileType.VIDEO;
+    if (mimetype.startsWith('image/')) return FileType.IMAGE;
+    if (mimetype.startsWith('application/pdf')) return FileType.PDF;
+    return FileType.OTHER;
   }
 }

@@ -81,8 +81,24 @@ export class IncidentController {
     );
   }
 
-  @MessagePattern({ cmd: 'UPLOAD_INCIDENT_FILE' })
-  uploadIncidentFile(@Payload() payload: any) {
-    return this.incidentService.uploadIncidentFile(payload);
+  // @MessagePattern({ cmd: 'UPLOAD_INCIDENT_FILE' })
+  // uploadIncidentFile(@Payload() payload: any) {
+  //   return this.incidentService.uploadIncidentFile(payload);
+  // }
+
+  @MessagePattern({ cmd: 'GENERATE_PRESIGNED_URL' })
+  generatePresignedUrl(@Payload() payload: any) {
+    return this.incidentService.generatePresignedUrl(payload);
   }
+
+  @MessagePattern({ cmd: 'CONFIRM_UPLOAD' })
+  confirmUpload(@Payload() payload: any) {
+    return this.incidentService.confirmUpload(payload);
+  }
+
+  // // Mantener el existente por si acaso para archivos pequeños
+  // @MessagePattern({ cmd: 'UPLOAD_INCIDENT_FILE' })
+  // uploadIncidentFile(@Payload() payload: any) {
+  //   return this.incidentService.uploadIncidentFile(payload);
+  // }
 }
