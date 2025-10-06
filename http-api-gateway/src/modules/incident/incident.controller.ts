@@ -11,6 +11,8 @@ import {
   Delete,
   Res,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
@@ -22,6 +24,7 @@ import { Response } from 'express';
 import { Public, UserDecorator } from 'src/common/decorators';
 import { IUser } from 'src/common/interfaces';
 import { GetReportIncidentDto } from './dtos/getReportIncident.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class IncidentController {
@@ -200,6 +203,30 @@ export class IncidentController {
       );
       return response;
     } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Post('/incident/:id/upload')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadIncidentFile(@UploadedFile() file: any, @Param('id') id: string) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'UPLOAD_INCIDENT_FILE' },
+          {
+            buffer: file.buffer.toString('base64'), // Convertir a Base64 para que pueda ser serializado
+            filename: file.originalname,
+            mimetype: file.mimetype,
+            id,
+          },
+        ),
+      );
+      return response;
+    } catch (error) {
+      console.log('fallo');
       console.error(error);
       handleRpcError(error);
     }

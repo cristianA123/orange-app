@@ -3,7 +3,8 @@ import { CreateIncidentDto } from './dto/create-incident.dto';
 import { UpdateIncidentDto } from './dto/update-incident.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import {
   Incident,
   IncidentStatus,
@@ -15,6 +16,7 @@ import { RpcException } from '@nestjs/microservices';
 import { incidentSubTypes, incidentTypes } from 'src/constants';
 import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
 import { ReportService } from './report.service';
+import { S3Service } from './file.service';
 
 @Injectable()
 export class IncidentService {
@@ -25,6 +27,7 @@ export class IncidentService {
     @InjectRepository(Incident)
     private incidentRepository: Repository<Incident>,
     private readonly reportService: ReportService,
+    private readonly s3Service: S3Service,
   ) {
     console.log('✅ IncidentService inicializado');
   }
@@ -61,8 +64,10 @@ export class IncidentService {
     }
 
     const incident = this.incidentRepository.create({
-      id: uuidv4(),
+      id: randomUUID(),
+      // id: uuidv4(),randomUUID()
       ...createIncidentDto,
+
       status: IncidentStatus.OPEN,
       user: existUser,
       officer: existOfficer,
@@ -359,5 +364,28 @@ export class IncidentService {
       page,
       data: rows,
     };
+  }
+
+  // async uploadIncidentFile(payload: any) {
+  //   const { buffer, filename, mimetype } = payload;
+  //   const s3 = new S3({
+  //     region: process.env.AWS_REGION,
+  //     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  //     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  //   });
+
+  //   const params = {
+  //     Bucket: process.env.AWS_S3_BUCKET,
+  //     Key: filename,
+  //     Body: buffer,
+  //     ContentType: mimetype,
+  //   };
+
+  //   const result = await s3.upload(params).promise();
+  //   return result.Location;
+  // }
+
+  async uploadIncidentFile(payload: any) {
+    return this.s3Service.uploadFile(payload);
   }
 }

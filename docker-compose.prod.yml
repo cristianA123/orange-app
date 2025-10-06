@@ -90,6 +90,10 @@ services:
       - DB_USERNAME=${DB_USERNAME:-testuser}
       - DB_PASSWORD=${DB_PASSWORD:-testuser123}
       - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     depends_on:
       - nats
 

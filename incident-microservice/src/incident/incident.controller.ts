@@ -80,4 +80,9 @@ export class IncidentController {
       updateIncidentDto,
     );
   }
+
+  @MessagePattern({ cmd: 'UPLOAD_INCIDENT_FILE' })
+  uploadIncidentFile(@Payload() payload: any) {
+    return this.incidentService.uploadIncidentFile(payload);
+  }
 }

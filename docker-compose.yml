@@ -86,6 +86,10 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
     depends_on:
       - nats
       - mysql_db
@@ -112,6 +116,7 @@ services:
     image: nats
     ports:
       - 4222:4222
+
   mysql_db:
     image: mysql
     ports:
