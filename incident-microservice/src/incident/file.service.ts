@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
@@ -11,6 +11,7 @@ import {
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { successResponse } from 'src/common/response/response.util';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class S3Service {
@@ -117,7 +118,7 @@ export class S3Service {
         {
           signedUrl,
           fileId: savedIncidentFile.id,
-          id: newFileNameUudi,
+          key: newFileNameUudi,
           requiredHeaders: {
             // 👈 INFORMAR al frontend los headers requeridos
             'Content-Type': mimetype,
@@ -135,6 +136,19 @@ export class S3Service {
     const { fileId, fileSize } = payload;
 
     try {
+      // buscar la incidencia por fileId
+      const incidentFile = await this.incidentFilesRepository.findOne({
+        where: { id: fileId },
+      });
+
+      if (!incidentFile) {
+        throw new RpcException({
+          message: `No se encontró el archivo con ID: ${fileId}`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+
+      // Actualizar metadata con el tamaño confirmado
       await this.incidentFilesRepository.update(fileId, {
         size: fileSize,
         status: FileStatus.COMPLETED,

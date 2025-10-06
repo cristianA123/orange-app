@@ -25,6 +25,8 @@ import { Public, UserDecorator } from 'src/common/decorators';
 import { IUser } from 'src/common/interfaces';
 import { GetReportIncidentDto } from './dtos/getReportIncident.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PresignedFilesDto } from './dtos/files/presigned-files.dto';
+import { ConfirmFilesDto } from './dtos/files/presigned-files.dto copy';
 
 @Controller()
 export class IncidentController {
@@ -235,7 +237,7 @@ export class IncidentController {
   @Post('/incident/:id/presigned-url')
   @HttpCode(HttpStatus.OK)
   async generatePresignedUrl(
-    @Body() body: { filename: string; mimetype: string },
+    @Body() presignedFilesDto: PresignedFilesDto,
     @Param('id') id: string,
   ) {
     try {
@@ -243,8 +245,8 @@ export class IncidentController {
         this.natsClient.send(
           { cmd: 'GENERATE_PRESIGNED_URL' },
           {
-            filename: body.filename,
-            mimetype: body.mimetype,
+            filename: presignedFilesDto.filename,
+            mimetype: presignedFilesDto.mimetype,
             id,
           },
         ),
@@ -258,14 +260,14 @@ export class IncidentController {
 
   @Post('/incident/confirm-upload')
   @HttpCode(HttpStatus.OK)
-  async confirmUpload(@Body() body: { fileId: string; fileSize: number }) {
+  async confirmUpload(@Body() confirmFilesDto: ConfirmFilesDto) {
     try {
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'CONFIRM_UPLOAD' },
           {
-            fileId: body.fileId,
-            fileSize: body.fileSize,
+            fileId: confirmFilesDto.fileId,
+            fileSize: confirmFilesDto.fileSize,
           },
         ),
       );
