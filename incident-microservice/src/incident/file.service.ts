@@ -54,7 +54,7 @@ export class S3Service {
         where: { id },
       });
       const incidentFile = this.incidentFilesRepository.create({
-        // fileName: newFileNameUudi,
+        fileName: newFileNameUudi,
         id: randomUUID(),
         url: result.Location,
         file_type: FileType.IMAGE,
