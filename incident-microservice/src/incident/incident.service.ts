@@ -390,10 +390,10 @@ export class IncidentService {
   // }
 
   async generatePresignedUrl(payload: any) {
-    return this.s3Service.generatePresignedUrl(payload);
+    return await this.s3Service.generatePresignedUrl(payload);
   }
 
   async confirmUpload(payload: any) {
-    return this.s3Service.confirmUpload(payload);
+    return await this.s3Service.confirmUpload(payload);
   }
 }

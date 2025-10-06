@@ -90,78 +90,73 @@ export class S3Service {
       ContentType: mimetype,
     };
 
-    try {
-      const signedUrl = await this.s3.getSignedUrlPromise('putObject', params);
+    const signedUrl = await this.s3.getSignedUrlPromise('putObject', params);
 
-      // Guardar metadata ANTES de la subida
-      const incident = await this.incidentRepository.findOne({
-        where: { id },
+    // Guardar metadata ANTES de la subida
+    const incident = await this.incidentRepository.findOne({
+      where: { id },
+    });
+
+    if (!incident) {
+      throw new RpcException({
+        message: `No se encontró la incidencia con ID: ${id}`,
+        status: HttpStatus.BAD_REQUEST,
       });
-
-      const incidentFile = this.incidentFilesRepository.create({
-        fileName: newFileNameUudi,
-        id: randomUUID(),
-        url: `https://${params.Bucket}.s3.${this.configService.get(
-          's3.region',
-        )}.amazonaws.com/${newFileNameUudi}`,
-        file_type: this.getFileType(mimetype),
-        size: 0, // Se actualizará después con confirmUpload
-        mime_type: mimetype,
-        incident: incident,
-        status: FileStatus.PENDING, // NUEVO CAMPO
-      });
-
-      const savedIncidentFile =
-        await this.incidentFilesRepository.save(incidentFile);
-
-      return successResponse(
-        {
-          signedUrl,
-          fileId: savedIncidentFile.id,
-          key: newFileNameUudi,
-          requiredHeaders: {
-            // 👈 INFORMAR al frontend los headers requeridos
-            'Content-Type': mimetype,
-          },
-        },
-        'URL pre-firmada generada',
-      );
-    } catch (error) {
-      throw new Error(`Failed to generate presigned URL: ${error.message}`);
     }
+
+    const incidentFile = this.incidentFilesRepository.create({
+      fileName: newFileNameUudi,
+      id: randomUUID(),
+      url: `https://${params.Bucket}.s3.${this.configService.get(
+        's3.region',
+      )}.amazonaws.com/${newFileNameUudi}`,
+      file_type: this.getFileType(mimetype),
+      size: 0, // Se actualizará después con confirmUpload
+      mime_type: mimetype,
+      incident: incident,
+      status: FileStatus.PENDING, // NUEVO CAMPO
+    });
+
+    const savedIncidentFile =
+      await this.incidentFilesRepository.save(incidentFile);
+
+    return successResponse(
+      {
+        signedUrl,
+        fileId: savedIncidentFile.id,
+        key: newFileNameUudi,
+        requiredHeaders: {
+          // 👈 INFORMAR al frontend los headers requeridos
+          'Content-Type': mimetype,
+        },
+      },
+      'URL pre-firmada generada',
+    );
   }
 
   // 🔹 NUEVO MÉTODO: Confirmar subida exitosa
   async confirmUpload(payload: any) {
     const { fileId, fileSize } = payload;
 
-    try {
-      // buscar la incidencia por fileId
-      const incidentFile = await this.incidentFilesRepository.findOne({
-        where: { id: fileId },
-      });
+    // buscar la incidencia por fileId
+    const incidentFile = await this.incidentFilesRepository.findOne({
+      where: { id: fileId },
+    });
 
-      if (!incidentFile) {
-        throw new RpcException({
-          message: `No se encontró el archivo con ID: ${fileId}`,
-          status: HttpStatus.BAD_REQUEST,
-        });
-      }
-
-      // Actualizar metadata con el tamaño confirmado
-      await this.incidentFilesRepository.update(fileId, {
-        size: fileSize,
-        status: FileStatus.COMPLETED,
+    if (!incidentFile) {
+      throw new RpcException({
+        message: `No se encontró el archivo con ID: ${fileId}`,
+        status: HttpStatus.BAD_REQUEST,
       });
-
-      return successResponse(null, 'Archivo subido y confirmado exitosamente');
-    } catch (error) {
-      // Marcar como fallado en caso de error
-      await this.incidentFilesRepository.update(fileId, {
-        status: FileStatus.FAILED,
-      });
-      throw new Error(`Failed to confirm upload: ${error.message}`);
     }
+
+    // Actualizar metadata con el tamaño confirmado
+    await this.incidentFilesRepository.update(fileId, {
+      size: fileSize,
+      status: FileStatus.COMPLETED,
+    });
+
+    return successResponse(null, 'Archivo subido y confirmado exitosamente');
   }
 
   // 🔹 MÉTODO AUXILIAR: Determinar tipo de archivo
