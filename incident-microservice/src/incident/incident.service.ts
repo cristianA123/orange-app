@@ -122,19 +122,20 @@ export class IncidentService {
   }
 
   async getIncidentById(id: string) {
-    // quiero agregar los datos del officer y solo sus id y name y documentType y documentNumber
+    // Usar findOne con relations para asegurar consistencia
     const incident = await this.incidentRepository.findOne({
-      where: {
-        id,
-      },
-      relations: ['officer'],
+      where: { id },
+      relations: ['officer', 'incidentFiles'],
     });
+
     if (!incident) {
       throw new RpcException({
         message: `No se encontraron incidentes`,
         status: HttpStatus.BAD_REQUEST,
       });
     }
+
+    // Limpiar datos del officer
     delete incident.officer.password;
     delete incident.officer.rol;
     delete incident.officer.institute_id;
@@ -143,6 +144,7 @@ export class IncidentService {
     delete incident.officer.updatedAt;
     delete incident.officer.deletedAt;
     delete incident.officer.status;
+
     return successResponse(incident, 'Incidente encontrado');
   }
 
@@ -365,29 +367,6 @@ export class IncidentService {
       data: rows,
     };
   }
-
-  // async uploadIncidentFile(payload: any) {
-  //   const { buffer, filename, mimetype } = payload;
-  //   const s3 = new S3({
-  //     region: process.env.AWS_REGION,
-  //     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  //     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  //   });
-
-  //   const params = {
-  //     Bucket: process.env.AWS_S3_BUCKET,
-  //     Key: filename,
-  //     Body: buffer,
-  //     ContentType: mimetype,
-  //   };
-
-  //   const result = await s3.upload(params).promise();
-  //   return result.Location;
-  // }
-
-  // async uploadIncidentFile(payload: any) {
-  //   return this.s3Service.uploadFile(payload);
-  // }
 
   async generatePresignedUrl(payload: any) {
     return await this.s3Service.generatePresignedUrl(payload);

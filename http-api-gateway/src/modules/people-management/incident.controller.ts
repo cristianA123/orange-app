@@ -10,12 +10,10 @@ import {
   Patch,
   Delete,
   Res,
-  Query,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
-import { CreateIncidentDto } from './dtos/createIncident.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
@@ -23,20 +21,18 @@ import { UpdateIncidentStatusDTO } from './dtos/updateIncidentStatus.dto';
 import { Response } from 'express';
 import { Public, UserDecorator } from 'src/common/decorators';
 import { IUser } from 'src/common/interfaces';
-import { GetReportIncidentDto } from './dtos/getReportIncident.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PresignedFilesDto } from './dtos/files/presigned-files.dto';
-import { ConfirmFilesDto } from './dtos/files/presigned-files.dto copy';
+import { CreatePeopleDto } from './dtos/createPeople.dto';
 
-@Controller()
-export class IncidentController {
+@Controller('people-management')
+export class PeopleManagementController {
   constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
 
   @Post('/incident')
   @HttpCode(HttpStatus.OK)
   async createIncident(
     @UserDecorator() user: IUser,
-    @Body() createIncidentDto: CreateIncidentDto,
+    @Body() createIncidentDto: CreatePeopleDto,
   ) {
     try {
       const response = await lastValueFrom(
@@ -94,25 +90,6 @@ export class IncidentController {
       return response;
     } catch (error) {
       console.error(error);
-      handleRpcError(error);
-    }
-  }
-
-  @Get('/incident/report')
-  async getReportIncidents(
-    @Query() query: GetReportIncidentDto,
-    @UserDecorator() user: IUser,
-  ) {
-    try {
-      const data = await lastValueFrom(
-        this.natsClient.send(
-          { cmd: 'GET_REPORTS_INCIDENT' },
-          { ...query, instituteId: user.instituteId },
-        ),
-      );
-
-      return data;
-    } catch (error) {
       handleRpcError(error);
     }
   }
@@ -229,50 +206,6 @@ export class IncidentController {
       return response;
     } catch (error) {
       console.log('fallo');
-      console.error(error);
-      handleRpcError(error);
-    }
-  }
-
-  @Post('/incident/:id/presigned-url')
-  @HttpCode(HttpStatus.OK)
-  async generatePresignedUrl(
-    @Body() presignedFilesDto: PresignedFilesDto,
-    @Param('id') id: string,
-  ) {
-    try {
-      const response = await lastValueFrom(
-        this.natsClient.send(
-          { cmd: 'GENERATE_PRESIGNED_URL' },
-          {
-            filename: presignedFilesDto.filename,
-            mimetype: presignedFilesDto.mimetype,
-            id,
-          },
-        ),
-      );
-      return response;
-    } catch (error) {
-      console.error(error);
-      handleRpcError(error);
-    }
-  }
-
-  @Post('/incident/confirm-upload')
-  @HttpCode(HttpStatus.OK)
-  async confirmUpload(@Body() confirmFilesDto: ConfirmFilesDto) {
-    try {
-      const response = await lastValueFrom(
-        this.natsClient.send(
-          { cmd: 'CONFIRM_UPLOAD' },
-          {
-            fileId: confirmFilesDto.fileId,
-            fileSize: confirmFilesDto.fileSize,
-          },
-        ),
-      );
-      return response;
-    } catch (error) {
       console.error(error);
       handleRpcError(error);
     }
