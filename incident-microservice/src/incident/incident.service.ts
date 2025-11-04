@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import {
   Incident,
+  IncidentFile,
   IncidentStatus,
   Institute,
   User,
@@ -28,6 +29,8 @@ export class IncidentService {
     private incidentRepository: Repository<Incident>,
     private readonly reportService: ReportService,
     private readonly s3Service: S3Service,
+    @InjectRepository(IncidentFile)
+    private incidentFileRepository: Repository<IncidentFile>,
   ) {
     console.log('✅ IncidentService inicializado');
   }
@@ -122,7 +125,6 @@ export class IncidentService {
   }
 
   async getIncidentById(id: string) {
-    // Usar findOne con relations para asegurar consistencia
     const incident = await this.incidentRepository.findOne({
       where: { id },
       relations: ['officer', 'incidentFiles'],
@@ -145,7 +147,13 @@ export class IncidentService {
     delete incident.officer.deletedAt;
     delete incident.officer.status;
 
-    return successResponse(incident, 'Incidente encontrado');
+    // Asegurar que incidentFiles esté incluido en la respuesta
+    const responseData = {
+      ...incident,
+      incidentFiles: incident.incidentFiles || [],
+    };
+
+    return successResponse(responseData, 'Incidente encontrado');
   }
 
   async getIncidentPdfById(id: string): Promise<Buffer> {

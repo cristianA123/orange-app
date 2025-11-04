@@ -11,3 +11,8 @@ npm run migration:generate ./src/migrations/InitSchema
 ```
 npm run migration:run
 ```
+
+* Levantar servicios
+```
+docker compose -f docker-compose.prod.yml up --build -d
+```
