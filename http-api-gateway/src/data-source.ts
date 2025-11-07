@@ -7,6 +7,18 @@ import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { InstituteModule } from './typeorm/entities/InstituteModule';
 import { Module } from './typeorm/entities/Module';
 import { UserModule } from './typeorm/entities/UserModule';
+import { Department } from './typeorm/entities/Department';
+import { Province } from './typeorm/entities/Province';
+import { District } from './typeorm/entities/District';
+import { Origin } from './typeorm/entities/Origin';
+import { BloodType } from './typeorm/entities/BloodType';
+import { EducationLevel } from './typeorm/entities/EducationLevel';
+import { EmergencyContactType } from './typeorm/entities/EmergencyContactType';
+import { LicenseA } from './typeorm/entities/LicenseA';
+import { LicenseB } from './typeorm/entities/LicenseB';
+import { MaritalStatus } from './typeorm/entities/MaritalStatus';
+import { Nationality } from './typeorm/entities/Nationality';
+import { PensionSystem } from './typeorm/entities/PensionSystem';
 
 export const databaseConfig = {
   type: process.env.DB_TYPE as any,
@@ -28,6 +40,18 @@ export const keyDatabase: DataSourceOptions = {
     UserModule,
     Incident,
     IncidentFile,
+    Department,
+    Province,
+    District,
+    Origin,
+    BloodType,
+    EducationLevel,
+    EmergencyContactType,
+    LicenseA,
+    LicenseB,
+    MaritalStatus,
+    Nationality,
+    PensionSystem,
   ],
   migrations: [__dirname + '/migrations/*.ts'],
   synchronize: false,
