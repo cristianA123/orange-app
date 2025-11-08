@@ -315,4 +315,8 @@ export class CreatePeopleDto {
   @IsOptional()
   @IsString()
   jobTitle?: string;
+
+  @IsOptional()
+  @IsUUID()
+  cargoId?: string;
 }

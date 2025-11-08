@@ -111,6 +111,8 @@ export class PeopleManagementService {
       // Licencias ManyToMany
       licensesA: relatedEntities.licensesA,
       licensesB: relatedEntities.licensesB,
+      // Relación cargo
+      cargo: relatedEntities.cargo,
     });
 
     // Guardar la entidad con todas sus relaciones
@@ -147,6 +149,8 @@ export class PeopleManagementService {
         'licensesB',
         'children',
         'institution',
+        // Relación cargo
+        'cargo',
       ],
     });
 
@@ -352,6 +356,19 @@ export class PeopleManagementService {
       }
     }
 
+    // Cargo
+    if (dto.cargoId) {
+      entities.cargo = await this.cargoRepository.findOne({
+        where: { id: dto.cargoId },
+      });
+      if (!entities.cargo) {
+        throw new RpcException({
+          message: `Cargo con ID ${dto.cargoId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
     return entities;
   }
 
@@ -438,132 +455,6 @@ export class PeopleManagementService {
       });
     }
   }
-
-  // async getPeopleFormData() {
-  //   try {
-  //     const [
-  //       departments,
-  //       nationalities,
-  //       maritalStatuses,
-  //       pensionSystems,
-  //       bloodTypes,
-  //       emergencyContactTypes,
-  //       origins,
-  //       educationLevels,
-  //       licensesA,
-  //       licensesB,
-  //     ] = await Promise.all([
-  //       this.departmentRepository
-  //         .find({
-  //           order: { depID: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching departments:', err);
-  //           throw new Error(`Error al obtener departamentos: ${err.message}`);
-  //         }),
-  //       this.nationalityRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching nationalities:', err);
-  //           throw new Error(`Error al obtener nacionalidades: ${err.message}`);
-  //         }),
-  //       this.maritalStatusRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching marital statuses:', err);
-  //           throw new Error(`Error al obtener estados civiles: ${err.message}`);
-  //         }),
-  //       this.pensionSystemRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching pension systems:', err);
-  //           throw new Error(
-  //             `Error al obtener sistemas de pensiones: ${err.message}`,
-  //           );
-  //         }),
-  //       this.bloodTypeRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching blood types:', err);
-  //           throw new Error(`Error al obtener tipos de sangre: ${err.message}`);
-  //         }),
-  //       this.emergencyContactTypeRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching emergency contact types:', err);
-  //           throw new Error(
-  //             `Error al obtener tipos de contacto de emergencia: ${err.message}`,
-  //           );
-  //         }),
-  //       this.originRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching origins:', err);
-  //           throw new Error(`Error al obtener procedencias: ${err.message}`);
-  //         }),
-  //       this.educationLevelRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching education levels:', err);
-  //           throw new Error(
-  //             `Error al obtener niveles educativos: ${err.message}`,
-  //           );
-  //         }),
-  //       this.licenseARepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching licenses A:', err);
-  //           throw new Error(`Error al obtener licencias A: ${err.message}`);
-  //         }),
-  //       this.licenseBRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching licenses B:', err);
-  //           throw new Error(`Error al obtener licencias B: ${err.message}`);
-  //         }),
-  //     ]);
-
-  //     return {
-  //       success: true,
-  //       data: {
-  //         departments,
-  //         nationalities,
-  //         maritalStatuses,
-  //         pensionSystems,
-  //         bloodTypes,
-  //         emergencyContactTypes,
-  //         origins,
-  //         educationLevels,
-  //         licensesA,
-  //         licensesB,
-  //       },
-  //     };
-  //   } catch (error) {
-  //     console.error('Detailed error in getPeopleFormData:', error);
-  //     throw new RpcException({
-  //       message: error.message || 'Error al obtener datos del formulario',
-  //       status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //     });
-  //   }
-  // }
 
   async getProvincesByDepartment(departmentId: string) {
     try {
@@ -714,6 +605,8 @@ export class PeopleManagementService {
           'licensesB',
           'children',
           'institution',
+          // Relación cargo
+          'cargo',
         ],
       });
 
@@ -843,6 +736,10 @@ export class PeopleManagementService {
         person.children = updatePeopleDto.children.map((childDto) =>
           this.childRepository.create({ ...childDto, parent: person }),
         );
+      }
+      // Cargo
+      if (updatePeopleDto.cargoId) {
+        person.cargo = related.cargo;
       }
 
       // eliminar el dato del parent de cada children
