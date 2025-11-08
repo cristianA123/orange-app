@@ -10,6 +10,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 import { Department } from './Department';
@@ -25,6 +26,8 @@ import { EducationLevel } from './EducationLevel';
 import { BloodType } from './BloodType';
 import { EmergencyContactType } from './EmergencyContactType';
 import { Optional } from '@nestjs/common';
+import { Institute } from './Institute';
+import { Child } from './Child';
 
 @Entity('people')
 export class People {
@@ -164,9 +167,20 @@ export class People {
   @Column({ nullable: true })
   weaponsLicense: boolean;
 
+  // licencia rpas
+  @Column({ nullable: true })
+  rpas: boolean;
+
   // habilidad diferente
   @Column({ nullable: true })
   differentAbility: boolean;
+
+  @Column({ nullable: true })
+  conadis: boolean;
+
+  //anexo
+  @Column({ nullable: true })
+  anexo: boolean;
 
   // estatura
   @Column({ nullable: true })
@@ -241,4 +255,47 @@ export class People {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @ManyToOne(() => Institute, { nullable: true })
+  @JoinColumn({ name: 'institution_id' })
+  institution: Institute;
+
+  //DATOS FAMILIARES
+  @OneToMany(() => Child, (child) => child.parent, { cascade: true })
+  children: Child[];
+
+  // Nombre del padre
+  @Column({ nullable: true })
+  parentName: string;
+
+  // Nombre de la Madre
+  @Column({ nullable: true })
+  motherName: string;
+
+  // Nombre del conyuge
+  @Column({ nullable: true })
+  spouseName: string;
+
+  // DATOS DE CONTACTO
+  //tipo de parentesco
+  @Column({ nullable: true })
+  relationshipType: string;
+  // dni
+  @Column({ nullable: true })
+  documentContact: string;
+  // nombre del contacto
+  @Column({ nullable: true })
+  contactName: string;
+
+  // telefono del contacto
+  @Column({ nullable: true })
+  contactPhone: string;
+
+  //OTROS DATOS
+  // Area
+  @Column({ nullable: true })
+  area: string;
+  // Cargo
+  @Column({ nullable: true })
+  jobTitle: string;
 }
