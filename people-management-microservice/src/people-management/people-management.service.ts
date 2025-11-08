@@ -763,20 +763,19 @@ export class PeopleManagementService {
     source: string,
   ) {
     try {
-      console.log('dd');
-      console.log(instituteId, source);
+      source = source.toUpperCase();
       const people = await this.peopleRepository
         .createQueryBuilder('people')
         .leftJoinAndSelect('people.cargo', 'cargo')
         .where('people.institution_id = :instituteId', { instituteId })
         .andWhere('cargo.source = :source', { source })
-        // .select([
-        //   'people.id',
-        //   'people.names',
-        //   'people.paternalSurname',
-        //   'people.maternalSurname',
-        //   'people.document',
-        // ])
+        .select([
+          'people.id',
+          'people.names',
+          'people.paternalSurname',
+          'people.maternalSurname',
+          'people.document',
+        ])
         .getMany();
 
       return successResponse(people, 'Personas encontradas');
