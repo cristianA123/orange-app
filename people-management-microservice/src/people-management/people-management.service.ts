@@ -26,6 +26,7 @@ import {
 } from 'src/typeorm/entities';
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Injectable()
 export class PeopleManagementService {
@@ -679,15 +680,113 @@ export class PeopleManagementService {
     }
   }
 
-  // async update(id: string, updatePeopleDto: UpdatePeopleDto) {
-  //   // const peopleUpdated = await this.peopleRepository.findOneBy({
-  //   //   id,
-  //   // });
-  //   // delete incidentUpdated.user;
-  //   // delete incidentUpdated.institute;
-  //   // delete incidentUpdated.officer;
-  //   // return successResponse(incidentUpdated, 'Incidente actualizado');
-  // }
+  async update(id: string, updatePeopleDto: UpdatePeopleDto) {
+    try {
+      const person = await this.peopleRepository.findOne({
+        where: { id },
+        relations: [
+          'ubigeo',
+          'nationality',
+          'department',
+          'province',
+          'district',
+          'birthplaceDepartment',
+          'maritalStatus',
+          'pensionSystem',
+          'bloodType',
+          'emergencyContactType',
+          'origin',
+          'educationLevel',
+          'licensesA',
+          'licensesB',
+        ],
+      });
+
+      if (!person) {
+        throw new RpcException({
+          message: `Persona con ID ${id} no encontrada`,
+          status: HttpStatus.NOT_FOUND,
+        });
+      }
+
+      // Resolver relaciones sólo si se pasan IDs
+      const related = await this.validateAndFindRelatedEntities(
+        updatePeopleDto as CreatePeopleDto,
+      );
+
+      const directFields: Partial<People> = {
+        paternalSurname: updatePeopleDto.paternalSurname,
+        maternalSurname: updatePeopleDto.maternalSurname,
+        names: updatePeopleDto.names,
+        cellphone: updatePeopleDto.cellphone,
+        email: updatePeopleDto.email,
+        address: updatePeopleDto.address,
+        landline: updatePeopleDto.landline,
+        documentType: updatePeopleDto.documentType,
+        document: updatePeopleDto.document,
+        gender: updatePeopleDto.gender,
+        birthDate: updatePeopleDto.birthDate,
+        age: updatePeopleDto.age,
+        domicile: updatePeopleDto.domicile,
+        healthInsurance: updatePeopleDto.healthInsurance,
+        insuranceType: updatePeopleDto.insuranceType,
+        sctr: updatePeopleDto.sctr,
+        isDonor: updatePeopleDto.isDonor,
+        tattoos: updatePeopleDto.tattoos,
+        militaryService: updatePeopleDto.militaryService,
+        weaponsLicense: updatePeopleDto.weaponsLicense,
+        differentAbility: updatePeopleDto.differentAbility,
+        height: updatePeopleDto.height,
+        weight: updatePeopleDto.weight,
+        childrenNumber: updatePeopleDto.childrenNumber,
+        spouse: updatePeopleDto.spouse,
+        emergencyName: updatePeopleDto.emergencyName,
+        emergencyEmail: updatePeopleDto.emergencyEmail,
+        emergencyPhone: updatePeopleDto.emergencyPhone,
+        lastUserModified: updatePeopleDto.lastUserModified,
+        lastModificationDate: new Date(),
+      };
+
+      Object.keys(directFields).forEach((key) => {
+        const k = key as keyof People;
+        if (directFields[k] === undefined) delete (directFields as any)[k];
+      });
+      Object.assign(person, directFields);
+
+      if (updatePeopleDto.ubigeoId) person.ubigeo = related.ubigeo;
+      if (updatePeopleDto.nationalityId)
+        person.nationality = related.nationality;
+      if (updatePeopleDto.departmentId) person.department = related.department;
+      if (updatePeopleDto.provinceId) person.province = related.province;
+      if (updatePeopleDto.districtId) person.district = related.district;
+      if (updatePeopleDto.birthplaceDepartmentId)
+        person.birthplaceDepartment = related.birthplaceDepartment;
+      if (updatePeopleDto.maritalStatusId)
+        person.maritalStatus = related.maritalStatus;
+      if (updatePeopleDto.pensionSystemId)
+        person.pensionSystem = related.pensionSystem;
+      if (updatePeopleDto.bloodTypeId) person.bloodType = related.bloodType;
+      if (updatePeopleDto.emergencyContactTypeId)
+        person.emergencyContactType = related.emergencyContactType;
+      if (updatePeopleDto.originId) person.origin = related.origin;
+      if (updatePeopleDto.educationLevelId)
+        person.educationLevel = related.educationLevel;
+
+      if (updatePeopleDto.licensesAIds)
+        person.licensesA = related.licensesA ?? [];
+      if (updatePeopleDto.licensesBIds)
+        person.licensesB = related.licensesB ?? [];
+
+      const saved = await this.peopleRepository.save(person);
+      return successResponse(saved, 'Persona actualizada exitosamente');
+    } catch (error) {
+      if (error instanceof RpcException) throw error;
+      throw new RpcException({
+        message: 'Error al actualizar persona',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 
   // async remove(id: string) {
   //   const incident = await this.incidentRepository.update(id, {

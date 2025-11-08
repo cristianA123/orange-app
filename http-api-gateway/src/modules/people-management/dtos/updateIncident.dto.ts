@@ -1,108 +1,255 @@
 import {
   IsString,
-  IsNotEmpty,
+  IsEmail,
   IsOptional,
-  IsUUID,
+  IsDateString,
   IsNumber,
   IsBoolean,
-  IsDate,
+  IsUUID,
+  IsArray,
+  Min,
+  Max,
+  IsPhoneNumber,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class UpdatePeopleDTO {
-  @IsUUID()
-  @IsNotEmpty()
-  @IsOptional()
-  id: string;
-
+  // @ApiProperty({ description: 'Apellido paterno' })
   @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  type: string;
+  paternalSurname: string;
 
+  // @ApiProperty({ description: 'Apellido materno' })
   @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  subType: string;
+  maternalSurname: string;
 
+  // @ApiProperty({ description: 'Nombres' })
   @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  description: string;
+  names: string;
 
-  @IsString()
-  @IsNotEmpty()
+  // @ApiProperty({ description: 'Celular', required: false })
   @IsOptional()
-  address: string;
+  @IsPhoneNumber()
+  cellphone?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
+  // @ApiProperty({ description: 'Email', required: false })
   @IsOptional()
-  officerId?: string;
+  @IsEmail()
+  email?: string;
 
-  @IsNumber({ maxDecimalPlaces: 6 })
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsOptional()
-  locationLat: number;
-
-  @IsNumber({ maxDecimalPlaces: 6 })
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsOptional()
-  locationLng: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  formType: string;
-
+  // @ApiProperty({ description: 'Dirección', required: false })
   @IsOptional()
   @IsString()
-  @IsOptional()
-  officerName?: string;
+  address?: string;
 
+  // @ApiProperty({ description: 'Tipo de documento', required: false })
   @IsOptional()
   @IsString()
-  @IsOptional()
-  phoneNumber?: string;
+  documentType?: string;
 
+  // @ApiProperty({ description: 'Número de documento', required: false })
   @IsOptional()
   @IsString()
-  @IsOptional()
-  senderName?: string;
+  document?: string;
 
+  // @ApiProperty({ description: 'Sexo', required: false })
   @IsOptional()
   @IsString()
-  @IsOptional()
-  cameraNumber?: string;
+  gender?: string;
 
+  // @ApiProperty({
+  //   description: 'Fecha de nacimiento (YYYY-MM-DD)',
+  //   required: false,
+  // })
   @IsOptional()
-  @IsString()
-  @IsOptional()
-  documentNumber?: string;
+  @IsDateString()
+  birthDate?: string;
 
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  @IsOptional()
-  attentionDate?: Date;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  @IsOptional()
-  closingDate?: Date;
-
-  @IsBoolean()
-  @Type(() => Boolean)
-  @IsOptional()
-  isRelevant: boolean;
-
+  // @ApiProperty({ description: 'Edad', required: false })
   @IsOptional()
   @IsNumber()
-  @Type(() => Number)
+  @Min(0)
+  @Max(150)
+  age?: number;
+
+  // @ApiProperty({ description: 'Lugar de domicilio', required: false })
   @IsOptional()
-  status?: number;
+  @IsString()
+  domicile?: string;
+
+  // @ApiProperty({ description: 'Teléfono fijo', required: false })
+  @IsOptional()
+  @IsString()
+  landline?: string;
+
+  // @ApiProperty({ description: 'Seguro de salud', required: false })
+  @IsOptional()
+  @IsBoolean()
+  healthInsurance?: boolean;
+
+  // @ApiProperty({ description: 'Tipo de seguro', required: false })
+  @IsOptional()
+  @IsString()
+  insuranceType?: string;
+
+  // @ApiProperty({ description: 'SCTR', required: false })
+  @IsOptional()
+  @IsBoolean()
+  sctr?: boolean;
+
+  // @ApiProperty({ description: 'Es donante', required: false })
+  @IsOptional()
+  @IsBoolean()
+  isDonor?: boolean;
+
+  // @ApiProperty({ description: 'Cónyuge', required: false })
+  @IsOptional()
+  @IsString()
+  spouse?: string;
+
+  // @ApiProperty({ description: 'Tatuajes', required: false })
+  @IsOptional()
+  @IsBoolean()
+  tattoos?: boolean;
+
+  // @ApiProperty({ description: 'Servicio militar', required: false })
+  @IsOptional()
+  @IsBoolean()
+  militaryService?: boolean;
+
+  // @ApiProperty({ description: 'Licencia de armas', required: false })
+  @IsOptional()
+  @IsBoolean()
+  weaponsLicense?: boolean;
+
+  // @ApiProperty({ description: 'Habilidad diferente', required: false })
+  @IsOptional()
+  @IsBoolean()
+  differentAbility?: boolean;
+
+  // @ApiProperty({ description: 'Estatura (cm)', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(300)
+  height?: number;
+
+  // @ApiProperty({ description: 'Peso (kg)', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(500)
+  weight?: number;
+
+  // @ApiProperty({ description: 'Número de hijos', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  childrenNumber?: number;
+
+  // @ApiProperty({
+  //   description: 'Nombre de contacto de emergencia',
+  //   required: false,
+  // })
+  @IsOptional()
+  @IsString()
+  emergencyName?: string;
+
+  // @ApiProperty({
+  //   description: 'Email de contacto de emergencia',
+  //   required: false,
+  // })
+  @IsOptional()
+  @IsEmail()
+  emergencyEmail?: string;
+
+  // @ApiProperty({
+  //   description: 'Teléfono de contacto de emergencia',
+  //   required: false,
+  // })
+  @IsOptional()
+  @IsString()
+  emergencyPhone?: string;
+
+  // Relaciones (IDs)
+  // @ApiProperty({ description: 'ID del ubigeo', required: false })
+  @IsOptional()
+  // @IsUUID()
+  ubigeoId?: string;
+
+  // @ApiProperty({ description: 'ID de nacionalidad', required: false })
+  @IsOptional()
+  @IsUUID()
+  nationalityId?: string;
+
+  // @ApiProperty({ description: 'ID del departamento', required: false })
+  @IsOptional()
+  departmentId?: string;
+
+  // @ApiProperty({ description: 'ID de la provincia', required: false })
+  @IsOptional()
+  provinceId?: string;
+
+  // @ApiProperty({ description: 'ID del distrito', required: false })
+  @IsOptional()
+  districtId?: string;
+
+  // @ApiProperty({
+  //   description: 'ID del departamento de nacimiento',
+  //   required: false,
+  // })
+  @IsOptional()
+  // @IsUUID()
+  birthplaceDepartmentId?: string;
+
+  // @ApiProperty({ description: 'ID del estado civil', required: false })
+  @IsOptional()
+  @IsUUID()
+  maritalStatusId?: string;
+
+  // @ApiProperty({ description: 'ID del sistema de pensiones', required: false })
+  @IsOptional()
+  @IsUUID()
+  pensionSystemId?: string;
+
+  // @ApiProperty({ description: 'ID del tipo sanguíneo', required: false })
+  @IsOptional()
+  @IsUUID()
+  bloodTypeId?: string;
+
+  // @ApiProperty({
+  //   description: 'ID del tipo de contacto de emergencia',
+  //   required: false,
+  // })
+  @IsOptional()
+  @IsUUID()
+  emergencyContactTypeId?: string;
+
+  // @ApiProperty({ description: 'ID de procedencia', required: false })
+  @IsOptional()
+  @IsUUID()
+  originId?: string;
+
+  // @ApiProperty({ description: 'ID del nivel de educación', required: false })
+  @IsOptional()
+  @IsUUID()
+  educationLevelId?: string;
+
+  // @ApiProperty({
+  //   description: 'IDs de licencias A',
+  //   required: false,
+  //   type: [String],
+  // })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  licensesAIds?: string[];
+
+  // @ApiProperty({
+  //   description: 'IDs de licencias B',
+  //   required: false,
+  //   type: [String],
+  // })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  licensesBIds?: string[];
 }

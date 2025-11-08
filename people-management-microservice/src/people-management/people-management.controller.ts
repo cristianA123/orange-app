@@ -1,9 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-// import { IncidentService } from './people-management.service';
 import { CreatePeopleDto } from './dto/create-people.dto';
-// import { UpdateIncidentDto } from './dto/update-incident.dto';
 import { PeopleManagementService } from './people-management.service';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Controller()
 export class PeopleManagementController {
@@ -15,6 +14,15 @@ export class PeopleManagementController {
   async create(@Payload() createPeopleDto: CreatePeopleDto) {
     console.log('e2');
     return this.peopleManagementService.create(createPeopleDto);
+  }
+
+  @MessagePattern({ cmd: 'UPDATE_PEOPLE' })
+  async update(@Payload() updatePeopleDto: UpdatePeopleDto) {
+    console.log('e2');
+    return this.peopleManagementService.update(
+      updatePeopleDto.id,
+      updatePeopleDto,
+    );
   }
 
   // @MessagePattern({ cmd: 'GET_PEOPLE' })
@@ -41,14 +49,6 @@ export class PeopleManagementController {
   getDistrictsByProvince(@Payload() provinceId: string) {
     return this.peopleManagementService.getDistrictsByProvince(provinceId);
   }
-
-  // @MessagePattern({ cmd: 'UPDATE_INCIDENT2' })
-  // update(@Payload() updateIncidentDto: UpdateIncidentDto) {
-  //   return this.peopleManagementService.update(
-  //     updateIncidentDto.id,
-  //     updateIncidentDto,
-  //   );
-  // }
 
   // @MessagePattern({ cmd: 'DELETE_INCIDENT2' })
   // remove(@Payload() id: string) {

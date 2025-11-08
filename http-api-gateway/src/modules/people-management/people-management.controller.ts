@@ -108,7 +108,7 @@ export class PeopleManagementController {
     }
   }
 
-  @Get('/people/:id')
+  @Get('/:id')
   async getPeopleById(@Param('id') id: string) {
     try {
       const response = await lastValueFrom(
@@ -121,13 +121,14 @@ export class PeopleManagementController {
     }
   }
 
-  @Patch('/people/:id')
+  @Patch('/:id')
   async update(
     @Param('id') id: string,
     @UserDecorator() user: IUser,
     @Payload() updatePeopleDTO: UpdatePeopleDTO,
   ) {
     try {
+      console.log('modificar');
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'UPDATE_PEOPLE' },
