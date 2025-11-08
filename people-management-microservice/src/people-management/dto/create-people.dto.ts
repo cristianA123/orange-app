@@ -68,7 +68,7 @@ export interface CreatePeopleDto {
   emergencyContactTypeId?: string;
   originId?: string;
   educationLevelId?: string;
-  institutionId?: string;
+  instituteId?: string;
 
   // Licencias
   licensesAIds?: string[];

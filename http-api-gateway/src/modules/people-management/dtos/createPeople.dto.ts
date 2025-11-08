@@ -270,9 +270,9 @@ export class CreatePeopleDto {
   @IsString()
   anexo?: string;
 
-  @IsOptional()
-  @IsUUID()
-  institutionId?: string;
+  // @IsOptional()
+  // @IsUUID()
+  // institutionId?: string;
 
   @IsOptional()
   @IsArray()

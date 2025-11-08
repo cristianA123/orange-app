@@ -104,6 +104,7 @@ export class PeopleManagementService {
       emergencyContactType: relatedEntities.emergencyContactType,
       origin: relatedEntities.origin,
       educationLevel: relatedEntities.educationLevel,
+      institution: relatedEntities.institution,
       // Licencias ManyToMany
       licensesA: relatedEntities.licensesA,
       licensesB: relatedEntities.licensesB,
@@ -111,6 +112,17 @@ export class PeopleManagementService {
 
     // Guardar la entidad con todas sus relaciones
     const savedPeople = await this.peopleRepository.save(newPeopleEntity);
+
+    // Hijos (Children) - crear y asociar si vienen en el DTO
+    if (createPeopleDto.children && createPeopleDto.children.length > 0) {
+      createPeopleDto.children.map((childDto) =>
+        this.childRepository.create({
+          ...childDto,
+          parent: savedPeople, // aquí ya tiene ID
+        }),
+      );
+      // await this.childRepository.save(children);
+    }
 
     // Cargar las relaciones para la respuesta
     const peopleWithRelations = await this.peopleRepository.findOne({
@@ -130,6 +142,8 @@ export class PeopleManagementService {
         'educationLevel',
         'licensesA',
         'licensesB',
+        'children',
+        'institution',
       ],
     });
 
@@ -138,6 +152,19 @@ export class PeopleManagementService {
 
   private async validateAndFindRelatedEntities(dto: CreatePeopleDto) {
     const entities: any = {};
+
+    // Ubigeo (Distrito) para dirección
+    if (dto.ubigeoId) {
+      entities.ubigeo = await this.districtRepository.findOne({
+        where: { disID: dto.ubigeoId },
+      });
+      if (!entities.ubigeo) {
+        throw new RpcException({
+          message: `Ubigeo con ID ${dto.ubigeoId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
 
     // Nacionalidad
     if (dto.nationalityId) {
@@ -278,6 +305,19 @@ export class PeopleManagementService {
       if (!entities.educationLevel) {
         throw new RpcException({
           message: `Nivel educativo con ID ${dto.educationLevelId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    // Institución
+    if (dto.instituteId) {
+      entities.institution = await this.instituteRepository.findOne({
+        where: { id: dto.instituteId },
+      });
+      if (!entities.institution) {
+        throw new RpcException({
+          message: `Institución con ID ${dto.instituteId} no encontrada`,
           status: HttpStatus.BAD_REQUEST,
         });
       }
@@ -663,6 +703,8 @@ export class PeopleManagementService {
           'educationLevel',
           'licensesA',
           'licensesB',
+          'children',
+          'institution',
         ],
       });
 
@@ -774,11 +816,30 @@ export class PeopleManagementService {
       if (updatePeopleDto.originId) person.origin = related.origin;
       if (updatePeopleDto.educationLevelId)
         person.educationLevel = related.educationLevel;
+      if (updatePeopleDto.instituteId) person.institution = related.institution;
 
       if (updatePeopleDto.licensesAIds)
         person.licensesA = related.licensesA ?? [];
       if (updatePeopleDto.licensesBIds)
         person.licensesB = related.licensesB ?? [];
+
+      // Reemplazar hijos si se proporcionan
+      if (updatePeopleDto.children) {
+        const existingChildren = await this.childRepository.find({
+          where: { parent: { id } },
+        });
+        if (existingChildren.length) {
+          await this.childRepository.remove(existingChildren);
+        }
+        person.children = updatePeopleDto.children.map((childDto) =>
+          this.childRepository.create({ ...childDto, parent: person }),
+        );
+      }
+
+      // eliminar el dato del parent de cada children
+      person.children.forEach((child) => {
+        child.parent = null;
+      });
 
       const saved = await this.peopleRepository.save(person);
       return successResponse(saved, 'Persona actualizada exitosamente');

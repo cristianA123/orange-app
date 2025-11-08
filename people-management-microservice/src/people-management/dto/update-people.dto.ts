@@ -1,6 +1,7 @@
 import { ChildDto } from './child.dto';
 
 export interface UpdatePeopleDto {
+  id: string;
   // Datos personales
   paternalSurname?: string;
   maternalSurname?: string;
@@ -68,7 +69,7 @@ export interface UpdatePeopleDto {
   emergencyContactTypeId?: string;
   originId?: string;
   educationLevelId?: string;
-  institutionId?: string;
+  instituteId?: string;
 
   // Licencias
   licensesAIds?: string[];

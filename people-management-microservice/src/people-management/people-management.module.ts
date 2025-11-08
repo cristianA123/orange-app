@@ -19,6 +19,7 @@ import {
   EducationLevel,
   BloodType,
   EmergencyContactType,
+  Child,
 } from 'src/typeorm/entities';
 
 @Module({
@@ -40,6 +41,7 @@ import {
       EducationLevel,
       BloodType,
       EmergencyContactType,
+      Child,
     ]),
   ],
   controllers: [PeopleManagementController],
