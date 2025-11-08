@@ -215,7 +215,7 @@ export class CreatePeopleDto {
   //   required: false,
   // })
   @IsOptional()
-  @IsUUID()
+  // @IsUUID()
   birthplaceDepartmentId?: string;
 
   // @ApiProperty({ description: 'ID del estado civil', required: false })

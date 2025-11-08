@@ -161,6 +161,32 @@ export class PeopleManagementService {
       }
     }
 
+    // Provincia
+    if (dto.provinceId) {
+      entities.province = await this.provinceRepository.findOne({
+        where: { proID: dto.provinceId },
+      });
+      if (!entities.province) {
+        throw new RpcException({
+          message: `Provincia con ID ${dto.provinceId} no encontrada`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    // Distrito
+    if (dto.districtId) {
+      entities.district = await this.districtRepository.findOne({
+        where: { disID: dto.districtId },
+      });
+      if (!entities.district) {
+        throw new RpcException({
+          message: `Distrito con ID ${dto.districtId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
     // Departamento de nacimiento
     if (dto.birthplaceDepartmentId) {
       entities.birthplaceDepartment = await this.departmentRepository.findOne({
