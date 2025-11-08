@@ -96,6 +96,28 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     depends_on:
       - nats
+    
+  people-management-microservice:
+    build:
+      context: .
+      dockerfile: ./people-management-microservice/Dockerfile.prod
+    volumes:
+      - ./.env:/usr/src/app/.env
+    image: people-management_microservice-prod
+    environment:
+      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
+      - DB_TYPE=${DB_TYPE:-mysql}
+      - DB_HOST=${DB_HOST:-mysql_db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USERNAME=${DB_USERNAME:-testuser}
+      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
+      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    depends_on:
+      - nats
 
   dashboard_microservice:
     build:
