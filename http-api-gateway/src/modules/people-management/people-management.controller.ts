@@ -50,7 +50,7 @@ export class PeopleManagementController {
     }
   }
 
-  @Get('/institute-incidents')
+  @Get('/institute-people')
   @HttpCode(HttpStatus.OK)
   async findAllPeopleByInstituteId(@UserDecorator() user: IUser) {
     try {

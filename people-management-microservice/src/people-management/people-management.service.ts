@@ -548,41 +548,41 @@ export class PeopleManagementService {
     return successResponse(incident, 'Incidente encontrado');
   }
 
-  // async findAllPeopleByInstituteId(instituteId: string) {
-  //   try {
-  //     const people = await this.peopleRepository.find({
-  //       where: {
-  //         institute: {
-  //           id: instituteId,
-  //         },
-  //       },
-  //       relations: [
-  //         'ubigeo',
-  //         'nationality',
-  //         'department',
-  //         'province',
-  //         'district',
-  //         'birthplaceDepartment',
-  //         'maritalStatus',
-  //         'pensionSystem',
-  //         'bloodType',
-  //         'emergencyContactType',
-  //         'origin',
-  //         'educationLevel',
-  //         'licensesA',
-  //         'licensesB',
-  //       ],
-  //       order: { createdAt: 'DESC' },
-  //     });
+  async findAllPeopleByInstituteId(instituteId: string) {
+    try {
+      const people = await this.peopleRepository.find({
+        where: {
+          institution: {
+            id: instituteId,
+          },
+        },
+        relations: [
+          'ubigeo',
+          'nationality',
+          'department',
+          'province',
+          'district',
+          'birthplaceDepartment',
+          'maritalStatus',
+          'pensionSystem',
+          'bloodType',
+          'emergencyContactType',
+          'origin',
+          'educationLevel',
+          'licensesA',
+          'licensesB',
+        ],
+        order: { createdAt: 'DESC' },
+      });
 
-  //     return successResponse(people, 'Personas recuperadas exitosamente');
-  //   } catch (error) {
-  //     throw new RpcException({
-  //       message: 'Error al obtener personas',
-  //       status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //     });
-  //   }
-  // }
+      return successResponse(people, 'Personas recuperadas exitosamente');
+    } catch (error) {
+      throw new RpcException({
+        message: 'Error al obtener personas',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 
   async getPeopleById(id: string) {
     try {

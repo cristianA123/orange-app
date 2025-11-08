@@ -25,10 +25,10 @@ export class PeopleManagementController {
     );
   }
 
-  // @MessagePattern({ cmd: 'GET_PEOPLE' })
-  // findAllPeople(@Payload() instituteId: string) {
-  //   return this.peopleManagementService.findAllPeopleByInstituteId(instituteId);
-  // }
+  @MessagePattern({ cmd: 'GET_PEOPLE' })
+  findAllPeople(@Payload() instituteId: string) {
+    return this.peopleManagementService.findAllPeopleByInstituteId(instituteId);
+  }
 
   @MessagePattern({ cmd: 'GET_PEOPLE_BY_ID' })
   getPeopleById(@Payload() id: string) {
