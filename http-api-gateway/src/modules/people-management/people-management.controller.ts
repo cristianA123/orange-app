@@ -73,15 +73,32 @@ export class PeopleManagementController {
     @Query('source') source: string,
   ) {
     try {
-      console.log('eee');
-      console.log(source);
-      console.log('eee');
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'GET_PEOPLE_SUMMARY' },
           {
             instituteId: user.instituteId,
             source,
+          },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/security')
+  @HttpCode(HttpStatus.OK)
+  async findAllPeopleSecurityByInstituteId(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_PEOPLE_SECURITY' },
+          {
+            instituteId: user.instituteId,
           },
         ),
       );

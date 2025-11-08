@@ -788,6 +788,26 @@ export class PeopleManagementService {
     }
   }
 
+  async findAllPeopleSecurityByInstituteId(instituteId: string) {
+    try {
+      const people = await this.peopleRepository.find({
+        where: {
+          institution: {
+            id: instituteId,
+          },
+          area: In(['SERENAZGO', 'SECURITY', 'Security', 'security']),
+        },
+      });
+      return successResponse(people, 'Personas encontradas');
+    } catch (error) {
+      if (error instanceof RpcException) throw error;
+      throw new RpcException({
+        message: 'Error al obtener personas',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
   // async remove(id: string) {
   //   const incident = await this.incidentRepository.update(id, {
   //     status: IncidentStatus.DELETED,

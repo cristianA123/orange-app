@@ -151,6 +151,7 @@ export class IncidentService {
           paternalSurname: incident.people.paternalSurname,
           maternalSurname: incident.people.maternalSurname,
           email: incident.people.email,
+          document: incident.people.document,
         }
       : null;
 

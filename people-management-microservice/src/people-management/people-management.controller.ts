@@ -60,6 +60,15 @@ export class PeopleManagementController {
     );
   }
 
+  @MessagePattern({ cmd: 'GET_PEOPLE_SECURITY' })
+  findAllPeopleSecurityByInstituteId(
+    @Payload() payload: { instituteId: string; source: string },
+  ) {
+    return this.peopleManagementService.findAllPeopleSecurityByInstituteId(
+      payload.instituteId,
+    );
+  }
+
   // @MessagePattern({ cmd: 'DELETE_INCIDENT2' })
   // remove(@Payload() id: string) {
   //   return this.peopleManagementService.remove(id);
