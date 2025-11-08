@@ -20,6 +20,7 @@ import {
   BloodType,
   EmergencyContactType,
   Child,
+  Cargo,
 } from 'src/typeorm/entities';
 
 @Module({
@@ -42,6 +43,7 @@ import {
       BloodType,
       EmergencyContactType,
       Child,
+      Cargo,
     ]),
   ],
   controllers: [PeopleManagementController],

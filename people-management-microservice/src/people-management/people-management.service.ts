@@ -28,6 +28,7 @@ import {
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 import { UpdatePeopleDto } from './dto/update-people.dto';
+import { Cargo } from 'src/typeorm/entities/Cargo';
 
 @Injectable()
 export class PeopleManagementService {
@@ -65,6 +66,8 @@ export class PeopleManagementService {
     private emergencyContactTypeRepository: Repository<EmergencyContactType>,
     @InjectRepository(Child)
     private childRepository: Repository<Child>,
+    @InjectRepository(Cargo)
+    private cargoRepository: Repository<Cargo>,
   ) {
     console.log('✅ PeopleManagementService inicializado');
   }
@@ -365,6 +368,7 @@ export class PeopleManagementService {
         educationLevels,
         licensesA,
         licensesB,
+        cargoes,
       ] = await Promise.all([
         this.departmentRepository.find({
           order: { depID: 'ASC' },
@@ -405,6 +409,10 @@ export class PeopleManagementService {
           order: { name: 'ASC' },
           select: ['id', 'name'],
         }),
+        this.cargoRepository.find({
+          order: { name: 'ASC' },
+          select: ['id', 'name', 'source'],
+        }),
       ]);
 
       return {
@@ -420,6 +428,7 @@ export class PeopleManagementService {
           educationLevels,
           licensesA,
           licensesB,
+          cargoes,
         },
       };
     } catch (error) {
