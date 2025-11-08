@@ -25,6 +25,7 @@ import { LicenseB } from './typeorm/entities/LicenseB';
 import { EducationLevel } from './typeorm/entities/EducationLevel';
 import { BloodType } from './typeorm/entities/BloodType';
 import { EmergencyContactType } from './typeorm/entities/EmergencyContactType';
+import { Child } from './typeorm/entities/Child';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { EmergencyContactType } from './typeorm/entities/EmergencyContactType';
         EducationLevel,
         BloodType,
         EmergencyContactType,
+        Child,
       ],
       synchronize: false,
       migrations: [__dirname + '/migrations/*.ts'],

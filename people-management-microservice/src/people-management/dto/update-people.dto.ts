@@ -1,20 +1,18 @@
-// src/people-management/dto/update-people.dto.ts
-export class UpdatePeopleDto {
-  // Identificador de la persona a actualizar
-  id: string;
+import { ChildDto } from './child.dto';
 
-  // Campos principales
+export interface UpdatePeopleDto {
+  // Datos personales
   paternalSurname?: string;
   maternalSurname?: string;
   names?: string;
 
-  // Información de contacto
+  // Contacto
   cellphone?: string;
   email?: string;
   address?: string;
   landline?: string;
 
-  // Documentación e información personal
+  // Documento e información personal
   documentType?: string;
   document?: string;
   gender?: string;
@@ -22,7 +20,7 @@ export class UpdatePeopleDto {
   age?: number;
   domicile?: string;
 
-  // Información de salud y características
+  // Salud y características
   healthInsurance?: boolean;
   insuranceType?: string;
   sctr?: boolean;
@@ -31,17 +29,33 @@ export class UpdatePeopleDto {
   militaryService?: boolean;
   weaponsLicense?: boolean;
   differentAbility?: boolean;
+  conadis?: boolean;
+  rpas?: boolean;
   height?: number;
   weight?: number;
   childrenNumber?: number;
+
+  // Información familiar
   spouse?: string;
+  parentName?: string;
+  motherName?: string;
+  spouseName?: string;
 
   // Contacto de emergencia
   emergencyName?: string;
   emergencyEmail?: string;
   emergencyPhone?: string;
+  relationshipType?: string;
+  documentContact?: string;
+  contactName?: string;
+  contactPhone?: string;
 
-  // IDs de relaciones
+  // Datos laborales / administrativos
+  area?: string;
+  jobTitle?: string;
+  anexo?: string;
+
+  // Relaciones (IDs)
   ubigeoId?: string;
   nationalityId?: string;
   departmentId?: string;
@@ -54,11 +68,17 @@ export class UpdatePeopleDto {
   emergencyContactTypeId?: string;
   originId?: string;
   educationLevelId?: string;
+  institutionId?: string;
 
-  // Arrays de licencias
+  // Licencias
   licensesAIds?: string[];
   licensesBIds?: string[];
 
   // Auditoría
   lastUserModified?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+
+  // Relación hijos
+  children?: ChildDto[];
 }

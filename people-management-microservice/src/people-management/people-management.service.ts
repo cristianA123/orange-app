@@ -23,6 +23,7 @@ import {
   EducationLevel,
   BloodType,
   EmergencyContactType,
+  Child,
 } from 'src/typeorm/entities';
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
@@ -62,6 +63,8 @@ export class PeopleManagementService {
     private bloodTypeRepository: Repository<BloodType>,
     @InjectRepository(EmergencyContactType)
     private emergencyContactTypeRepository: Repository<EmergencyContactType>,
+    @InjectRepository(Child)
+    private childRepository: Repository<Child>,
   ) {
     console.log('✅ PeopleManagementService inicializado');
   }

@@ -180,7 +180,7 @@ export class People {
 
   //anexo
   @Column({ nullable: true })
-  anexo: boolean;
+  anexo: string;
 
   // estatura
   @Column({ nullable: true })

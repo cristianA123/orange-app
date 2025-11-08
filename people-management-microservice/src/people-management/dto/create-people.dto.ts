@@ -1,17 +1,18 @@
-// src/people/dto/create-people.dto.ts
-export class CreatePeopleDto {
-  // Campos principales requeridos
+import { ChildDto } from './child.dto';
+
+export interface CreatePeopleDto {
+  // Datos personales
   paternalSurname: string;
   maternalSurname: string;
   names: string;
 
-  // Información de contacto
+  // Contacto
   cellphone?: string;
   email?: string;
   address?: string;
   landline?: string;
 
-  // Documentación e información personal
+  // Documento e información personal
   documentType?: string;
   document?: string;
   gender?: string;
@@ -19,7 +20,7 @@ export class CreatePeopleDto {
   age?: number;
   domicile?: string;
 
-  // Información de salud y características
+  // Salud y características
   healthInsurance?: boolean;
   insuranceType?: string;
   sctr?: boolean;
@@ -28,18 +29,33 @@ export class CreatePeopleDto {
   militaryService?: boolean;
   weaponsLicense?: boolean;
   differentAbility?: boolean;
+  conadis?: boolean;
+  rpas?: boolean;
   height?: number;
   weight?: number;
   childrenNumber?: number;
+
   // Información familiar
   spouse?: string;
+  parentName?: string;
+  motherName?: string;
+  spouseName?: string;
 
   // Contacto de emergencia
   emergencyName?: string;
   emergencyEmail?: string;
   emergencyPhone?: string;
+  relationshipType?: string;
+  documentContact?: string;
+  contactName?: string;
+  contactPhone?: string;
 
-  // IDs de relaciones (opcionales)
+  // Datos laborales / administrativos
+  area?: string;
+  jobTitle?: string;
+  anexo?: string;
+
+  // Relaciones (IDs)
   ubigeoId?: string;
   nationalityId?: string;
   departmentId?: string;
@@ -52,11 +68,17 @@ export class CreatePeopleDto {
   emergencyContactTypeId?: string;
   originId?: string;
   educationLevelId?: string;
+  institutionId?: string;
 
-  // Arrays de licencias
+  // Licencias
   licensesAIds?: string[];
   licensesBIds?: string[];
 
-  // Campos de auditoría (si los necesitas)
+  // Auditoría
   lastUserModified?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+
+  // Relación hijos
+  children?: ChildDto[];
 }

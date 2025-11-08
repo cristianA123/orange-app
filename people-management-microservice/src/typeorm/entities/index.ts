@@ -18,3 +18,4 @@ export * from './LicenseB';
 export * from './EducationLevel';
 export * from './BloodType';
 export * from './EmergencyContactType';
+export * from './Child';

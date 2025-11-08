@@ -1,19 +1,4 @@
-// import {
-//   IsString,
-//   IsNotEmpty,
-//   IsOptional,
-//   IsNumber,
-//   IsBoolean,
-//   IsDate,
-//   IsUUID,
-// } from 'class-validator';
-// import { Type } from 'class-transformer';
-
-// export class CreatePeopleDto {
-
-// }
-
-// src/people/dto/create-people.dto.ts
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsEmail,
@@ -26,7 +11,9 @@ import {
   Min,
   Max,
   IsPhoneNumber,
+  ValidateNested,
 } from 'class-validator';
+import { ChildDto } from './child.dto';
 // import { Type } from 'class-transformer';
 // import { ApiProperty } from '@nestjs/swagger';
 
@@ -270,4 +257,62 @@ export class CreatePeopleDto {
   @IsArray()
   @IsUUID('4', { each: true })
   licensesBIds?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  rpas?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  conadis?: boolean;
+
+  @IsOptional()
+  @IsString()
+  anexo?: string;
+
+  @IsOptional()
+  @IsUUID()
+  institutionId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ChildDto)
+  children?: ChildDto[];
+
+  @IsOptional()
+  @IsString()
+  parentName?: string;
+
+  @IsOptional()
+  @IsString()
+  motherName?: string;
+
+  @IsOptional()
+  @IsString()
+  spouseName?: string;
+
+  @IsOptional()
+  @IsString()
+  relationshipType?: string;
+
+  @IsOptional()
+  @IsString()
+  documentContact?: string;
+
+  @IsOptional()
+  @IsString()
+  contactName?: string;
+
+  @IsOptional()
+  @IsString()
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsString()
+  area?: string;
+
+  @IsOptional()
+  @IsString()
+  jobTitle?: string;
 }
