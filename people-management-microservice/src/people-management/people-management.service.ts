@@ -763,25 +763,22 @@ export class PeopleManagementService {
     source: string,
   ) {
     try {
-      // tengo el source ahor anecesito filtrar por source  TODOS MIS PEOPLE QUE TENGAN EL CAROG QUE HAGA RELACION CON EL SOURCE
-      // y que tengan el instituto id
-      const people = await this.peopleRepository.find({
-        where: {
-          institution: {
-            id: instituteId,
-          },
-          cargo: {
-            source,
-          },
-        },
-        select: {
-          id: true,
-          names: true,
-          paternalSurname: true,
-          maternalSurname: true,
-          document: true,
-        },
-      });
+      console.log('dd');
+      console.log(instituteId, source);
+      const people = await this.peopleRepository
+        .createQueryBuilder('people')
+        .leftJoinAndSelect('people.cargo', 'cargo')
+        .where('people.institution_id = :instituteId', { instituteId })
+        .andWhere('cargo.source = :source', { source })
+        // .select([
+        //   'people.id',
+        //   'people.names',
+        //   'people.paternalSurname',
+        //   'people.maternalSurname',
+        //   'people.document',
+        // ])
+        .getMany();
+
       return successResponse(people, 'Personas encontradas');
     } catch (error) {
       if (error instanceof RpcException) throw error;

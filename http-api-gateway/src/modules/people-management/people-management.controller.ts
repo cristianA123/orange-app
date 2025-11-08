@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -69,9 +70,12 @@ export class PeopleManagementController {
   @HttpCode(HttpStatus.OK)
   async findAllPeopleByInstituteIdToSummary(
     @UserDecorator() user: IUser,
-    @Param('source') source: string,
+    @Query('source') source: string,
   ) {
     try {
+      console.log('eee');
+      console.log(source);
+      console.log('eee');
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'GET_PEOPLE_SUMMARY' },
