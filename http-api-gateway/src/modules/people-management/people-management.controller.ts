@@ -67,10 +67,19 @@ export class PeopleManagementController {
 
   @Get('/institute-people/summary')
   @HttpCode(HttpStatus.OK)
-  async findAllPeopleByInstituteIdToSummary(@UserDecorator() user: IUser) {
+  async findAllPeopleByInstituteIdToSummary(
+    @UserDecorator() user: IUser,
+    @Param('source') source: string,
+  ) {
     try {
       const response = await lastValueFrom(
-        this.natsClient.send({ cmd: 'GET_PEOPLE_SUMMARY' }, user.instituteId),
+        this.natsClient.send(
+          { cmd: 'GET_PEOPLE_SUMMARY' },
+          {
+            instituteId: user.instituteId,
+            source,
+          },
+        ),
       );
 
       return response;

@@ -758,12 +758,20 @@ export class PeopleManagementService {
     }
   }
 
-  async findAllPeopleByInstituteIdToSummary(instituteId: string) {
+  async findAllPeopleByInstituteIdToSummary(
+    instituteId: string,
+    source: string,
+  ) {
     try {
+      // tengo el source ahor anecesito filtrar por source  TODOS MIS PEOPLE QUE TENGAN EL CAROG QUE HAGA RELACION CON EL SOURCE
+      // y que tengan el instituto id
       const people = await this.peopleRepository.find({
         where: {
           institution: {
             id: instituteId,
+          },
+          cargo: {
+            source,
           },
         },
         select: {

@@ -51,9 +51,12 @@ export class PeopleManagementController {
   }
 
   @MessagePattern({ cmd: 'GET_PEOPLE_SUMMARY' })
-  findAllPeopleByInstituteIdToSummary(@Payload() instituteId: string) {
+  findAllPeopleByInstituteIdToSummary(
+    @Payload() payload: { instituteId: string; source: string },
+  ) {
     return this.peopleManagementService.findAllPeopleByInstituteIdToSummary(
-      instituteId,
+      payload.instituteId,
+      payload.source,
     );
   }
 
