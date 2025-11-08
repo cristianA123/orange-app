@@ -758,6 +758,32 @@ export class PeopleManagementService {
     }
   }
 
+  async findAllPeopleByInstituteIdToSummary(instituteId: string) {
+    try {
+      const people = await this.peopleRepository.find({
+        where: {
+          institution: {
+            id: instituteId,
+          },
+        },
+        select: {
+          id: true,
+          names: true,
+          paternalSurname: true,
+          maternalSurname: true,
+          document: true,
+        },
+      });
+      return successResponse(people, 'Personas encontradas');
+    } catch (error) {
+      if (error instanceof RpcException) throw error;
+      throw new RpcException({
+        message: 'Error al obtener personas',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
   // async remove(id: string) {
   //   const incident = await this.incidentRepository.update(id, {
   //     status: IncidentStatus.DELETED,

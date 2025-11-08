@@ -50,6 +50,13 @@ export class PeopleManagementController {
     return this.peopleManagementService.getDistrictsByProvince(provinceId);
   }
 
+  @MessagePattern({ cmd: 'GET_PEOPLE_SUMMARY' })
+  findAllPeopleByInstituteIdToSummary(@Payload() instituteId: string) {
+    return this.peopleManagementService.findAllPeopleByInstituteIdToSummary(
+      instituteId,
+    );
+  }
+
   // @MessagePattern({ cmd: 'DELETE_INCIDENT2' })
   // remove(@Payload() id: string) {
   //   return this.peopleManagementService.remove(id);

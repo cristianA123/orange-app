@@ -65,6 +65,21 @@ export class PeopleManagementController {
     }
   }
 
+  @Get('/institute-people/summary')
+  @HttpCode(HttpStatus.OK)
+  async findAllPeopleByInstituteIdToSummary(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_PEOPLE_SUMMARY' }, user.instituteId),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
   @Get('/form-data')
   async getPeopleFormData() {
     try {
