@@ -18,4 +18,5 @@ export class CreateIncidentDto {
   isRelevant: boolean;
   status?: number;
   officerId: string;
+  peopleId: string;
 }

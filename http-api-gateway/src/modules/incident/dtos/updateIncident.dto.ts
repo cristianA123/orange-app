@@ -36,7 +36,6 @@ export class UpdateIncidentDTO {
   address: string;
 
   @IsString()
-  @IsNotEmpty()
   @IsUUID()
   @IsOptional()
   officerId?: string;
@@ -105,4 +104,9 @@ export class UpdateIncidentDTO {
   @Type(() => Number)
   @IsOptional()
   status?: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  peopleId: string;
 }

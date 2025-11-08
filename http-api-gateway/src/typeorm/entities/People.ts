@@ -29,6 +29,7 @@ import { Optional } from '@nestjs/common';
 import { Institute } from './Institute';
 import { Child } from './Child';
 import { Cargo } from './Cargo';
+import { Incident } from './Incident';
 
 @Entity('people')
 export class People {
@@ -304,4 +305,8 @@ export class People {
   @ManyToOne(() => Cargo, (cargo) => cargo.people)
   @JoinColumn({ name: 'cargo_id' })
   cargo: Cargo;
+
+  // Incidentes
+  @OneToMany(() => Incident, (incident) => incident.people)
+  incidents: Incident[];
 }

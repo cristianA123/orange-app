@@ -12,6 +12,7 @@ import {
 import { User } from './User';
 import { Institute } from './Institute';
 import { IncidentFile } from './IncidentFile';
+import { People } from './People';
 
 export enum IncidentStatus {
   OPEN = '1', // Abierto
@@ -98,4 +99,12 @@ export class Incident {
 
   @OneToMany(() => IncidentFile, (file) => file.incident)
   incidentFiles: IncidentFile[];
+
+  //agregar people
+  @ManyToOne(() => People, (people) => people.incidents, { nullable: true })
+  @JoinColumn({ name: 'people_id' })
+  people: People;
+
+  @Column({ nullable: true })
+  peopleName?: string;
 }
