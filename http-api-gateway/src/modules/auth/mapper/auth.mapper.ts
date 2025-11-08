@@ -11,6 +11,7 @@ export function AuthResponse(response: any) {
         rol: response.user.rol,
         instituteId: response.user.instituteId,
       },
+      institute: response.institute,
     },
   };
 }

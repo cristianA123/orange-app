@@ -29,7 +29,10 @@ export class AuthService {
       const user = await this.usersService.getUserById(payload.sub);
       if (!user.data) throw UnauthorizedRpcException();
 
-      return this.generateTokens(user.data);
+      const userData = await this.usersService.findByEmail(user.data.email);
+      if (!userData) throw NotFoundRpcException();
+
+      return this.generateTokens(userData);
     } catch (err) {
       throw UnauthorizedRpcException();
     }
@@ -60,6 +63,7 @@ export class AuthService {
         rol: user.rol,
         instituteId: user.institute_id,
       },
+      institute: user.institute,
     };
   }
 

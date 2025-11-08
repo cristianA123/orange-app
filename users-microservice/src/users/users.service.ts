@@ -111,9 +111,24 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { email: email },
+      relations: ['institute'],
     });
+    if (!user) {
+      throw new RpcException({
+        message: `No se encontro usuario con ese correo`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    //limpiar algunos cmapos de institute si existe
+    if (user.institute) {
+      delete user.institute.createdAt;
+      delete user.institute.updatedAt;
+      delete user.institute.deletedAt;
+    }
+
+    return user;
   }
 
   async validateUserById(userId: string): Promise<boolean> {
