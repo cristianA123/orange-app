@@ -1,3 +1,4 @@
+// src/entities/People.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,8 +8,23 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
-import { Incident } from './Incident';
+
+import { Department } from './Department';
+import { Province } from './Province';
+import { District } from './District';
+import { Nationality } from './Nationality';
+import { MaritalStatus } from './MaritalStatus';
+import { Origin } from './Origin';
+import { PensionSystem } from './PensionSystem';
+import { LicenseA } from './LicenseA';
+import { LicenseB } from './LicenseB';
+import { EducationLevel } from './EducationLevel';
+import { BloodType } from './BloodType';
+import { EmergencyContactType } from './EmergencyContactType';
+import { Optional } from '@nestjs/common';
 
 @Entity('people')
 export class People {
@@ -16,20 +32,30 @@ export class People {
   id: string;
 
   // ubigeo
-  @Column()
-  ubigeo: string;
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({ name: 'ubigeo_id', referencedColumnName: 'disID' })
+  @Optional()
+  ubigeo: District;
+
+  // Nacionalidad
+  @ManyToOne(() => Nationality, { nullable: true })
+  @JoinColumn({ name: 'nationality_id' })
+  nationality: Nationality;
 
   // departamento
-  @Column()
-  department: string;
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({ name: 'department_id', referencedColumnName: 'depID' })
+  department: Department;
 
   // provincia
-  @Column()
-  province: string;
+  @ManyToOne(() => Province, { nullable: true })
+  @JoinColumn({ name: 'province_id', referencedColumnName: 'proID' })
+  province: Province;
 
   // distrito
-  @Column()
-  district: string;
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({ name: 'district_id', referencedColumnName: 'disID' })
+  district: District;
 
   // apellido paterno
   @Column()
@@ -76,8 +102,12 @@ export class People {
   age: number;
 
   // lugar de nacimiento
-  @Column({ nullable: true })
-  birthplace: string;
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({
+    name: 'birthplace_department_id',
+    referencedColumnName: 'depID',
+  })
+  birthplaceDepartment: Department;
 
   // lugar de domicilio
   @Column({ nullable: true })
@@ -88,16 +118,18 @@ export class People {
   landline: string;
 
   // estado civil
-  @Column({ nullable: true })
-  maritalStatus: string;
+  @ManyToOne(() => MaritalStatus, { nullable: true })
+  @JoinColumn({ name: 'marital_status_id' })
+  maritalStatus: MaritalStatus;
 
   // sistema prevision
-  @Column({ nullable: true })
-  pensionSystem: string;
+  @ManyToOne(() => PensionSystem, { nullable: true })
+  @JoinColumn({ name: 'pension_system_id' })
+  pensionSystem: PensionSystem;
 
   // seguro salud
   @Column({ nullable: true })
-  healthInsurance: string;
+  healthInsurance: boolean;
 
   // tipo seguro
   @Column({ nullable: true })
@@ -105,15 +137,16 @@ export class People {
 
   // SCTR
   @Column({ nullable: true })
-  sctr: string;
+  sctr: boolean;
 
   // es donante
   @Column({ nullable: true })
-  isDonor: string;
+  isDonor: boolean;
 
   // grupo sanguineo
-  @Column({ nullable: true })
-  bloodType: string;
+  @ManyToOne(() => BloodType, { nullable: true })
+  @JoinColumn({ name: 'blood_type_id' })
+  bloodType: BloodType;
 
   // conyuge
   @Column({ nullable: true })
@@ -121,19 +154,19 @@ export class People {
 
   // tatuajes
   @Column({ nullable: true })
-  tattoos: string;
+  tattoos: boolean;
 
   // servicio militar
   @Column({ nullable: true })
-  militaryService: string;
+  militaryService: boolean;
 
   // licencia armas
   @Column({ nullable: true })
-  weaponsLicense: string;
+  weaponsLicense: boolean;
 
   // habilidad diferente
   @Column({ nullable: true })
-  differentAbility: string;
+  differentAbility: boolean;
 
   // estatura
   @Column({ nullable: true })
@@ -148,8 +181,9 @@ export class People {
   childrenNumber: number;
 
   // contacto emergencia
-  @Column({ nullable: true })
-  emergencyContact: string;
+  @ManyToOne(() => EmergencyContactType, { nullable: true })
+  @JoinColumn({ name: 'emergency_contact_type_id' })
+  emergencyContactType: EmergencyContactType;
 
   // nombre emergencia
   @Column({ nullable: true })
@@ -164,20 +198,32 @@ export class People {
   emergencyPhone: string;
 
   // procedencia
-  @Column({ nullable: true })
-  origin: string;
+  @ManyToOne(() => Origin, { nullable: true })
+  @JoinColumn({ name: 'origin_id' })
+  origin: Origin;
 
   // licencia A
-  @Column({ nullable: true })
-  licenseA: string;
+  @ManyToMany(() => LicenseA)
+  @JoinTable({
+    name: 'people_licenses_a',
+    joinColumn: { name: 'people_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'license_a_id', referencedColumnName: 'id' },
+  })
+  licensesA: LicenseA[];
 
   // licencia B
-  @Column({ nullable: true })
-  licenseB: string;
+  @ManyToMany(() => LicenseB)
+  @JoinTable({
+    name: 'people_licenses_b',
+    joinColumn: { name: 'people_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'license_b_id', referencedColumnName: 'id' },
+  })
+  licensesB: LicenseB[];
 
   // nivel estudios
-  @Column({ nullable: true })
-  educationLevel: string;
+  @ManyToOne(() => EducationLevel, { nullable: true })
+  @JoinColumn({ name: 'education_level_id' })
+  educationLevel: EducationLevel;
 
   // ultima fecha modificacion
   @Column({ type: 'timestamp', nullable: true })
@@ -195,8 +241,4 @@ export class People {
 
   @DeleteDateColumn()
   deletedAt?: Date;
-
-  @ManyToOne(() => Incident, (incident) => incident.incidentFiles)
-  @JoinColumn({ name: 'incident_id' })
-  incident: Incident;
 }

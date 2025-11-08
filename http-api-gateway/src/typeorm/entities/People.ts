@@ -1,206 +1,244 @@
-// import {
-//   Entity,
-//   PrimaryGeneratedColumn,
-//   Column,
-//   CreateDateColumn,
-//   UpdateDateColumn,
-//   DeleteDateColumn,
-//   ManyToOne,
-//   JoinColumn,
-// } from 'typeorm';
-// import { Incident } from './Incident';
+// src/entities/People.ts
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
-// @Entity('people')
-// export class People {
-//   @PrimaryGeneratedColumn('uuid')
-//   id: string;
+import { Department } from './Department';
+import { Province } from './Province';
+import { District } from './District';
+import { Nationality } from './Nationality';
+import { MaritalStatus } from './MaritalStatus';
+import { Origin } from './Origin';
+import { PensionSystem } from './PensionSystem';
+import { LicenseA } from './LicenseA';
+import { LicenseB } from './LicenseB';
+import { EducationLevel } from './EducationLevel';
+import { BloodType } from './BloodType';
+import { EmergencyContactType } from './EmergencyContactType';
+import { Optional } from '@nestjs/common';
 
-//   // ubigeo
-//   @Column()
-//   ubigeo: string;
+@Entity('people')
+export class People {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-//   // Nacionalidad
-//   @Column()
-//   nationality: string;
+  // ubigeo
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({ name: 'ubigeo_id', referencedColumnName: 'disID' })
+  @Optional()
+  ubigeo: District;
 
-//   // departamento
-//   @Column()
-//   department: string;
+  // Nacionalidad
+  @ManyToOne(() => Nationality, { nullable: true })
+  @JoinColumn({ name: 'nationality_id' })
+  nationality: Nationality;
 
-//   // provincia
-//   @Column()
-//   province: string;
+  // departamento
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({ name: 'department_id', referencedColumnName: 'depID' })
+  department: Department;
 
-//   // distrito
-//   @Column()
-//   district: string;
+  // provincia
+  @ManyToOne(() => Province, { nullable: true })
+  @JoinColumn({ name: 'province_id', referencedColumnName: 'proID' })
+  province: Province;
 
-//   // apellido paterno
-//   @Column()
-//   paternalSurname: string;
+  // distrito
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({ name: 'district_id', referencedColumnName: 'disID' })
+  district: District;
 
-//   // apellido materno
-//   @Column()
-//   maternalSurname: string;
+  // apellido paterno
+  @Column()
+  paternalSurname: string;
 
-//   // nombres
-//   @Column()
-//   names: string;
+  // apellido materno
+  @Column()
+  maternalSurname: string;
 
-//   // celular
-//   @Column({ nullable: true })
-//   cellphone: string;
+  // nombres
+  @Column()
+  names: string;
 
-//   // email
-//   @Column({ nullable: true })
-//   email: string;
+  // celular
+  @Column({ nullable: true })
+  cellphone: string;
 
-//   // direccion
-//   @Column({ nullable: true })
-//   address: string;
+  // email
+  @Column({ nullable: true })
+  email: string;
 
-//   // tipo de documento
-//   @Column({ nullable: true })
-//   documentType: string;
+  // direccion
+  @Column({ nullable: true })
+  address: string;
 
-//   // documento
-//   @Column({ nullable: true })
-//   document: string;
+  // tipo de documento
+  @Column({ nullable: true })
+  documentType: string;
 
-//   // sexo
-//   @Column({ nullable: true })
-//   gender: string;
+  // documento
+  @Column({ nullable: true })
+  document: string;
 
-//   // fecha de nacimiento
-//   @Column({ type: 'date', nullable: true })
-//   birthDate: Date;
+  // sexo
+  @Column({ nullable: true })
+  gender: string;
 
-//   // edad
-//   @Column({ nullable: true })
-//   age: number;
+  // fecha de nacimiento
+  @Column({ type: 'date', nullable: true })
+  birthDate: Date;
 
-//   // lugar de nacimiento
-//   @Column({ nullable: true })
-//   birthplace: string;
+  // edad
+  @Column({ nullable: true })
+  age: number;
 
-//   // lugar de domicilio
-//   @Column({ nullable: true })
-//   domicile: string;
+  // lugar de nacimiento
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({
+    name: 'birthplace_department_id',
+    referencedColumnName: 'depID',
+  })
+  birthplaceDepartment: Department;
 
-//   // telefono fijo
-//   @Column({ nullable: true })
-//   landline: string;
+  // lugar de domicilio
+  @Column({ nullable: true })
+  domicile: string;
 
-//   // estado civil
-//   @Column({ nullable: true })
-//   maritalStatus: string;
+  // telefono fijo
+  @Column({ nullable: true })
+  landline: string;
 
-//   // sistema prevision
-//   @Column({ nullable: true })
-//   pensionSystem: string;
+  // estado civil
+  @ManyToOne(() => MaritalStatus, { nullable: true })
+  @JoinColumn({ name: 'marital_status_id' })
+  maritalStatus: MaritalStatus;
 
-//   // seguro salud
-//   @Column({ nullable: true })
-//   healthInsurance: string;
+  // sistema prevision
+  @ManyToOne(() => PensionSystem, { nullable: true })
+  @JoinColumn({ name: 'pension_system_id' })
+  pensionSystem: PensionSystem;
 
-//   // tipo seguro
-//   @Column({ nullable: true })
-//   insuranceType: string;
+  // seguro salud
+  @Column({ nullable: true })
+  healthInsurance: boolean;
 
-//   // SCTR
-//   @Column({ nullable: true })
-//   sctr: string;
+  // tipo seguro
+  @Column({ nullable: true })
+  insuranceType: string;
 
-//   // es donante
-//   @Column({ nullable: true })
-//   isDonor: string;
+  // SCTR
+  @Column({ nullable: true })
+  sctr: boolean;
 
-//   // grupo sanguineo
-//   @Column({ nullable: true })
-//   bloodType: string;
+  // es donante
+  @Column({ nullable: true })
+  isDonor: boolean;
 
-//   // conyuge
-//   @Column({ nullable: true })
-//   spouse: string;
+  // grupo sanguineo
+  @ManyToOne(() => BloodType, { nullable: true })
+  @JoinColumn({ name: 'blood_type_id' })
+  bloodType: BloodType;
 
-//   // tatuajes
-//   @Column({ nullable: true })
-//   tattoos: string;
+  // conyuge
+  @Column({ nullable: true })
+  spouse: string;
 
-//   // servicio militar
-//   @Column({ nullable: true })
-//   militaryService: string;
+  // tatuajes
+  @Column({ nullable: true })
+  tattoos: boolean;
 
-//   // licencia armas
-//   @Column({ nullable: true })
-//   weaponsLicense: string;
+  // servicio militar
+  @Column({ nullable: true })
+  militaryService: boolean;
 
-//   // habilidad diferente
-//   @Column({ nullable: true })
-//   differentAbility: string;
+  // licencia armas
+  @Column({ nullable: true })
+  weaponsLicense: boolean;
 
-//   // estatura
-//   @Column({ nullable: true })
-//   height: number;
+  // habilidad diferente
+  @Column({ nullable: true })
+  differentAbility: boolean;
 
-//   // peso
-//   @Column({ nullable: true })
-//   weight: number;
+  // estatura
+  @Column({ nullable: true })
+  height: number;
 
-//   // numero hijos
-//   @Column({ nullable: true })
-//   childrenNumber: number;
+  // peso
+  @Column({ nullable: true })
+  weight: number;
 
-//   // contacto emergencia
-//   @Column({ nullable: true })
-//   emergencyContact: string;
+  // numero hijos
+  @Column({ nullable: true })
+  childrenNumber: number;
 
-//   // nombre emergencia
-//   @Column({ nullable: true })
-//   emergencyName: string;
+  // contacto emergencia
+  @ManyToOne(() => EmergencyContactType, { nullable: true })
+  @JoinColumn({ name: 'emergency_contact_type_id' })
+  emergencyContactType: EmergencyContactType;
 
-//   // correo emergencia
-//   @Column({ nullable: true })
-//   emergencyEmail: string;
+  // nombre emergencia
+  @Column({ nullable: true })
+  emergencyName: string;
 
-//   // telefono emergencia
-//   @Column({ nullable: true })
-//   emergencyPhone: string;
+  // correo emergencia
+  @Column({ nullable: true })
+  emergencyEmail: string;
 
-//   // procedencia
-//   @Column({ nullable: true })
-//   origin: string;
+  // telefono emergencia
+  @Column({ nullable: true })
+  emergencyPhone: string;
 
-//   // licencia A
-//   @Column({ nullable: true })
-//   licenseA: string;
+  // procedencia
+  @ManyToOne(() => Origin, { nullable: true })
+  @JoinColumn({ name: 'origin_id' })
+  origin: Origin;
 
-//   // licencia B
-//   @Column({ nullable: true })
-//   licenseB: string;
+  // licencia A
+  @ManyToMany(() => LicenseA)
+  @JoinTable({
+    name: 'people_licenses_a',
+    joinColumn: { name: 'people_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'license_a_id', referencedColumnName: 'id' },
+  })
+  licensesA: LicenseA[];
 
-//   // nivel estudios
-//   @Column({ nullable: true })
-//   educationLevel: string;
+  // licencia B
+  @ManyToMany(() => LicenseB)
+  @JoinTable({
+    name: 'people_licenses_b',
+    joinColumn: { name: 'people_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'license_b_id', referencedColumnName: 'id' },
+  })
+  licensesB: LicenseB[];
 
-//   // ultima fecha modificacion
-//   @Column({ type: 'timestamp', nullable: true })
-//   lastModificationDate: Date;
+  // nivel estudios
+  @ManyToOne(() => EducationLevel, { nullable: true })
+  @JoinColumn({ name: 'education_level_id' })
+  educationLevel: EducationLevel;
 
-//   // ultimo usuario que modifico
-//   @Column({ nullable: true })
-//   lastUserModified: string;
+  // ultima fecha modificacion
+  @Column({ type: 'timestamp', nullable: true })
+  lastModificationDate: Date;
 
-//   @CreateDateColumn()
-//   createdAt: Date;
+  // ultimo usuario que modifico
+  @Column({ nullable: true })
+  lastUserModified: string;
 
-//   @UpdateDateColumn()
-//   updatedAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-//   @DeleteDateColumn()
-//   deletedAt?: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-//   @ManyToOne(() => Incident, (incident) => incident.incidentFiles)
-//   @JoinColumn({ name: 'incident_id' })
-//   incident: Incident;
-// }
+  @DeleteDateColumn()
+  deletedAt?: Date;
+}

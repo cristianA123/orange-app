@@ -9,8 +9,22 @@ import { UserModule } from './typeorm/entities/UserModule';
 import { Incident } from './typeorm/entities/Incident';
 import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { Module as ModuleTypeOrm } from './typeorm/entities/Module';
-import { IncidentModule } from './incident/incident.module';
+// import { PeopleManagementModule } from './people-management/people-management.module';
 import configuration from './config/configuration';
+import { People } from './typeorm/entities/People';
+import { PeopleManagementModule } from './people-management/people-management.module';
+import { Department } from './typeorm/entities/Department';
+import { Province } from './typeorm/entities/Province';
+import { District } from './typeorm/entities/District';
+import { Nationality } from './typeorm/entities/Nationality';
+import { MaritalStatus } from './typeorm/entities/MaritalStatus';
+import { Origin } from './typeorm/entities/Origin';
+import { PensionSystem } from './typeorm/entities/PensionSystem';
+import { LicenseA } from './typeorm/entities/LicenseA';
+import { LicenseB } from './typeorm/entities/LicenseB';
+import { EducationLevel } from './typeorm/entities/EducationLevel';
+import { BloodType } from './typeorm/entities/BloodType';
+import { EmergencyContactType } from './typeorm/entities/EmergencyContactType';
 
 @Module({
   imports: [
@@ -28,11 +42,24 @@ import configuration from './config/configuration';
         UserModule,
         Incident,
         IncidentFile,
+        People,
+        Department,
+        Province,
+        District,
+        Nationality,
+        MaritalStatus,
+        Origin,
+        PensionSystem,
+        LicenseA,
+        LicenseB,
+        EducationLevel,
+        BloodType,
+        EmergencyContactType,
       ],
       synchronize: false,
       migrations: [__dirname + '/migrations/*.ts'],
     }),
-    IncidentModule,
+    PeopleManagementModule,
   ],
   controllers: [],
   providers: [],

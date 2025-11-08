@@ -19,6 +19,7 @@ import { LicenseB } from './typeorm/entities/LicenseB';
 import { MaritalStatus } from './typeorm/entities/MaritalStatus';
 import { Nationality } from './typeorm/entities/Nationality';
 import { PensionSystem } from './typeorm/entities/PensionSystem';
+import { People } from './typeorm/entities/People';
 
 export const databaseConfig = {
   type: process.env.DB_TYPE as any,
@@ -52,6 +53,7 @@ export const keyDatabase: DataSourceOptions = {
     MaritalStatus,
     Nationality,
     PensionSystem,
+    People,
   ],
   migrations: [__dirname + '/migrations/*.ts'],
   synchronize: false,

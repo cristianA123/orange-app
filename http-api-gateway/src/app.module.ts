@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { NatsAuthGuard } from './common/guards/auth.guards';
 import { APP_GUARD } from '@nestjs/core';
 import { NatsClientModule } from './nats-client/nats-client.module';
+import { PeopleManagementModule } from './modules/people-management/people-management.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { NatsClientModule } from './nats-client/nats-client.module';
     InstituteModule,
     DashboardModule,
     IncidentModule,
+    PeopleManagementModule,
   ],
   providers: [
     {
