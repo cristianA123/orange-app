@@ -3,7 +3,6 @@ import { CreateIncidentDto } from './dto/create-incident.dto';
 import { UpdateIncidentDto } from './dto/update-incident.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-// import { v4 as uuidv4 } from 'uuid';
 import { randomUUID } from 'crypto';
 import {
   Incident,
@@ -16,8 +15,8 @@ import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 import { incidentSubTypes, incidentTypes } from 'src/constants';
 import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
-import { ReportService } from './report.service';
 import { S3Service } from './file.service';
+import {ReportService} from "./report.service";
 
 @Injectable()
 export class IncidentService {
@@ -158,14 +157,14 @@ export class IncidentService {
 
   async getIncidentPdfById(id: string): Promise<Buffer> {
     const incident = await this.incidentRepository.findOne({
-      where: { id },
-      relations: ['user', 'institute'],
+        where: { id },
+        relations: ['officer', 'institute'],
     });
     if (!incident) {
-      throw new RpcException({
-        message: `No se encontraron incidentes`,
-        status: HttpStatus.BAD_REQUEST,
-      });
+        throw new RpcException({
+            message: `No se encontraron incidentes`,
+            status: HttpStatus.BAD_REQUEST,
+        });
     }
 
     return this.reportService.generateIncidentPdf(incident);
