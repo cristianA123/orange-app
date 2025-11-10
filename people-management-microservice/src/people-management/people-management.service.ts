@@ -692,6 +692,15 @@ export class PeopleManagementService {
         emergencyPhone: updatePeopleDto.emergencyPhone,
         lastUserModified: updatePeopleDto.lastUserModified,
         lastModificationDate: new Date(),
+        parentName: updatePeopleDto.parentName,
+        motherName: updatePeopleDto.motherName,
+        spouseName: updatePeopleDto.spouseName,
+        relationshipType: updatePeopleDto.relationshipType,
+        documentContact: updatePeopleDto.documentContact,
+        contactName: updatePeopleDto.contactName,
+        contactPhone: updatePeopleDto.contactPhone,
+        area: updatePeopleDto.area,
+        jobTitle: updatePeopleDto.jobTitle,
         // Relación cargo
         cargo: related.cargo,
       };
