@@ -20,6 +20,23 @@ services:
     depends_on:
       - nats
 
+  camera_microservice:
+    build: ./camera-microservice
+    volumes:
+      - ./camera-microservice/src:/usr/src/app/src
+      - ./.env:/usr/src/app/.env
+    command: npm run start:dev
+    environment:
+      - NATS_HOST=${NATS_HOST}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - nats
+
   users_microservice:
     build:
       context: .
