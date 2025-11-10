@@ -11,6 +11,7 @@ import { NatsAuthGuard } from './common/guards/auth.guards';
 import { APP_GUARD } from '@nestjs/core';
 import { NatsClientModule } from './nats-client/nats-client.module';
 import { PeopleManagementModule } from './modules/people-management/people-management.module';
+import {CameraModule} from "./modules/camera/camera.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PeopleManagementModule } from './modules/people-management/people-manag
     ModuleModule,
     InstituteModule,
     DashboardModule,
+    CameraModule,
     IncidentModule,
     PeopleManagementModule,
   ],
