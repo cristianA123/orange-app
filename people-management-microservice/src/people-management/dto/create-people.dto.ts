@@ -81,4 +81,7 @@ export interface CreatePeopleDto {
 
   // Relación hijos
   children?: ChildDto[];
+
+  // Relación cargo
+  cargoId?: string;
 }

@@ -82,4 +82,7 @@ export interface UpdatePeopleDto {
 
   // Relación hijos
   children?: ChildDto[];
+
+  // Relación cargo
+  cargoId?: string;
 }

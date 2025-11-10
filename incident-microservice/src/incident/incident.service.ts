@@ -17,6 +17,7 @@ import { incidentSubTypes, incidentTypes } from 'src/constants';
 import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
 import { S3Service } from './file.service';
 import {ReportService} from "./report.service";
+import { People } from 'src/typeorm/entities/People';
 
 @Injectable()
 export class IncidentService {
@@ -30,6 +31,8 @@ export class IncidentService {
     private readonly s3Service: S3Service,
     @InjectRepository(IncidentFile)
     private incidentFileRepository: Repository<IncidentFile>,
+    @InjectRepository(People)
+    private peopleRepository: Repository<People>,
   ) {
     console.log('✅ IncidentService inicializado');
   }
@@ -55,25 +58,29 @@ export class IncidentService {
       });
     }
 
-    const existOfficer = await this.usersRepository.findOneBy({
-      id: createIncidentDto.officerId,
+    const existPeople = await this.peopleRepository.findOneBy({
+      id: createIncidentDto.peopleId,
     });
-    if (!existOfficer) {
+    if (!existPeople) {
       throw new RpcException({
-        message: `No existe el oficial`,
+        message: `No existe el people`,
         status: HttpStatus.BAD_REQUEST,
       });
     }
 
     const incident = this.incidentRepository.create({
       id: randomUUID(),
-      // id: uuidv4(),randomUUID()
       ...createIncidentDto,
-
       status: IncidentStatus.OPEN,
       user: existUser,
-      officer: existOfficer,
+      people: existPeople,
       institute: existInstitute,
+      peopleName:
+        existPeople.names +
+        ' ' +
+        existPeople.paternalSurname +
+        ' ' +
+        existPeople.maternalSurname,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -89,9 +96,9 @@ export class IncidentService {
 
     delete newIncident.user;
     delete newIncident.institute;
-    delete newIncident.officer;
+    delete newIncident.people;
 
-    return successResponse(newIncident, 'Incidencia creado exitosamente');
+    return successResponse(newIncident, 'Incidencia creado exitosamente.');
   }
 
   async findAllIncidentByInstituteId(id: string) {
@@ -126,7 +133,7 @@ export class IncidentService {
   async getIncidentById(id: string) {
     const incident = await this.incidentRepository.findOne({
       where: { id },
-      relations: ['officer', 'incidentFiles'],
+      relations: ['people', 'incidentFiles'],
     });
 
     if (!incident) {
@@ -136,19 +143,20 @@ export class IncidentService {
       });
     }
 
-    // Limpiar datos del officer
-    delete incident.officer.password;
-    delete incident.officer.rol;
-    delete incident.officer.institute_id;
-    delete incident.officer.email;
-    delete incident.officer.createdAt;
-    delete incident.officer.updatedAt;
-    delete incident.officer.deletedAt;
-    delete incident.officer.status;
+    const filteredPeople = incident.people
+      ? {
+          id: incident.people.id,
+          name: incident.people.names,
+          paternalSurname: incident.people.paternalSurname,
+          maternalSurname: incident.people.maternalSurname,
+          email: incident.people.email,
+          document: incident.people.document,
+        }
+      : null;
 
-    // Asegurar que incidentFiles esté incluido en la respuesta
     const responseData = {
       ...incident,
+      people: filteredPeople,
       incidentFiles: incident.incidentFiles || [],
     };
 
@@ -190,15 +198,15 @@ export class IncidentService {
         status: HttpStatus.BAD_REQUEST,
       });
     }
-    let existOfficer = null;
-    if (updateIncidentDto.officerId) {
-      existOfficer = await this.usersRepository.findOneBy({
-        id: updateIncidentDto.officerId,
+    let existPeople = null;
+    if (updateIncidentDto.peopleId) {
+      existPeople = await this.peopleRepository.findOneBy({
+        id: updateIncidentDto.peopleId,
       });
-      console.log(existOfficer);
-      if (!existOfficer) {
+      console.log(existPeople);
+      if (!existPeople) {
         throw new RpcException({
-          message: `No existe el oficial`,
+          message: `No existe el people`,
           status: HttpStatus.BAD_REQUEST,
         });
       }
@@ -206,13 +214,13 @@ export class IncidentService {
 
     delete updateIncidentDto.userId;
     delete updateIncidentDto.instituteId;
-    delete updateIncidentDto.officerId;
+    delete updateIncidentDto.peopleId;
 
     const incident = await this.incidentRepository.update(id, {
       ...updateIncidentDto,
       user: existUser,
       institute: existInstitute,
-      officer: existOfficer ? existOfficer : null,
+      people: existPeople ? existPeople : null,
       status: updateIncidentDto.status as unknown as IncidentStatus,
     });
     if (!incident) {

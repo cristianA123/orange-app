@@ -25,10 +25,10 @@ export class PeopleManagementController {
     );
   }
 
-  // @MessagePattern({ cmd: 'GET_PEOPLE' })
-  // findAllPeople(@Payload() instituteId: string) {
-  //   return this.peopleManagementService.findAllPeopleByInstituteId(instituteId);
-  // }
+  @MessagePattern({ cmd: 'GET_PEOPLE' })
+  findAllPeople(@Payload() instituteId: string) {
+    return this.peopleManagementService.findAllPeopleByInstituteId(instituteId);
+  }
 
   @MessagePattern({ cmd: 'GET_PEOPLE_BY_ID' })
   getPeopleById(@Payload() id: string) {
@@ -48,6 +48,25 @@ export class PeopleManagementController {
   @MessagePattern({ cmd: 'GET_DISTRICTS_BY_PROVINCE' })
   getDistrictsByProvince(@Payload() provinceId: string) {
     return this.peopleManagementService.getDistrictsByProvince(provinceId);
+  }
+
+  @MessagePattern({ cmd: 'GET_PEOPLE_SUMMARY' })
+  findAllPeopleByInstituteIdToSummary(
+    @Payload() payload: { instituteId: string; source: string },
+  ) {
+    return this.peopleManagementService.findAllPeopleByInstituteIdToSummary(
+      payload.instituteId,
+      payload.source,
+    );
+  }
+
+  @MessagePattern({ cmd: 'GET_PEOPLE_SECURITY' })
+  findAllPeopleSecurityByInstituteId(
+    @Payload() payload: { instituteId: string; source: string },
+  ) {
+    return this.peopleManagementService.findAllPeopleSecurityByInstituteId(
+      payload.instituteId,
+    );
   }
 
   // @MessagePattern({ cmd: 'DELETE_INCIDENT2' })

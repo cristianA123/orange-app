@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -50,12 +51,56 @@ export class PeopleManagementController {
     }
   }
 
-  @Get('/institute-incidents')
+  @Get('/institute-people')
   @HttpCode(HttpStatus.OK)
   async findAllPeopleByInstituteId(@UserDecorator() user: IUser) {
     try {
       const response = await lastValueFrom(
         this.natsClient.send({ cmd: 'GET_PEOPLE' }, user.instituteId),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/institute-people/summary')
+  @HttpCode(HttpStatus.OK)
+  async findAllPeopleByInstituteIdToSummary(
+    @UserDecorator() user: IUser,
+    @Query('source') source: string,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_PEOPLE_SUMMARY' },
+          {
+            instituteId: user.instituteId,
+            source,
+          },
+        ),
+      );
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/security')
+  @HttpCode(HttpStatus.OK)
+  async findAllPeopleSecurityByInstituteId(@UserDecorator() user: IUser) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'GET_PEOPLE_SECURITY' },
+          {
+            instituteId: user.instituteId,
+          },
+        ),
       );
 
       return response;

@@ -1,17 +1,17 @@
 FROM node:18-alpine as deps-prod
 WORKDIR /usr/src/app
-COPY ./incident-microservice/package*.json ./
+COPY ./people-management-microservice/package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 FROM node:18-alpine as deps-build
 WORKDIR /usr/src/app
-COPY ./incident-microservice/package*.json ./
+COPY ./people-management-microservice/package*.json ./
 RUN npm ci && npm cache clean --force
 
 FROM node:18-alpine as build
 WORKDIR /usr/src/app
 COPY --from=deps-build /usr/src/app/node_modules ./node_modules
-COPY ./incident-microservice/ .
+COPY ./people-management-microservice/ .
 RUN npm run build
 
 FROM node:18-alpine as prod

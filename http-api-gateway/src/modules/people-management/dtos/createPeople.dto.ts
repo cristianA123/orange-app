@@ -10,7 +10,6 @@ import {
   IsArray,
   Min,
   Max,
-  IsPhoneNumber,
   ValidateNested,
 } from 'class-validator';
 import { ChildDto } from './child.dto';
@@ -32,7 +31,7 @@ export class CreatePeopleDto {
 
   // @ApiProperty({ description: 'Celular', required: false })
   @IsOptional()
-  @IsPhoneNumber()
+  @IsString()
   cellphone?: string;
 
   // @ApiProperty({ description: 'Email', required: false })
@@ -315,4 +314,8 @@ export class CreatePeopleDto {
   @IsOptional()
   @IsString()
   jobTitle?: string;
+
+  @IsOptional()
+  @IsUUID()
+  cargoId?: string;
 }

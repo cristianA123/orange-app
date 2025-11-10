@@ -315,4 +315,8 @@ export class UpdatePeopleDTO {
   @IsOptional()
   @IsString()
   jobTitle?: string;
+
+  @IsOptional()
+  @IsUUID()
+  cargoId?: string;
 }

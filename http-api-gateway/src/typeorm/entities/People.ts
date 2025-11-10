@@ -28,6 +28,8 @@ import { EmergencyContactType } from './EmergencyContactType';
 import { Optional } from '@nestjs/common';
 import { Institute } from './Institute';
 import { Child } from './Child';
+import { Cargo } from './Cargo';
+import { Incident } from './Incident';
 
 @Entity('people')
 export class People {
@@ -295,7 +297,16 @@ export class People {
   // Area
   @Column({ nullable: true })
   area: string;
+
   // Cargo
   @Column({ nullable: true })
   jobTitle: string;
+
+  @ManyToOne(() => Cargo, (cargo) => cargo.people)
+  @JoinColumn({ name: 'cargo_id' })
+  cargo: Cargo;
+
+  // Incidentes
+  @OneToMany(() => Incident, (incident) => incident.people)
+  incidents: Incident[];
 }

@@ -28,6 +28,7 @@ import {
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
 import { UpdatePeopleDto } from './dto/update-people.dto';
+import { Cargo } from 'src/typeorm/entities/Cargo';
 
 @Injectable()
 export class PeopleManagementService {
@@ -65,6 +66,8 @@ export class PeopleManagementService {
     private emergencyContactTypeRepository: Repository<EmergencyContactType>,
     @InjectRepository(Child)
     private childRepository: Repository<Child>,
+    @InjectRepository(Cargo)
+    private cargoRepository: Repository<Cargo>,
   ) {
     console.log('✅ PeopleManagementService inicializado');
   }
@@ -108,6 +111,8 @@ export class PeopleManagementService {
       // Licencias ManyToMany
       licensesA: relatedEntities.licensesA,
       licensesB: relatedEntities.licensesB,
+      // Relación cargo
+      cargo: relatedEntities.cargo,
     });
 
     // Guardar la entidad con todas sus relaciones
@@ -144,6 +149,8 @@ export class PeopleManagementService {
         'licensesB',
         'children',
         'institution',
+        // Relación cargo
+        'cargo',
       ],
     });
 
@@ -349,6 +356,19 @@ export class PeopleManagementService {
       }
     }
 
+    // Cargo
+    if (dto.cargoId) {
+      entities.cargo = await this.cargoRepository.findOne({
+        where: { id: dto.cargoId },
+      });
+      if (!entities.cargo) {
+        throw new RpcException({
+          message: `Cargo con ID ${dto.cargoId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
     return entities;
   }
 
@@ -365,6 +385,7 @@ export class PeopleManagementService {
         educationLevels,
         licensesA,
         licensesB,
+        cargoes,
       ] = await Promise.all([
         this.departmentRepository.find({
           order: { depID: 'ASC' },
@@ -405,6 +426,10 @@ export class PeopleManagementService {
           order: { name: 'ASC' },
           select: ['id', 'name'],
         }),
+        this.cargoRepository.find({
+          order: { name: 'ASC' },
+          select: ['id', 'name', 'source'],
+        }),
       ]);
 
       return {
@@ -420,6 +445,7 @@ export class PeopleManagementService {
           educationLevels,
           licensesA,
           licensesB,
+          cargoes,
         },
       };
     } catch (error) {
@@ -429,132 +455,6 @@ export class PeopleManagementService {
       });
     }
   }
-
-  // async getPeopleFormData() {
-  //   try {
-  //     const [
-  //       departments,
-  //       nationalities,
-  //       maritalStatuses,
-  //       pensionSystems,
-  //       bloodTypes,
-  //       emergencyContactTypes,
-  //       origins,
-  //       educationLevels,
-  //       licensesA,
-  //       licensesB,
-  //     ] = await Promise.all([
-  //       this.departmentRepository
-  //         .find({
-  //           order: { depID: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching departments:', err);
-  //           throw new Error(`Error al obtener departamentos: ${err.message}`);
-  //         }),
-  //       this.nationalityRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching nationalities:', err);
-  //           throw new Error(`Error al obtener nacionalidades: ${err.message}`);
-  //         }),
-  //       this.maritalStatusRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching marital statuses:', err);
-  //           throw new Error(`Error al obtener estados civiles: ${err.message}`);
-  //         }),
-  //       this.pensionSystemRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching pension systems:', err);
-  //           throw new Error(
-  //             `Error al obtener sistemas de pensiones: ${err.message}`,
-  //           );
-  //         }),
-  //       this.bloodTypeRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching blood types:', err);
-  //           throw new Error(`Error al obtener tipos de sangre: ${err.message}`);
-  //         }),
-  //       this.emergencyContactTypeRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching emergency contact types:', err);
-  //           throw new Error(
-  //             `Error al obtener tipos de contacto de emergencia: ${err.message}`,
-  //           );
-  //         }),
-  //       this.originRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching origins:', err);
-  //           throw new Error(`Error al obtener procedencias: ${err.message}`);
-  //         }),
-  //       this.educationLevelRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching education levels:', err);
-  //           throw new Error(
-  //             `Error al obtener niveles educativos: ${err.message}`,
-  //           );
-  //         }),
-  //       this.licenseARepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching licenses A:', err);
-  //           throw new Error(`Error al obtener licencias A: ${err.message}`);
-  //         }),
-  //       this.licenseBRepository
-  //         .find({
-  //           order: { name: 'ASC' },
-  //         })
-  //         .catch((err) => {
-  //           console.error('Error fetching licenses B:', err);
-  //           throw new Error(`Error al obtener licencias B: ${err.message}`);
-  //         }),
-  //     ]);
-
-  //     return {
-  //       success: true,
-  //       data: {
-  //         departments,
-  //         nationalities,
-  //         maritalStatuses,
-  //         pensionSystems,
-  //         bloodTypes,
-  //         emergencyContactTypes,
-  //         origins,
-  //         educationLevels,
-  //         licensesA,
-  //         licensesB,
-  //       },
-  //     };
-  //   } catch (error) {
-  //     console.error('Detailed error in getPeopleFormData:', error);
-  //     throw new RpcException({
-  //       message: error.message || 'Error al obtener datos del formulario',
-  //       status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //     });
-  //   }
-  // }
 
   async getProvincesByDepartment(departmentId: string) {
     try {
@@ -648,41 +548,40 @@ export class PeopleManagementService {
     return successResponse(incident, 'Incidente encontrado');
   }
 
-  // async findAllPeopleByInstituteId(instituteId: string) {
-  //   try {
-  //     const people = await this.peopleRepository.find({
-  //       where: {
-  //         institute: {
-  //           id: instituteId,
-  //         },
-  //       },
-  //       relations: [
-  //         'ubigeo',
-  //         'nationality',
-  //         'department',
-  //         'province',
-  //         'district',
-  //         'birthplaceDepartment',
-  //         'maritalStatus',
-  //         'pensionSystem',
-  //         'bloodType',
-  //         'emergencyContactType',
-  //         'origin',
-  //         'educationLevel',
-  //         'licensesA',
-  //         'licensesB',
-  //       ],
-  //       order: { createdAt: 'DESC' },
-  //     });
+  async findAllPeopleByInstituteId(instituteId: string) {
+    try {
+      const people = await this.peopleRepository.find({
+        where: {
+          institution: {
+            id: instituteId,
+          },
+        },
+        relations: ['cargo'],
+        select: [
+          'id',
+          'names',
+          'cellphone',
+          'email',
+          'documentType',
+          'document',
+          'paternalSurname',
+          'maternalSurname',
+          'createdAt',
+          'updatedAt',
+          'area',
+          'jobTitle',
+        ],
+        order: { createdAt: 'DESC' },
+      });
 
-  //     return successResponse(people, 'Personas recuperadas exitosamente');
-  //   } catch (error) {
-  //     throw new RpcException({
-  //       message: 'Error al obtener personas',
-  //       status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //     });
-  //   }
-  // }
+      return successResponse(people, 'Personas recuperadas exitosamente');
+    } catch (error) {
+      throw new RpcException({
+        message: 'Error al obtener personas',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 
   async getPeopleById(id: string) {
     try {
@@ -705,6 +604,8 @@ export class PeopleManagementService {
           'licensesB',
           'children',
           'institution',
+          // Relación cargo
+          'cargo',
         ],
       });
 
@@ -744,6 +645,7 @@ export class PeopleManagementService {
           'educationLevel',
           'licensesA',
           'licensesB',
+          'children',
         ],
       });
 
@@ -790,6 +692,17 @@ export class PeopleManagementService {
         emergencyPhone: updatePeopleDto.emergencyPhone,
         lastUserModified: updatePeopleDto.lastUserModified,
         lastModificationDate: new Date(),
+        parentName: updatePeopleDto.parentName,
+        motherName: updatePeopleDto.motherName,
+        spouseName: updatePeopleDto.spouseName,
+        relationshipType: updatePeopleDto.relationshipType,
+        documentContact: updatePeopleDto.documentContact,
+        contactName: updatePeopleDto.contactName,
+        contactPhone: updatePeopleDto.contactPhone,
+        area: updatePeopleDto.area,
+        jobTitle: updatePeopleDto.jobTitle,
+        // Relación cargo
+        cargo: related.cargo,
       };
 
       Object.keys(directFields).forEach((key) => {
@@ -835,6 +748,10 @@ export class PeopleManagementService {
           this.childRepository.create({ ...childDto, parent: person }),
         );
       }
+      // Cargo
+      if (updatePeopleDto.cargoId) {
+        person.cargo = related.cargo;
+      }
 
       // eliminar el dato del parent de cada children
       person.children.forEach((child) => {
@@ -847,6 +764,56 @@ export class PeopleManagementService {
       if (error instanceof RpcException) throw error;
       throw new RpcException({
         message: 'Error al actualizar persona',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async findAllPeopleByInstituteIdToSummary(
+    instituteId: string,
+    source: string,
+  ) {
+    try {
+      source = source.toUpperCase();
+      const people = await this.peopleRepository
+        .createQueryBuilder('people')
+        .leftJoinAndSelect('people.cargo', 'cargo')
+        .where('people.institution_id = :instituteId', { instituteId })
+        .andWhere('cargo.source = :source', { source })
+        .select([
+          'people.id',
+          'people.names',
+          'people.paternalSurname',
+          'people.maternalSurname',
+          'people.document',
+        ])
+        .getMany();
+
+      return successResponse(people, 'Personas encontradas');
+    } catch (error) {
+      if (error instanceof RpcException) throw error;
+      throw new RpcException({
+        message: 'Error al obtener personas',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async findAllPeopleSecurityByInstituteId(instituteId: string) {
+    try {
+      const people = await this.peopleRepository.find({
+        where: {
+          institution: {
+            id: instituteId,
+          },
+          area: In(['SERENAZGO', 'SECURITY', 'Security', 'security']),
+        },
+      });
+      return successResponse(people, 'Personas encontradas');
+    } catch (error) {
+      if (error instanceof RpcException) throw error;
+      throw new RpcException({
+        message: 'Error al obtener personas',
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       });
     }

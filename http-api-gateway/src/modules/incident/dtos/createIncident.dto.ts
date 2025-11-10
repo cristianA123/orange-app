@@ -27,8 +27,8 @@ export class CreateIncidentDto {
   address: string;
 
   @IsString()
-  @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   officerId: string;
 
   @IsNumber({ maxDecimalPlaces: 6 })
@@ -83,4 +83,9 @@ export class CreateIncidentDto {
   @IsNumber()
   @Type(() => Number)
   status?: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  peopleId: string;
 }
