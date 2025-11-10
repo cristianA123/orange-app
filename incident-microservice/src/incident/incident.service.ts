@@ -201,7 +201,7 @@ export class IncidentService {
     }
     let existPeople = null;
     if (updateIncidentDto.peopleId) {
-      existPeople = await this.usersRepository.findOneBy({
+      existPeople = await this.peopleRepository.findOneBy({
         id: updateIncidentDto.peopleId,
       });
       console.log(existPeople);

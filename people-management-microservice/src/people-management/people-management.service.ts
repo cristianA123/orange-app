@@ -646,6 +646,7 @@ export class PeopleManagementService {
           'educationLevel',
           'licensesA',
           'licensesB',
+          'children',
         ],
       });
 
@@ -692,6 +693,8 @@ export class PeopleManagementService {
         emergencyPhone: updatePeopleDto.emergencyPhone,
         lastUserModified: updatePeopleDto.lastUserModified,
         lastModificationDate: new Date(),
+        // Relación cargo
+        cargo: related.cargo,
       };
 
       Object.keys(directFields).forEach((key) => {
