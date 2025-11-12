@@ -808,6 +808,22 @@ export class PeopleManagementService {
           },
           area: In(['SERENAZGO', 'SECURITY', 'Security', 'security']),
         },
+        relations: ['cargo'],
+        select: [
+          'id',
+          'names',
+          'cellphone',
+          'email',
+          'documentType',
+          'document',
+          'paternalSurname',
+          'maternalSurname',
+          'createdAt',
+          'updatedAt',
+          'area',
+          'jobTitle',
+        ],
+        order: { createdAt: 'DESC' },
       });
       return successResponse(people, 'Personas encontradas');
     } catch (error) {
