@@ -197,13 +197,13 @@ export class CreatePeopleDto {
   districtId?: string;
 
   @IsOptional()
-  birthplaceDepartment?: string;
+  birthplaceDepartmentId?: string;
 
   @IsOptional()
-  birthplaceProvince?: string;
+  birthplaceProvinceId?: string;
 
   @IsOptional()
-  birthplaceDistrict?: string;
+  birthplaceDistrictId?: string;
 
   @IsOptional()
   birthplaceAnexo?: string;
@@ -212,27 +212,19 @@ export class CreatePeopleDto {
   birthplaceAddress?: string;
 
   @IsOptional()
-  residenceDepartment?: string;
+  residenceDepartmentId?: string;
 
   @IsOptional()
-  residenceProvince?: string;
+  residenceProvinceId?: string;
 
   @IsOptional()
-  residenceDistrict?: string;
+  residenceDistrictId?: string;
 
   @IsOptional()
   residenceAnexo?: string;
 
   @IsOptional()
   residenceAddress?: string;
-
-  // @ApiProperty({
-  //   description: 'ID del departamento de nacimiento',
-  //   required: false,
-  // })
-  @IsOptional()
-  // @IsUUID()
-  birthplaceDepartmentId?: string;
 
   // @ApiProperty({ description: 'ID del estado civil', required: false })
   @IsOptional()

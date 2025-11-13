@@ -100,7 +100,6 @@ export class PeopleManagementService {
       department: relatedEntities.department,
       province: relatedEntities.province,
       district: relatedEntities.district,
-      birthplaceDepartment: relatedEntities.birthplaceDepartment,
       maritalStatus: relatedEntities.maritalStatus,
       pensionSystem: relatedEntities.pensionSystem,
       bloodType: relatedEntities.bloodType,
@@ -114,10 +113,12 @@ export class PeopleManagementService {
       // Relación cargo
       cargo: relatedEntities.cargo,
       // Relaciones ManyToOne para lugar de nacimiento y residencia
+      birthplaceDepartment: relatedEntities.birthplaceDepartment,
       birthplaceProvince: relatedEntities.birthplaceProvince,
       birthplaceDistrict: relatedEntities.birthplaceDistrict,
       birthplaceAnexo: relatedEntities.birthplaceAnexo,
       birthplaceAddress: relatedEntities.birthplaceAddress,
+      residenceDepartment: relatedEntities.residenceDepartment,
       residenceProvince: relatedEntities.residenceProvince,
       residenceDistrict: relatedEntities.residenceDistrict,
       residenceAnexo: relatedEntities.residenceAnexo,
@@ -147,7 +148,6 @@ export class PeopleManagementService {
         'department',
         'province',
         'district',
-        'birthplaceDepartment',
         'maritalStatus',
         'pensionSystem',
         'bloodType',
@@ -160,6 +160,13 @@ export class PeopleManagementService {
         'institution',
         // Relación cargo
         'cargo',
+        // Relaciones ManyToOne para lugar de nacimiento y residencia
+        'birthplaceDepartment',
+        'birthplaceProvince',
+        'birthplaceDistrict',
+        'residenceDepartment',
+        'residenceProvince',
+        'residenceDistrict',
       ],
     });
 
@@ -381,7 +388,7 @@ export class PeopleManagementService {
     // Relaciones ManyToOne para lugar de nacimiento y residencia
     if (dto.birthplaceDepartmentId) {
       entities.birthplaceDepartment = await this.departmentRepository.findOne({
-        where: { id: dto.birthplaceDepartmentId },
+        where: { depID: dto.birthplaceDepartmentId },
       });
       if (!entities.birthplaceDepartment) {
         throw new RpcException({
@@ -415,7 +422,7 @@ export class PeopleManagementService {
 
     if (dto.residenceDepartmentId) {
       entities.residenceDepartment = await this.departmentRepository.findOne({
-        where: { id: dto.residenceDepartmentId },
+        where: { depID: dto.residenceDepartmentId },
       });
       if (!entities.residenceDepartment) {
         throw new RpcException({
