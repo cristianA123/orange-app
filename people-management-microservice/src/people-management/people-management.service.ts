@@ -113,6 +113,15 @@ export class PeopleManagementService {
       licensesB: relatedEntities.licensesB,
       // Relación cargo
       cargo: relatedEntities.cargo,
+      // Relaciones ManyToOne para lugar de nacimiento y residencia
+      birthplaceProvince: relatedEntities.birthplaceProvince,
+      birthplaceDistrict: relatedEntities.birthplaceDistrict,
+      birthplaceAnexo: relatedEntities.birthplaceAnexo,
+      birthplaceAddress: relatedEntities.birthplaceAddress,
+      residenceProvince: relatedEntities.residenceProvince,
+      residenceDistrict: relatedEntities.residenceDistrict,
+      residenceAnexo: relatedEntities.residenceAnexo,
+      residenceAddress: relatedEntities.residenceAddress,
     });
 
     // Guardar la entidad con todas sus relaciones
@@ -364,6 +373,77 @@ export class PeopleManagementService {
       if (!entities.cargo) {
         throw new RpcException({
           message: `Cargo con ID ${dto.cargoId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    // Relaciones ManyToOne para lugar de nacimiento y residencia
+    if (dto.birthplaceDepartmentId) {
+      entities.birthplaceDepartment = await this.departmentRepository.findOne({
+        where: { id: dto.birthplaceDepartmentId },
+      });
+      if (!entities.birthplaceDepartment) {
+        throw new RpcException({
+          message: `Departamento de nacimiento con ID ${dto.birthplaceDepartmentId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+    if (dto.birthplaceProvinceId) {
+      entities.birthplaceProvince = await this.provinceRepository.findOne({
+        where: { proID: dto.birthplaceProvinceId },
+      });
+      if (!entities.birthplaceProvince) {
+        throw new RpcException({
+          message: `Provincia de nacimiento con ID ${dto.birthplaceProvinceId} no encontrada`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+    if (dto.birthplaceDistrictId) {
+      entities.birthplaceDistrict = await this.districtRepository.findOne({
+        where: { disID: dto.birthplaceDistrictId },
+      });
+      if (!entities.birthplaceDistrict) {
+        throw new RpcException({
+          message: `Distrito de nacimiento con ID ${dto.birthplaceDistrictId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    if (dto.residenceDepartmentId) {
+      entities.residenceDepartment = await this.departmentRepository.findOne({
+        where: { id: dto.residenceDepartmentId },
+      });
+      if (!entities.residenceDepartment) {
+        throw new RpcException({
+          message: `Departamento de residencia con ID ${dto.residenceDepartmentId} no encontrado`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    if (dto.residenceProvinceId) {
+      entities.residenceProvince = await this.provinceRepository.findOne({
+        where: { proID: dto.residenceProvinceId },
+      });
+      if (!entities.residenceProvince) {
+        throw new RpcException({
+          message: `Provincia de residencia con ID ${dto.residenceProvinceId} no encontrada`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    if (dto.residenceDistrictId) {
+      entities.residenceDistrict = await this.districtRepository.findOne({
+        where: { disID: dto.residenceDistrictId },
+      });
+      if (!entities.residenceDistrict) {
+        throw new RpcException({
+          message: `Distrito de residencia con ID ${dto.residenceDistrictId} no encontrado`,
           status: HttpStatus.BAD_REQUEST,
         });
       }
@@ -668,13 +748,12 @@ export class PeopleManagementService {
         cellphone: updatePeopleDto.cellphone,
         email: updatePeopleDto.email,
         address: updatePeopleDto.address,
-        landline: updatePeopleDto.landline,
+        landlinePhone: updatePeopleDto.landlinePhone,
         documentType: updatePeopleDto.documentType,
         document: updatePeopleDto.document,
         gender: updatePeopleDto.gender,
         birthDate: updatePeopleDto.birthDate,
         age: updatePeopleDto.age,
-        domicile: updatePeopleDto.domicile,
         healthInsurance: updatePeopleDto.healthInsurance,
         insuranceType: updatePeopleDto.insuranceType,
         sctr: updatePeopleDto.sctr,
@@ -703,6 +782,17 @@ export class PeopleManagementService {
         jobTitle: updatePeopleDto.jobTitle,
         // Relación cargo
         cargo: related.cargo,
+        birthplaceDepartment: related.birthplaceDepartment,
+        birthplaceProvince: related.birthplaceProvince,
+        birthplaceDistrict: related.birthplaceDistrict,
+        birthplaceAnexo: updatePeopleDto.birthplaceAnexo,
+        birthplaceAddress: updatePeopleDto.birthplaceAddress,
+
+        residenceDepartment: related.residenceDepartment,
+        residenceProvince: related.residenceProvince,
+        residenceDistrict: related.residenceDistrict,
+        residenceAnexo: updatePeopleDto.residenceAnexo,
+        residenceAddress: updatePeopleDto.residenceAddress,
       };
 
       Object.keys(directFields).forEach((key) => {

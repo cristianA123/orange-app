@@ -62,6 +62,80 @@ export class People {
   @JoinColumn({ name: 'district_id', referencedColumnName: 'disID' })
   district: District;
 
+  //anexo
+  @Column({ nullable: true })
+  anexo: string;
+
+  // direccion
+  @Column({ nullable: true })
+  address: string;
+
+  //LUGAR DE NACIMIENTO
+  // lugar de nacimiento (Departamento)
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({
+    name: 'birthplace_department_id',
+    referencedColumnName: 'depID',
+  })
+  birthplaceDepartment: Department;
+
+  // provincia
+  @ManyToOne(() => Province, { nullable: true })
+  @JoinColumn({
+    name: 'birthplace_province_id',
+    referencedColumnName: 'proID',
+  })
+  birthplaceProvince: Province;
+
+  // distrito
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({
+    name: 'birthplace_district_id',
+    referencedColumnName: 'disID',
+  })
+  birthplaceDistrict: District;
+
+  //anexo
+  @Column({ nullable: true })
+  birthplaceAnexo: string;
+
+  // direccion
+  @Column({ nullable: true })
+  birthplaceAddress: string;
+
+  //LUGAR DE RESIDENCIA
+  // lugar de nacimiento (Departamento)
+  @ManyToOne(() => Department, { nullable: true })
+  @JoinColumn({
+    name: 'residence_department_id',
+    referencedColumnName: 'depID',
+  })
+  residenceDepartment: Department;
+
+  // provincia
+  @ManyToOne(() => Province, { nullable: true })
+  @JoinColumn({
+    name: 'residence_province_id',
+    referencedColumnName: 'proID',
+  })
+  residenceProvince: Province;
+
+  // distrito
+  @ManyToOne(() => District, { nullable: true })
+  @JoinColumn({
+    name: 'residence_district_id',
+    referencedColumnName: 'disID',
+  })
+  residenceDistrict: District;
+
+  //anexo
+  @Column({ nullable: true })
+  residenceAnexo: string;
+
+  // direccion
+  @Column({ nullable: true })
+  residenceAddress: string;
+
   // apellido paterno
   @Column()
   paternalSurname: string;
@@ -78,13 +152,13 @@ export class People {
   @Column({ nullable: true })
   cellphone: string;
 
+  // telefono fijo
+  @Column({ nullable: true })
+  landlinePhone: string;
+
   // email
   @Column({ nullable: true })
   email: string;
-
-  // direccion
-  @Column({ nullable: true })
-  address: string;
 
   // tipo de documento
   @Column({ nullable: true })
@@ -105,22 +179,6 @@ export class People {
   // edad
   @Column({ nullable: true })
   age: number;
-
-  // lugar de nacimiento
-  @ManyToOne(() => Department, { nullable: true })
-  @JoinColumn({
-    name: 'birthplace_department_id',
-    referencedColumnName: 'depID',
-  })
-  birthplaceDepartment: Department;
-
-  // lugar de domicilio
-  @Column({ nullable: true })
-  domicile: string;
-
-  // telefono fijo
-  @Column({ nullable: true })
-  landline: string;
 
   // estado civil
   @ManyToOne(() => MaritalStatus, { nullable: true })
@@ -179,10 +237,6 @@ export class People {
 
   @Column({ nullable: true })
   conadis: boolean;
-
-  //anexo
-  @Column({ nullable: true })
-  anexo: string;
 
   // estatura
   @Column({ nullable: true })

@@ -10,7 +10,7 @@ export interface CreatePeopleDto {
   cellphone?: string;
   email?: string;
   address?: string;
-  landline?: string;
+  landlinePhone?: string;
 
   // Documento e información personal
   documentType?: string;
@@ -61,7 +61,6 @@ export interface CreatePeopleDto {
   departmentId?: string;
   provinceId?: string;
   districtId?: string;
-  birthplaceDepartmentId?: string;
   maritalStatusId?: string;
   pensionSystemId?: string;
   bloodTypeId?: string;
@@ -84,4 +83,16 @@ export interface CreatePeopleDto {
 
   // Relación cargo
   cargoId?: string;
+
+  birthplaceDepartmentId?: string;
+  birthplaceProvinceId?: string;
+  birthplaceDistrictId?: string;
+  birthplaceAnexo?: string;
+  birthplaceAddress?: string;
+
+  residenceDepartmentId?: string;
+  residenceProvinceId?: string;
+  residenceDistrictId?: string;
+  residenceAnexo?: string;
+  residenceAddress?: string;
 }

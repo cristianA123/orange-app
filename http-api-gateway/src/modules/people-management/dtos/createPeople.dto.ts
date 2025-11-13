@@ -82,7 +82,7 @@ export class CreatePeopleDto {
   // @ApiProperty({ description: 'Teléfono fijo', required: false })
   @IsOptional()
   @IsString()
-  landline?: string;
+  landlinePhone?: string;
 
   // @ApiProperty({ description: 'Seguro de salud', required: false })
   @IsOptional()
@@ -195,6 +195,36 @@ export class CreatePeopleDto {
   // @ApiProperty({ description: 'ID del distrito', required: false })
   @IsOptional()
   districtId?: string;
+
+  @IsOptional()
+  birthplaceDepartment?: string;
+
+  @IsOptional()
+  birthplaceProvince?: string;
+
+  @IsOptional()
+  birthplaceDistrict?: string;
+
+  @IsOptional()
+  birthplaceAnexo?: string;
+
+  @IsOptional()
+  birthplaceAddress?: string;
+
+  @IsOptional()
+  residenceDepartment?: string;
+
+  @IsOptional()
+  residenceProvince?: string;
+
+  @IsOptional()
+  residenceDistrict?: string;
+
+  @IsOptional()
+  residenceAnexo?: string;
+
+  @IsOptional()
+  residenceAddress?: string;
 
   // @ApiProperty({
   //   description: 'ID del departamento de nacimiento',

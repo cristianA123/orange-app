@@ -11,7 +11,7 @@ export interface UpdatePeopleDto {
   cellphone?: string;
   email?: string;
   address?: string;
-  landline?: string;
+  landlinePhone?: string;
 
   // Documento e información personal
   documentType?: string;
@@ -62,7 +62,6 @@ export interface UpdatePeopleDto {
   departmentId?: string;
   provinceId?: string;
   districtId?: string;
-  birthplaceDepartmentId?: string;
   maritalStatusId?: string;
   pensionSystemId?: string;
   bloodTypeId?: string;
@@ -85,4 +84,16 @@ export interface UpdatePeopleDto {
 
   // Relación cargo
   cargoId?: string;
+
+  birthplaceDepartmentId?: string;
+  birthplaceProvinceId?: string;
+  birthplaceDistrictId?: string;
+  birthplaceAnexo?: string;
+  birthplaceAddress?: string;
+
+  residenceDepartmentId?: string;
+  residenceProvinceId?: string;
+  residenceDistrictId?: string;
+  residenceAnexo?: string;
+  residenceAddress?: string;
 }
