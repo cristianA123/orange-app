@@ -116,13 +116,9 @@ export class PeopleManagementService {
       birthplaceDepartment: relatedEntities.birthplaceDepartment,
       birthplaceProvince: relatedEntities.birthplaceProvince,
       birthplaceDistrict: relatedEntities.birthplaceDistrict,
-      birthplaceAnexo: relatedEntities.birthplaceAnexo,
-      birthplaceAddress: relatedEntities.birthplaceAddress,
       residenceDepartment: relatedEntities.residenceDepartment,
       residenceProvince: relatedEntities.residenceProvince,
       residenceDistrict: relatedEntities.residenceDistrict,
-      residenceAnexo: relatedEntities.residenceAnexo,
-      residenceAddress: relatedEntities.residenceAddress,
     });
 
     // Guardar la entidad con todas sus relaciones
