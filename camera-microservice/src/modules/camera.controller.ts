@@ -7,7 +7,14 @@ export class CameraMicroserviceController {
   constructor(private readonly cameraService: CameraService) {}
 
   @MessagePattern({ cmd: 'GET_HEAT_MAP' })
-  async getUserModules(@Payload() data: { instituteId: string }) {
-    return this.cameraService.getHeatMapByCamera(data.instituteId);
+  async getHeatMap(
+      @Payload()
+      data: { instituteId: string; from?: string; to?: string }
+  ) {
+    return this.cameraService.getHeatMapByCamera(
+        data.instituteId,
+        data.from,
+        data.to
+    );
   }
 }

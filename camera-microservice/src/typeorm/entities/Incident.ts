@@ -12,6 +12,8 @@ import {
 import { User } from './User';
 import { Institute } from './Institute';
 import { IncidentFile } from './IncidentFile';
+import { People } from './People';
+import {Camera} from "./Camera";
 
 export enum IncidentStatus {
   OPEN = '1', // Abierto
@@ -75,6 +77,13 @@ export class Incident {
   @Column({ nullable: true })
   documentNumber?: string;
 
+  @ManyToOne(() => Camera, camera => camera.incidents, { nullable: true })
+  @JoinColumn({ name: 'camera_id' })
+  camera: Camera;
+
+  @Column({ nullable: true })
+  camera_id: string;
+
   @Column({ type: 'timestamp', nullable: true })
   attentionDate?: Date;
 
@@ -98,4 +107,12 @@ export class Incident {
 
   @OneToMany(() => IncidentFile, (file) => file.incident)
   incidentFiles: IncidentFile[];
+
+  //agregar people
+  @ManyToOne(() => People, (people) => people.incidents, { nullable: true })
+  @JoinColumn({ name: 'people_id' })
+  people: People;
+
+  @Column({ nullable: true })
+  peopleName?: string;
 }

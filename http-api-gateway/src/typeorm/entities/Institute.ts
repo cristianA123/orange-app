@@ -11,6 +11,7 @@ import { User } from './User';
 import { InstituteModule } from './InstituteModule';
 import { Incident } from './Incident';
 import { IncidentFile } from './IncidentFile';
+import { Camera } from './Camera';
 
 export enum InstituteStatus {
   ACTIVE = '1',
@@ -62,4 +63,7 @@ export class Institute {
 
   @OneToMany(() => IncidentFile, (file) => file.institute)
   incidentFiles: IncidentFile[];
+
+  @OneToMany(() => Camera, (camera) => camera.institute) // 👈 RELACIÓN AGREGADA
+  cameras: Camera[];
 }

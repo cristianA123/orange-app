@@ -11,11 +11,13 @@ import { User } from './User';
 import { InstituteModule } from './InstituteModule';
 import { Incident } from './Incident';
 import { IncidentFile } from './IncidentFile';
+import { Camera } from './Camera';
 
 export enum InstituteStatus {
   ACTIVE = '1',
   INACTIVE = '2',
   BLOCKED = '3',
+  DELETED = '4',
 }
 
 @Entity('institutes')
@@ -31,6 +33,9 @@ export class Institute {
 
   @Column()
   address: string;
+
+  @Column()
+  ruc: string;
 
   @Column({
     type: 'enum',
@@ -58,4 +63,7 @@ export class Institute {
 
   @OneToMany(() => IncidentFile, (file) => file.institute)
   incidentFiles: IncidentFile[];
+
+  @OneToMany(() => Camera, (camera) => camera.institute) // 👈 RELACIÓN AGREGADA
+  cameras: Camera[];
 }

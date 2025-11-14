@@ -23,8 +23,8 @@ export enum UserStatus {
 
 export enum UserRole {
   SUPERADMIN = 'SUPERADMIN',
-  ADMIN = 'ADMIN',
-  DISPATCHER = 'DISPATCHER',
+  USER = 'USER',
+  EMPLOYEE = 'EMPLOYEE',
 }
 
 @Entity('users')
@@ -42,14 +42,41 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ nullable: true })
+  documentType: string;
+
+  @Column({ nullable: true })
+  documentNumber: string;
+
+  @Column({ nullable: true })
+  jobLevel: string;
+
+  @Column({ nullable: true })
+  area: string;
+
+  @Column({ nullable: true })
+  areaGroup: string;
+
+  @Column({ nullable: true })
+  entryDate: Date;
+
+  @Column({ nullable: true })
+  contractType: string;
+
+  @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   identifier: string;
+
+  @Column({ nullable: true })
+  gender: string;
 
   @Column({
     type: 'enum',
