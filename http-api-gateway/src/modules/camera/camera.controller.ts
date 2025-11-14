@@ -3,7 +3,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Inject,
+  Inject, Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,11 +19,19 @@ export class CameraController {
 
   @Get('/maps')
   @HttpCode(HttpStatus.OK)
-  async getIncidents(@Req() req: RequestWithUser) {
+  async getIncidents(
+      @Req() req: RequestWithUser,
+      @Query('from') from?: string,
+      @Query('to') to?: string
+  ) {
     const instituteId = req.user.instituteId;
+
     try {
       const response = await lastValueFrom(
-          this.natsClient.send({ cmd: 'GET_HEAT_MAP' }, { instituteId }),
+          this.natsClient.send(
+              { cmd: 'GET_HEAT_MAP' },
+              { instituteId, from, to }
+          )
       );
 
       return successResponse(response);
