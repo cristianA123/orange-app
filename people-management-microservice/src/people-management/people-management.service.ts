@@ -689,6 +689,12 @@ export class PeopleManagementService {
           'institution',
           // Relación cargo
           'cargo',
+          'birthplaceDepartment',
+          'birthplaceProvince',
+          'birthplaceDistrict',
+          'residenceDepartment',
+          'residenceProvince',
+          'residenceDistrict',
         ],
       });
 
