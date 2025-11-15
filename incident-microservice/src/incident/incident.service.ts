@@ -16,7 +16,7 @@ import { RpcException } from '@nestjs/microservices';
 import { incidentSubTypes, incidentTypes } from 'src/constants';
 import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
 import { S3Service } from './file.service';
-import {ReportService} from "./report.service";
+import { ReportService } from './report.service';
 import { People } from 'src/typeorm/entities/People';
 
 @Injectable()
@@ -58,14 +58,25 @@ export class IncidentService {
       });
     }
 
-    const existPeople = await this.peopleRepository.findOneBy({
-      id: createIncidentDto.peopleId,
-    });
-    if (!existPeople) {
-      throw new RpcException({
-        message: `No existe el people`,
-        status: HttpStatus.BAD_REQUEST,
+    // si existe peopleId, verificar que exista
+    let existPeople: People = null;
+    let peopleName: string = null;
+    if (createIncidentDto.peopleId) {
+      existPeople = await this.peopleRepository.findOneBy({
+        id: createIncidentDto.peopleId,
       });
+      if (!existPeople) {
+        throw new RpcException({
+          message: `No existe el people`,
+          status: HttpStatus.BAD_REQUEST,
+        });
+      }
+      peopleName =
+        existPeople.names +
+        ' ' +
+        existPeople.paternalSurname +
+        ' ' +
+        existPeople.maternalSurname;
     }
 
     const incident = this.incidentRepository.create({
@@ -75,12 +86,7 @@ export class IncidentService {
       user: existUser,
       people: existPeople,
       institute: existInstitute,
-      peopleName:
-        existPeople.names +
-        ' ' +
-        existPeople.paternalSurname +
-        ' ' +
-        existPeople.maternalSurname,
+      peopleName: peopleName,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -165,14 +171,14 @@ export class IncidentService {
 
   async getIncidentPdfById(id: string): Promise<Buffer> {
     const incident = await this.incidentRepository.findOne({
-        where: { id },
-        relations: ['officer', 'institute'],
+      where: { id },
+      relations: ['officer', 'institute'],
     });
     if (!incident) {
-        throw new RpcException({
-            message: `No se encontraron incidentes`,
-            status: HttpStatus.BAD_REQUEST,
-        });
+      throw new RpcException({
+        message: `No se encontraron incidentes`,
+        status: HttpStatus.BAD_REQUEST,
+      });
     }
 
     return this.reportService.generateIncidentPdf(incident);

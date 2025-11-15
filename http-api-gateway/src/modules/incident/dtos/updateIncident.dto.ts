@@ -106,7 +106,7 @@ export class UpdateIncidentDTO {
   status?: number;
 
   @IsString()
-  @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   peopleId: string;
 }

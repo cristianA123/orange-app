@@ -85,7 +85,7 @@ export class CreateIncidentDto {
   status?: number;
 
   @IsString()
-  @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   peopleId: string;
 }
