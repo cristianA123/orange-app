@@ -22,7 +22,7 @@ import { PensionSystem } from './typeorm/entities/PensionSystem';
 import { People } from './typeorm/entities/People';
 import { Child } from './typeorm/entities/Child';
 import { Cargo } from './typeorm/entities/Cargo';
-import {Camera} from "./typeorm/entities/Camera";
+import { Camera } from './typeorm/entities/Camera';
 
 export const databaseConfig = {
   type: process.env.DB_TYPE as any,
