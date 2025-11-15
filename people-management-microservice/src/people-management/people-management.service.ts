@@ -735,6 +735,14 @@ export class PeopleManagementService {
           'licensesA',
           'licensesB',
           'children',
+          'institution',
+          'cargo',
+          'birthplaceDepartment',
+          'birthplaceProvince',
+          'birthplaceDistrict',
+          'residenceDepartment',
+          'residenceProvince',
+          'residenceDistrict',
         ],
       });
 
@@ -934,17 +942,16 @@ export class PeopleManagementService {
     }
   }
 
-  // async remove(id: string) {
-  //   const incident = await this.incidentRepository.update(id, {
-  //     status: IncidentStatus.DELETED,
-  //     deletedAt: new Date(),
-  //   });
-  //   if (!incident) {
-  //     throw new RpcException({
-  //       message: `No se encontraron incidentes`,
-  //       status: HttpStatus.BAD_REQUEST,
-  //     });
-  //   }
-  //   return successResponse(incident, 'Incidente eliminado');
-  // }
+  async remove(id: string) {
+    const person = await this.peopleRepository.update(id, {
+      deletedAt: new Date(),
+    });
+    if (!person) {
+      throw new RpcException({
+        message: `No se encontraron personas`,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return successResponse({}, 'Persona eliminada');
+  }
 }

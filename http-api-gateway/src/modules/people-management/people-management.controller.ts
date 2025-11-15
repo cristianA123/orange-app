@@ -193,7 +193,7 @@ export class PeopleManagementController {
     }
   }
 
-  @Delete('/people/:id')
+  @Delete('/:id')
   async remove(@Param('id') id: string) {
     try {
       const response = await lastValueFrom(

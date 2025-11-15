@@ -69,8 +69,8 @@ export class PeopleManagementController {
     );
   }
 
-  // @MessagePattern({ cmd: 'DELETE_INCIDENT2' })
-  // remove(@Payload() id: string) {
-  //   return this.peopleManagementService.remove(id);
-  // }
+  @MessagePattern({ cmd: 'DELETE_PEOPLE' })
+  remove(@Payload() id: string) {
+    return this.peopleManagementService.remove(id);
+  }
 }
