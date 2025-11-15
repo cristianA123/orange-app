@@ -94,6 +94,8 @@ export class PeopleManagementService {
     // Crear la entidad People con todas las relaciones
     const newPeopleEntity = this.peopleRepository.create({
       ...createPeopleDto,
+      // Calcular la edad a partir de la fecha de nacimiento
+      age: this.calculateAge(createPeopleDto.birthDate),
       // Relaciones ManyToOne
       ubigeo: relatedEntities.ubigeo,
       nationality: relatedEntities.nationality,
@@ -121,21 +123,17 @@ export class PeopleManagementService {
       residenceDistrict: relatedEntities.residenceDistrict,
     });
 
-    // Guardar la entidad con todas sus relaciones
     const savedPeople = await this.peopleRepository.save(newPeopleEntity);
 
-    // Hijos (Children) - crear y asociar si vienen en el DTO
     if (createPeopleDto.children && createPeopleDto.children.length > 0) {
       createPeopleDto.children.map((childDto) =>
         this.childRepository.create({
           ...childDto,
-          parent: savedPeople, // aquí ya tiene ID
+          parent: savedPeople,
         }),
       );
-      // await this.childRepository.save(children);
     }
 
-    // Cargar las relaciones para la respuesta
     const peopleWithRelations = await this.peopleRepository.findOne({
       where: { id: savedPeople.id },
       relations: [
@@ -770,7 +768,7 @@ export class PeopleManagementService {
         document: updatePeopleDto.document,
         gender: updatePeopleDto.gender,
         birthDate: updatePeopleDto.birthDate,
-        age: updatePeopleDto.age,
+        age: this.calculateAge(updatePeopleDto.birthDate),
         healthInsurance: updatePeopleDto.healthInsurance,
         insuranceType: updatePeopleDto.insuranceType,
         sctr: updatePeopleDto.sctr,
@@ -852,7 +850,12 @@ export class PeopleManagementService {
           await this.childRepository.remove(existingChildren);
         }
         person.children = updatePeopleDto.children.map((childDto) =>
-          this.childRepository.create({ ...childDto, parent: person }),
+          // ayudame a calcular la edad por la fecha de nacimiento
+          this.childRepository.create({
+            ...childDto,
+            parent: person,
+            age: this.calculateAge(childDto.birthDate),
+          }),
         );
       }
       // Cargo
@@ -860,12 +863,11 @@ export class PeopleManagementService {
         person.cargo = related.cargo;
       }
 
-      // eliminar el dato del parent de cada children
+      const saved = await this.peopleRepository.save(person);
+
       person.children.forEach((child) => {
         child.parent = null;
       });
-
-      const saved = await this.peopleRepository.save(person);
       return successResponse(saved, 'Persona actualizada exitosamente');
     } catch (error) {
       if (error instanceof RpcException) throw error;
@@ -954,4 +956,15 @@ export class PeopleManagementService {
     }
     return successResponse({}, 'Persona eliminada');
   }
+
+  calculateAge = (birthDate: Date) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const month = today.getMonth() - birth.getMonth();
+    if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
 }
