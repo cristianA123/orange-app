@@ -820,7 +820,6 @@ export class PeopleManagementService {
         birthplaceDistrict: related.birthplaceDistrict,
         birthplaceAnexo: updatePeopleDto.birthplaceAnexo,
         birthplaceAddress: updatePeopleDto.birthplaceAddress,
-
         residenceDepartment: related.residenceDepartment,
         residenceProvince: related.residenceProvince,
         residenceDistrict: related.residenceDistrict,

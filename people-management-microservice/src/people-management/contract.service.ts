@@ -47,9 +47,15 @@ export class ContractService {
       isActive,
     } = createContractDto;
 
+    if (!peopleId) {
+      throw new RpcException({
+        message: 'peopleId is required to create a contract',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     const people = await this.peopleRepository.findOne({
       where: { id: peopleId },
-      relations: ['contracts'],
     });
     if (!people)
       throw new RpcException({
@@ -83,13 +89,15 @@ export class ContractService {
       });
 
     // Deactivate previous contracts
-    if (people.contracts) {
-      for (const contract of people.contracts) {
-        if (contract.isActive) {
-          contract.isActive = false;
-          contract.endDate = new Date(); // Set end date to now if not set? Or just deactivate.
-          await this.contractRepository.save(contract);
-        }
+    const previousContracts = await this.contractRepository.find({
+      where: { people: { id: peopleId }, isActive: true },
+    });
+
+    if (previousContracts.length > 0) {
+      for (const contract of previousContracts) {
+        contract.isActive = false;
+        contract.endDate = new Date();
+        await this.contractRepository.save(contract);
       }
     }
 
@@ -120,7 +128,8 @@ export class ContractService {
     }
 
     const newContract = this.contractRepository.create({
-      people,
+      // Set relation by id to guarantee FK assignment
+      people: { id: peopleId } as People,
       contractType,
       area,
       cargo,
@@ -131,7 +140,11 @@ export class ContractService {
       files,
     });
 
+    console.log('Creating contract with peopleId:', peopleId);
+    console.log('New Contract Object (people.id):', newContract.people?.id);
+
     const savedContract = await this.contractRepository.save(newContract);
+    console.log('Saved Contract people.id:', savedContract.people?.id);
 
     // Update People status and details
     people.status = 'ACTIVE';
