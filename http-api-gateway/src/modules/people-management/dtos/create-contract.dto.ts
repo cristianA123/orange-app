@@ -40,6 +40,10 @@ export class CreateContractDto {
   contractFileId?: string;
 
   @IsOptional()
+  @IsString()
+  workedTime?: string;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

@@ -213,6 +213,34 @@ export class PeopleManagementController {
     }
   }
 
+  @Get('/contract/:id')
+  @HttpCode(HttpStatus.OK)
+  async getContractById(@Param('id') id: string) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_CONTRACT_BY_ID' }, id),
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/:id/contracts')
+  @HttpCode(HttpStatus.OK)
+  async getContractsByPeople(@Param('id') id: string) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send({ cmd: 'GET_CONTRACTS_BY_PEOPLE' }, id),
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
   @Post('/contract')
   @HttpCode(HttpStatus.OK)
   async createContract(@Body() createContractDto: CreateContractDto) {

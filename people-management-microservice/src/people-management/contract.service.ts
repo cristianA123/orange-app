@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
@@ -43,6 +43,7 @@ export class ContractService {
       cvFileId,
       tdrFileId,
       contractFileId,
+      workedTime,
       isActive,
     } = createContractDto;
 
@@ -50,20 +51,36 @@ export class ContractService {
       where: { id: peopleId },
       relations: ['contracts'],
     });
-    if (!people) throw new NotFoundException('Person not found');
+    if (!people)
+      throw new RpcException({
+        message: 'Person not found',
+        status: HttpStatus.NOT_FOUND,
+      });
 
     const contractType = await this.contractTypeRepository.findOne({
       where: { id: createContractDto.contractTypeId },
     });
-    if (!contractType) throw new NotFoundException('Contract Type not found');
+    if (!contractType)
+      throw new RpcException({
+        message: 'Contract Type not found',
+        status: HttpStatus.NOT_FOUND,
+      });
 
     const area = await this.areaRepository.findOne({
       where: { id: createContractDto.areaId },
     });
-    if (!area) throw new NotFoundException('Area not found');
+    if (!area)
+      throw new RpcException({
+        message: 'Area not found',
+        status: HttpStatus.NOT_FOUND,
+      });
 
     const cargo = await this.cargoRepository.findOne({ where: { id: cargoId } });
-    if (!cargo) throw new NotFoundException('Cargo not found');
+    if (!cargo)
+      throw new RpcException({
+        message: 'Cargo not found',
+        status: HttpStatus.NOT_FOUND,
+      });
 
     // Deactivate previous contracts
     if (people.contracts) {
@@ -109,6 +126,7 @@ export class ContractService {
       cargo,
       startDate,
       endDate,
+      workedTime,
       isActive: isActive !== undefined ? isActive : true,
       files,
     });
@@ -118,14 +136,15 @@ export class ContractService {
     // Update People status and details
     people.status = 'ACTIVE';
     people.jobTitle = cargo.name; // Assuming jobTitle maps to cargo name
-    people.area = area.name; // Assuming area maps to area name
+    people.area = area.id; // Store ID instead of name
+    people.cargo = cargo; // Set relation
     await this.peopleRepository.save(people);
 
     return successResponse(savedContract, 'Contract created successfully');
   }
 
   async terminate(terminateContractDto: TerminateContractDto) {
-    const { contractId, endDate, reasonForTermination, terminationDocFileId } =
+    const { contractId, endDate, reasonForTermination, workedTime, terminationDocFileId } =
       terminateContractDto;
 
     const contract = await this.contractRepository.findOne({
@@ -133,10 +152,15 @@ export class ContractService {
       relations: ['people', 'files'],
     });
 
-    if (!contract) throw new NotFoundException('Contract not found');
+    if (!contract)
+      throw new RpcException({
+        message: 'Contract not found',
+        status: HttpStatus.NOT_FOUND,
+      });
 
     contract.endDate = endDate;
     contract.reasonForTermination = reasonForTermination;
+    contract.workedTime = workedTime;
     contract.isActive = false;
 
     if (terminationDocFileId) {
@@ -175,5 +199,35 @@ export class ContractService {
     }
 
     return result;
+  }
+
+  async findOne(id: string) {
+    const contract = await this.contractRepository.findOne({
+      where: { id },
+      relations: ['people', 'contractType', 'area', 'cargo', 'files'],
+    });
+    if (!contract)
+      throw new RpcException({
+        message: 'Contract not found',
+        status: HttpStatus.NOT_FOUND,
+      });
+    return successResponse(contract, 'Contract retrieved successfully');
+  }
+
+  async findAllByPeopleId(peopleId: string) {
+    console.log('Finding contracts for peopleId:', peopleId);
+    const contracts = await this.contractRepository
+      .createQueryBuilder('contract')
+      .leftJoinAndSelect('contract.people', 'people')
+      .leftJoinAndSelect('contract.contractType', 'contractType')
+      .leftJoinAndSelect('contract.area', 'area')
+      .leftJoinAndSelect('contract.cargo', 'cargo')
+      .leftJoinAndSelect('contract.files', 'files')
+      .where('people.id = :peopleId', { peopleId })
+      .orderBy('contract.startDate', 'DESC')
+      .getMany();
+
+    console.log('Found contracts:', contracts);
+    return successResponse(contracts, 'Contracts retrieved successfully');
   }
 }

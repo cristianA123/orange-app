@@ -8,5 +8,6 @@ export class CreateContractDto {
   cvFileId?: string;
   tdrFileId?: string;
   contractFileId?: string;
+  workedTime?: string;
   isActive?: boolean;
 }

@@ -109,4 +109,14 @@ export class PeopleManagementController {
   async confirmUploadContract(@Payload() payload: any) {
     return await this.s3Service.confirmUpload(payload);
   }
+
+  @MessagePattern({ cmd: 'GET_CONTRACT_BY_ID' })
+  async getContractById(@Payload() id: string) {
+    return await this.contractService.findOne(id);
+  }
+
+  @MessagePattern({ cmd: 'GET_CONTRACTS_BY_PEOPLE' })
+  async getContractsByPeople(@Payload() peopleId: string) {
+    return await this.contractService.findAllByPeopleId(peopleId);
+  }
 }
