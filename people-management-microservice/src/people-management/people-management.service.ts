@@ -711,6 +711,12 @@ export class PeopleManagementService {
           'residenceDepartment',
           'residenceProvince',
           'residenceDistrict',
+          // Relación contratos con todas sus sub-relaciones
+          'contracts',
+          'contracts.contractType',
+          'contracts.area',
+          'contracts.cargo',
+          'contracts.files',
         ],
       });
 
