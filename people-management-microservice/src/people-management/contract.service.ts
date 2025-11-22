@@ -1,0 +1,179 @@
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RpcException } from '@nestjs/microservices';
+import {
+  Contract,
+  People,
+  ContractType,
+  Area,
+  Cargo,
+  ContractFile,
+  ContractFileType,
+} from 'src/typeorm/entities';
+import { CreateContractDto } from './dto/create-contract.dto';
+import { TerminateContractDto } from './dto/terminate-contract.dto';
+import { successResponse } from 'src/common/response/response.util';
+
+@Injectable()
+export class ContractService {
+  constructor(
+    @InjectRepository(Contract)
+    private contractRepository: Repository<Contract>,
+    @InjectRepository(People)
+    private peopleRepository: Repository<People>,
+    @InjectRepository(ContractType)
+    private contractTypeRepository: Repository<ContractType>,
+    @InjectRepository(Area)
+    private areaRepository: Repository<Area>,
+    @InjectRepository(Cargo)
+    private cargoRepository: Repository<Cargo>,
+    @InjectRepository(ContractFile)
+    private contractFileRepository: Repository<ContractFile>,
+  ) { }
+
+  async create(createContractDto: CreateContractDto) {
+    const {
+      peopleId,
+      contractTypeId,
+      areaId,
+      cargoId,
+      startDate,
+      endDate,
+      cvFileId,
+      tdrFileId,
+      contractFileId,
+      isActive,
+    } = createContractDto;
+
+    const people = await this.peopleRepository.findOne({
+      where: { id: peopleId },
+      relations: ['contracts'],
+    });
+    if (!people) throw new NotFoundException('Person not found');
+
+    const contractType = await this.contractTypeRepository.findOne({
+      where: { id: createContractDto.contractTypeId },
+    });
+    if (!contractType) throw new NotFoundException('Contract Type not found');
+
+    const area = await this.areaRepository.findOne({
+      where: { id: createContractDto.areaId },
+    });
+    if (!area) throw new NotFoundException('Area not found');
+
+    const cargo = await this.cargoRepository.findOne({ where: { id: cargoId } });
+    if (!cargo) throw new NotFoundException('Cargo not found');
+
+    // Deactivate previous contracts
+    if (people.contracts) {
+      for (const contract of people.contracts) {
+        if (contract.isActive) {
+          contract.isActive = false;
+          contract.endDate = new Date(); // Set end date to now if not set? Or just deactivate.
+          await this.contractRepository.save(contract);
+        }
+      }
+    }
+
+    const files: ContractFile[] = [];
+
+    if (cvFileId) {
+      const cvFile = await this.contractFileRepository.findOne({ where: { id: cvFileId } });
+      if (cvFile) {
+        cvFile.fileType = ContractFileType.CV;
+        files.push(cvFile);
+      }
+    }
+
+    if (tdrFileId) {
+      const tdrFile = await this.contractFileRepository.findOne({ where: { id: tdrFileId } });
+      if (tdrFile) {
+        tdrFile.fileType = ContractFileType.TDR;
+        files.push(tdrFile);
+      }
+    }
+
+    if (contractFileId) {
+      const cFile = await this.contractFileRepository.findOne({ where: { id: contractFileId } });
+      if (cFile) {
+        cFile.fileType = ContractFileType.CONTRACT;
+        files.push(cFile);
+      }
+    }
+
+    const newContract = this.contractRepository.create({
+      people,
+      contractType,
+      area,
+      cargo,
+      startDate,
+      endDate,
+      isActive: isActive !== undefined ? isActive : true,
+      files,
+    });
+
+    const savedContract = await this.contractRepository.save(newContract);
+
+    // Update People status and details
+    people.status = 'ACTIVE';
+    people.jobTitle = cargo.name; // Assuming jobTitle maps to cargo name
+    people.area = area.name; // Assuming area maps to area name
+    await this.peopleRepository.save(people);
+
+    return successResponse(savedContract, 'Contract created successfully');
+  }
+
+  async terminate(terminateContractDto: TerminateContractDto) {
+    const { contractId, endDate, reasonForTermination, terminationDocFileId } =
+      terminateContractDto;
+
+    const contract = await this.contractRepository.findOne({
+      where: { id: contractId },
+      relations: ['people', 'files'],
+    });
+
+    if (!contract) throw new NotFoundException('Contract not found');
+
+    contract.endDate = endDate;
+    contract.reasonForTermination = reasonForTermination;
+    contract.isActive = false;
+
+    if (terminationDocFileId) {
+      const termFile = await this.contractFileRepository.findOne({ where: { id: terminationDocFileId } });
+      if (termFile) {
+        termFile.fileType = ContractFileType.TERMINATION;
+        // termFile.contract = contract; // Will be saved via cascade or manual save
+        if (!contract.files) contract.files = [];
+        contract.files.push(termFile);
+      }
+    }
+
+    const savedContract = await this.contractRepository.save(contract);
+
+    // Update People status
+    if (contract.people) {
+      contract.people.status = 'INACTIVE';
+      await this.peopleRepository.save(contract.people);
+    }
+
+    return successResponse(savedContract, 'Contract terminated successfully');
+  }
+
+  async reentry(createContractDto: CreateContractDto) {
+    // Reentry is essentially creating a new contract but maybe with specific status logic
+    const result = await this.create(createContractDto);
+
+    // If we need to explicitly set status to REENTRY (if 'ACTIVE' is not enough)
+    // But usually Reentry means they become Active again.
+    // If the requirement is to show 'REENTRY' status:
+    const savedContract = result.data;
+    const people = await this.peopleRepository.findOne({ where: { id: createContractDto.peopleId } });
+    if (people) {
+      people.status = 'REENTRY'; // Or keep it ACTIVE? User requested REENTRY status.
+      await this.peopleRepository.save(people);
+    }
+
+    return result;
+  }
+}

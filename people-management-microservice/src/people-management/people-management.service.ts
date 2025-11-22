@@ -24,6 +24,8 @@ import {
   BloodType,
   EmergencyContactType,
   Child,
+  ContractType,
+  Area,
 } from 'src/typeorm/entities';
 import { successResponse } from 'src/common/response/response.util';
 import { RpcException } from '@nestjs/microservices';
@@ -68,6 +70,10 @@ export class PeopleManagementService {
     private childRepository: Repository<Child>,
     @InjectRepository(Cargo)
     private cargoRepository: Repository<Cargo>,
+    @InjectRepository(ContractType)
+    private contractTypeRepository: Repository<ContractType>,
+    @InjectRepository(Area)
+    private areaRepository: Repository<Area>,
   ) {
     console.log('✅ PeopleManagementService inicializado');
   }
@@ -467,6 +473,8 @@ export class PeopleManagementService {
         licensesA,
         licensesB,
         cargoes,
+        contractTypes,
+        areas,
       ] = await Promise.all([
         this.departmentRepository.find({
           order: { depID: 'ASC' },
@@ -511,6 +519,14 @@ export class PeopleManagementService {
           order: { name: 'ASC' },
           select: ['id', 'name', 'source'],
         }),
+        this.contractTypeRepository.find({
+          order: { name: 'ASC' },
+          select: ['id', 'name'],
+        }),
+        this.areaRepository.find({
+          order: { name: 'ASC' },
+          select: ['id', 'name'],
+        }),
       ]);
 
       return {
@@ -527,6 +543,8 @@ export class PeopleManagementService {
           licensesA,
           licensesB,
           cargoes,
+          contractTypes,
+          areas,
         },
       };
     } catch (error) {

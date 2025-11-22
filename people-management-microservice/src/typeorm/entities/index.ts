@@ -20,3 +20,8 @@ export * from './BloodType';
 export * from './EmergencyContactType';
 export * from './Child';
 export * from './Cargo';
+export * from './Contract';
+export * from './ContractType';
+export * from './Area';
+export * from './ContractFile';
+export * from './ContractFileType';

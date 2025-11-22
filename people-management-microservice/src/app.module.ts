@@ -27,6 +27,10 @@ import { BloodType } from './typeorm/entities/BloodType';
 import { EmergencyContactType } from './typeorm/entities/EmergencyContactType';
 import { Child } from './typeorm/entities/Child';
 import { Cargo } from './typeorm/entities/Cargo';
+import { Contract } from './typeorm/entities/Contract';
+import { ContractType } from './typeorm/entities/ContractType';
+import { Area } from './typeorm/entities/Area';
+import { ContractFile } from './typeorm/entities';
 
 @Module({
   imports: [
@@ -59,6 +63,10 @@ import { Cargo } from './typeorm/entities/Cargo';
         EmergencyContactType,
         Child,
         Cargo,
+        Contract,
+        ContractType,
+        Area,
+        ContractFile,
       ],
       synchronize: false,
       migrations: [__dirname + '/migrations/*.ts'],
@@ -68,4 +76,4 @@ import { Cargo } from './typeorm/entities/Cargo';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

@@ -21,7 +21,13 @@ import {
   EmergencyContactType,
   Child,
   Cargo,
+  Contract,
+  ContractType,
+  Area,
+  ContractFile,
 } from 'src/typeorm/entities';
+import { ContractService } from './contract.service';
+import { S3Service } from './s3.service';
 
 @Module({
   imports: [
@@ -44,10 +50,14 @@ import {
       EmergencyContactType,
       Child,
       Cargo,
+      Contract,
+      ContractType,
+      Area,
+      ContractFile,
     ]),
   ],
   controllers: [PeopleManagementController],
-  providers: [PeopleManagementService],
-  exports: [PeopleManagementService],
+  providers: [PeopleManagementService, ContractService, S3Service],
+  exports: [PeopleManagementService, ContractService, S3Service],
 })
-export class PeopleManagementModule {}
+export class PeopleManagementModule { }
