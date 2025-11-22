@@ -30,6 +30,7 @@ import { Institute } from './Institute';
 import { Child } from './Child';
 import { Cargo } from './Cargo';
 import { Incident } from './Incident';
+import { Contract } from './Contract';
 
 @Entity('people')
 export class People {
@@ -363,4 +364,14 @@ export class People {
   // Incidentes
   @OneToMany(() => Incident, (incident) => incident.people)
   incidents: Incident[];
+
+  @Column({
+    type: 'enum',
+    enum: ['ACTIVE', 'INACTIVE', 'REENTRY'],
+    default: 'INACTIVE',
+  })
+  status: string;
+
+  @OneToMany(() => Contract, (contract) => contract.people)
+  contracts: Contract[];
 }

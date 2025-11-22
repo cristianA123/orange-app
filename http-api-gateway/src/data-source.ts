@@ -23,6 +23,10 @@ import { People } from './typeorm/entities/People';
 import { Child } from './typeorm/entities/Child';
 import { Cargo } from './typeorm/entities/Cargo';
 import { Camera } from './typeorm/entities/Camera';
+import { Contract } from './typeorm/entities/Contract';
+import { ContractType } from './typeorm/entities/ContractType';
+import { Area } from './typeorm/entities/Area';
+import { ContractFile } from './typeorm/entities/ContractFile';
 
 export const databaseConfig = {
   type: process.env.DB_TYPE as any,
@@ -60,6 +64,10 @@ export const keyDatabase: DataSourceOptions = {
     Camera,
     People,
     Child,
+    Contract,
+    ContractType,
+    Area,
+    ContractFile,
   ],
   migrations: [__dirname + '/migrations/*.ts'],
   synchronize: false,
