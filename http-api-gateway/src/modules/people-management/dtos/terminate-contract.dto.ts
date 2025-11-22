@@ -13,10 +13,6 @@ export class TerminateContractDto {
 
   @IsOptional()
   @IsString()
-  workedTime?: string;
-
-  @IsOptional()
-  @IsString()
   @IsUUID()
   terminationDocFileId?: string;
 }

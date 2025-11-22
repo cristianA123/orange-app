@@ -129,7 +129,7 @@ export class ContractService {
 
     const newContract = this.contractRepository.create({
       // Set relation by id to guarantee FK assignment
-      people: { id: peopleId } as People,
+      people,
       contractType,
       area,
       cargo,
@@ -157,7 +157,7 @@ export class ContractService {
   }
 
   async terminate(terminateContractDto: TerminateContractDto) {
-    const { contractId, endDate, reasonForTermination, workedTime, terminationDocFileId } =
+    const { contractId, endDate, reasonForTermination, terminationDocFileId } =
       terminateContractDto;
 
     const contract = await this.contractRepository.findOne({
@@ -173,7 +173,14 @@ export class ContractService {
 
     contract.endDate = endDate;
     contract.reasonForTermination = reasonForTermination;
-    contract.workedTime = workedTime;
+
+    // Calculate worked time in days
+    const startDate = new Date(contract.startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    contract.workedTime = `${diffDays} días`;
+
     contract.isActive = false;
 
     if (terminationDocFileId) {
