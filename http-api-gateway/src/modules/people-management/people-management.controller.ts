@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -314,8 +315,11 @@ export class PeopleManagementController {
   @HttpCode(HttpStatus.OK)
   async generatePresignedUrlContract(
     @Body() presignedFilesDto: PresignedFilesDto,
+    @Req() req: any,
   ) {
     try {
+      const instituteId = req.user?.instituteId;
+
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'GENERATE_PRESIGNED_URL_CONTRACT' },
@@ -323,6 +327,7 @@ export class PeopleManagementController {
             filename: presignedFilesDto.filename,
             mimetype: presignedFilesDto.mimetype,
             extension: presignedFilesDto.filename.split('.').pop(),
+            instituteId,
           },
         ),
       );

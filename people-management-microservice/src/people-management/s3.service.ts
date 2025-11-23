@@ -32,16 +32,19 @@ export class S3Service {
   }
 
   async uploadFile(payload: any) {
-    const { buffer, filename, mimetype, fileType, size, extension } = payload;
+    const { buffer, filename, mimetype, fileType, size, extension, instituteId } = payload;
 
     // Convertir de Base64 a Buffer
     const fileBuffer = Buffer.from(buffer, 'base64');
 
-    const newFileNameUudi = `${randomUUID()}-${filename}`;
+    const newFileNameUuid = `${randomUUID()}-${filename}`;
+    const s3Key = instituteId
+      ? `documents/${instituteId}/${newFileNameUuid}`
+      : newFileNameUuid;
 
     const params = {
       Bucket: this.configService.get('s3.bucket'),
-      Key: newFileNameUudi,
+      Key: s3Key,
       Body: fileBuffer,
       ContentType: mimetype,
     };
@@ -50,7 +53,7 @@ export class S3Service {
       const result = await this.s3.upload(params).promise();
 
       const contractFile = this.contractFilesRepository.create({
-        fileName: newFileNameUudi,
+        fileName: newFileNameUuid,
         url: result.Location,
         mimeType: mimetype,
         size: size || fileBuffer.length,
@@ -66,13 +69,16 @@ export class S3Service {
   }
 
   async generatePresignedUrl(payload: any) {
-    const { filename, mimetype, fileType, size, extension } = payload;
+    const { filename, mimetype, fileType, size, extension, instituteId } = payload;
 
-    const newFileNameUudi = `${randomUUID()}-${filename}`;
+    const newFileNameUuid = `${randomUUID()}-${filename}`;
+    const s3Key = instituteId
+      ? `documents/${instituteId}/${newFileNameUuid}`
+      : newFileNameUuid;
 
     const params = {
       Bucket: this.configService.get('s3.bucket'),
-      Key: newFileNameUudi,
+      Key: s3Key,
       Expires: 3600,
       ContentType: mimetype,
     };
@@ -80,10 +86,10 @@ export class S3Service {
     const signedUrl = await this.s3.getSignedUrlPromise('putObject', params);
 
     const contractFile = this.contractFilesRepository.create({
-      fileName: newFileNameUudi,
+      fileName: newFileNameUuid,
       url: `https://${params.Bucket}.s3.${this.configService.get(
         's3.region',
-      )}.amazonaws.com/${newFileNameUudi}`,
+      )}.amazonaws.com/${s3Key}`,
       mimeType: mimetype,
       size: size || 0,
       extension: extension || filename.split('.').pop(),
@@ -96,7 +102,7 @@ export class S3Service {
       {
         signedUrl,
         fileId: savedContractFile.id,
-        key: newFileNameUudi,
+        key: s3Key,
         requiredHeaders: {
           'Content-Type': mimetype,
         },
