@@ -37,16 +37,19 @@ export class S3Service {
 
   // funcion para subir archivos
   async uploadFile(payload: any) {
-    const { buffer, filename, mimetype, id } = payload;
+    const { buffer, filename, mimetype, id, instituteId } = payload;
 
     // Convertir de Base64 a Buffer
     const fileBuffer = Buffer.from(buffer, 'base64');
 
-    const newFileNameUudi = `${randomUUID()}-${filename}`;
+    const newFileNameUuid = `${randomUUID()}-${filename}`;
+    const s3Key = instituteId
+      ? `media/${instituteId}/${newFileNameUuid}`
+      : newFileNameUuid;
 
     const params = {
       Bucket: this.configService.get('s3.bucket'),
-      Key: newFileNameUudi,
+      Key: s3Key,
       Body: fileBuffer,
       ContentType: mimetype,
     };
@@ -60,7 +63,7 @@ export class S3Service {
         where: { id },
       });
       const incidentFile = this.incidentFilesRepository.create({
-        fileName: newFileNameUudi,
+        fileName: newFileNameUuid,
         id: randomUUID(),
         url: result.Location,
         file_type: FileType.IMAGE,
@@ -79,13 +82,16 @@ export class S3Service {
 
   // 🔹 NUEVO MÉTODO: Generar URL pre-firmada
   async generatePresignedUrl(payload: any) {
-    const { filename, mimetype, id } = payload;
+    const { filename, mimetype, id, instituteId } = payload;
 
-    const newFileNameUudi = `${randomUUID()}-${filename}`;
+    const newFileNameUuid = `${randomUUID()}-${filename}`;
+    const s3Key = instituteId
+      ? `media/${instituteId}/${newFileNameUuid}`
+      : newFileNameUuid;
 
     const params = {
       Bucket: this.configService.get('s3.bucket'),
-      Key: newFileNameUudi,
+      Key: s3Key,
       Expires: 3600, // 1 hora en segundos
       ContentType: mimetype,
     };
@@ -105,11 +111,11 @@ export class S3Service {
     }
 
     const incidentFile = this.incidentFilesRepository.create({
-      fileName: newFileNameUudi,
+      fileName: newFileNameUuid,
       id: randomUUID(),
       url: `https://${params.Bucket}.s3.${this.configService.get(
         's3.region',
-      )}.amazonaws.com/${newFileNameUudi}`,
+      )}.amazonaws.com/${s3Key}`,
       file_type: this.getFileType(mimetype),
       size: 0, // Se actualizará después con confirmUpload
       mime_type: mimetype,
@@ -124,7 +130,7 @@ export class S3Service {
       {
         signedUrl,
         fileId: savedIncidentFile.id,
-        key: newFileNameUudi,
+        key: s3Key,
         requiredHeaders: {
           // 👈 INFORMAR al frontend los headers requeridos
           'Content-Type': mimetype,

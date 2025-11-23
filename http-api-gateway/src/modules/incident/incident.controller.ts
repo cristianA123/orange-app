@@ -13,6 +13,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
@@ -30,7 +31,7 @@ import { ConfirmFilesDto } from './dtos/files/presigned-files.dto copy';
 
 @Controller()
 export class IncidentController {
-  constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) {}
+  constructor(@Inject('NATS_SERVICE') private natsClient: ClientProxy) { }
 
   @Post('/incident')
   @HttpCode(HttpStatus.OK)
@@ -239,8 +240,11 @@ export class IncidentController {
   async generatePresignedUrl(
     @Body() presignedFilesDto: PresignedFilesDto,
     @Param('id') id: string,
+    @Req() req: any,
   ) {
     try {
+      const instituteId = req.user?.instituteId;
+
       const response = await lastValueFrom(
         this.natsClient.send(
           { cmd: 'GENERATE_PRESIGNED_URL' },
@@ -248,6 +252,7 @@ export class IncidentController {
             filename: presignedFilesDto.filename,
             mimetype: presignedFilesDto.mimetype,
             id,
+            instituteId,
           },
         ),
       );
