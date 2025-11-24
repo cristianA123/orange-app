@@ -327,6 +327,7 @@ export class PeopleManagementController {
             filename: presignedFilesDto.filename,
             mimetype: presignedFilesDto.mimetype,
             extension: presignedFilesDto.filename.split('.').pop(),
+            fileType: presignedFilesDto.fileType,
             instituteId,
           },
         ),
