@@ -19,7 +19,7 @@ export class CameraController {
 
   @Get('/maps')
   @HttpCode(HttpStatus.OK)
-  async getIncidents(
+  async getHeatMap(
       @Req() req: RequestWithUser,
       @Query('from') from?: string,
       @Query('to') to?: string
@@ -32,6 +32,50 @@ export class CameraController {
               { cmd: 'GET_HEAT_MAP' },
               { instituteId, from, to }
           )
+      );
+
+      return successResponse(response);
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/incidents')
+  @HttpCode(HttpStatus.OK)
+  async getIncidents(
+      @Req() req: RequestWithUser,
+      @Query('from') from?: string,
+      @Query('to') to?: string
+  ) {
+    const instituteId = req.user.instituteId;
+
+    try {
+      const response = await lastValueFrom(
+          this.natsClient.send(
+              { cmd: 'GET_INCIDENTS' },
+              { instituteId, from, to },
+          )
+      );
+
+      return successResponse(response);
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async getCameras(@Req() req: RequestWithUser) {
+    const instituteId = req.user.instituteId;
+
+    try {
+      const response = await lastValueFrom(
+          this.natsClient.send(
+              { cmd: 'GET_CAMERAS_BY_INSTITUTE' },
+              { instituteId },
+          ),
       );
 
       return successResponse(response);
