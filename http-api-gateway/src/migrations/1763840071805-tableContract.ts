@@ -23,6 +23,9 @@ export class TableContract1763840071805 implements MigrationInterface {
         }
 
         await queryRunner.query(`ALTER TABLE \`cameras\` CHANGE \`id\` \`id\` char(36) NOT NULL`);
+
+        // Drop the existing FK constraint before dropping the column
+        await queryRunner.query(`ALTER TABLE \`cameras\` DROP FOREIGN KEY \`FK_cameras_institute\``);
         await queryRunner.query(`ALTER TABLE \`cameras\` DROP COLUMN \`institute_id\``);
         await queryRunner.query(`ALTER TABLE \`cameras\` ADD \`institute_id\` varchar(255) NULL`);
 

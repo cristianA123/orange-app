@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { CreateIncidentDto } from './dtos/createIncident.dto';
+import { SendIncidentEmailDto } from './dtos/sendIncidentEmail.dto';
 import { lastValueFrom } from 'rxjs';
 import { handleRpcError } from 'src/common/erros/error-handler';
 import { UpdateIncidentDTO } from './dtos/updateIncident.dto';
@@ -51,6 +52,25 @@ export class IncidentController {
         ),
       );
 
+      return response;
+    } catch (error) {
+      console.error(error);
+      handleRpcError(error);
+    }
+  }
+
+  @Post('/incident/email')
+  @HttpCode(HttpStatus.OK)
+  async sendIncidentEmail(
+    @Body() sendIncidentEmailDto: SendIncidentEmailDto,
+  ) {
+    try {
+      const response = await lastValueFrom(
+        this.natsClient.send(
+          { cmd: 'SEND_INCIDENT_EMAIL' },
+          sendIncidentEmailDto,
+        ),
+      );
       return response;
     } catch (error) {
       console.error(error);

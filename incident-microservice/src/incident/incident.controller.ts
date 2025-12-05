@@ -6,7 +6,7 @@ import { UpdateIncidentDto } from './dto/update-incident.dto';
 
 @Controller()
 export class IncidentController {
-  constructor(private readonly incidentService: IncidentService) {}
+  constructor(private readonly incidentService: IncidentService) { }
 
   @MessagePattern({ cmd: 'CREATE_INCIDENT' })
   async create(@Payload() createIncidentDto: CreateIncidentDto) {
@@ -97,8 +97,8 @@ export class IncidentController {
   }
 
   // // Mantener el existente por si acaso para archivos pequeños
-  // @MessagePattern({ cmd: 'UPLOAD_INCIDENT_FILE' })
-  // uploadIncidentFile(@Payload() payload: any) {
-  //   return this.incidentService.uploadIncidentFile(payload);
-  // }
+  @MessagePattern({ cmd: 'SEND_INCIDENT_EMAIL' })
+  sendEmail(@Payload() payload: any) {
+    return this.incidentService.sendEmail(payload);
+  }
 }

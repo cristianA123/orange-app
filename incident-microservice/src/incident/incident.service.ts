@@ -18,6 +18,7 @@ import { updateIncidentStatusDTO } from './dto/update-incident-status.dto';
 import { S3Service } from './file.service';
 import { ReportService } from './report.service';
 import { People } from 'src/typeorm/entities/People';
+import { EmailService } from './email/email.service';
 
 @Injectable()
 export class IncidentService {
@@ -32,7 +33,9 @@ export class IncidentService {
     @InjectRepository(IncidentFile)
     private incidentFileRepository: Repository<IncidentFile>,
     @InjectRepository(People)
+    @InjectRepository(People)
     private peopleRepository: Repository<People>,
+    private readonly emailService: EmailService,
   ) {
     console.log('✅ IncidentService inicializado');
   }
@@ -151,13 +154,13 @@ export class IncidentService {
 
     const filteredPeople = incident.people
       ? {
-          id: incident.people.id,
-          name: incident.people.names,
-          paternalSurname: incident.people.paternalSurname,
-          maternalSurname: incident.people.maternalSurname,
-          email: incident.people.email,
-          document: incident.people.document,
-        }
+        id: incident.people.id,
+        name: incident.people.names,
+        paternalSurname: incident.people.paternalSurname,
+        maternalSurname: incident.people.maternalSurname,
+        email: incident.people.email,
+        document: incident.people.document,
+      }
       : null;
 
     const responseData = {
@@ -395,5 +398,24 @@ export class IncidentService {
 
   async confirmUpload(payload: any) {
     return await this.s3Service.confirmUpload(payload);
+  }
+
+  async sendEmail(payload: any) {
+    await this.emailService.sendIncidentNotification({
+      id: payload.id,
+      email: payload.email,
+      type: payload.type,
+      subType: payload.subType,
+      description: payload.description,
+      address: payload.address,
+      locationLat: payload.locationLat,
+      locationLng: payload.locationLng,
+      formType: payload.formType,
+      isRelevant: payload.isRelevant,
+      officerName: payload.officerName,
+      phoneNumber: payload.phoneNumber,
+      senderName: payload.senderName,
+    });
+    return successResponse(null, 'Correo enviado exitosamente');
   }
 }

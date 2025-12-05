@@ -33,4 +33,11 @@ export default () => ({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
+  mail: {
+    host: process.env.MAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.MAIL_PORT, 10) || 587,
+    user: process.env.MAIL_USER,
+    password: process.env.MAIL_PASSWORD,
+    from: process.env.MAIL_FROM,
+  },
 });

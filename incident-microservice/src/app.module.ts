@@ -10,6 +10,7 @@ import { Incident } from './typeorm/entities/Incident';
 import { IncidentFile } from './typeorm/entities/IncidentFile';
 import { Module as ModuleTypeOrm } from './typeorm/entities/Module';
 import { IncidentModule } from './incident/incident.module';
+import { EmailModule } from './incident/email/email.module';
 import configuration from './config/configuration';
 import { People } from './typeorm/entities/People';
 import { Department } from './typeorm/entities/Department';
@@ -63,8 +64,9 @@ import { Cargo } from './typeorm/entities/Cargo';
       migrations: [__dirname + '/migrations/*.ts'],
     }),
     IncidentModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

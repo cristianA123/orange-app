@@ -5,7 +5,7 @@ services:
       - "${PORT}:3000"
     volumes:
       - ./http-api-gateway/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env 
+      - ./.env:/usr/src/app/.env
     command: npm run start:dev
     environment:
       - PORT=${PORT}
@@ -72,7 +72,7 @@ services:
     depends_on:
       - nats
       - mysql_db
-  
+
   institute_microservice:
     build: ./institute-microservice
     volumes:
@@ -96,6 +96,7 @@ services:
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
       - ./incident-microservice/fonts:/usr/src/app/fonts
+      - ./incident-microservice/.env:/usr/src/app/.env
     command: npm run start:dev
     environment:
       - NATS_HOST=${NATS_HOST}
@@ -151,7 +152,7 @@ services:
     depends_on:
       - nats
       - mysql_db
-  
+
   nats:
     image: nats
     ports:

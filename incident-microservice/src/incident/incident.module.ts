@@ -6,13 +6,15 @@ import { Incident, IncidentFile, Institute, User } from 'src/typeorm/entities';
 import { ReportService } from './report.service';
 import { S3Service } from './file.service';
 import { People } from 'src/typeorm/entities/People';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Incident, User, Institute, IncidentFile, People]),
+    EmailModule,
   ],
   controllers: [IncidentController],
   providers: [IncidentService, ReportService, S3Service],
   exports: [IncidentService],
 })
-export class IncidentModule {}
+export class IncidentModule { }

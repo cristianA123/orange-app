@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #ff6b00;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            margin-left: 10px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .btn-detail {
+            display: inline-block;
+            background-color: #ff6b00;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .btn-detail:hover {
+            background-color: #e55d00;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2>Nueva Incidencia Reportada</h2>
+    </div>
+    <div class="content">
+        <div class="field">
+            <span class="label">Tipo:</span>
+            <span class="value">{{type}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Subtipo:</span>
+            <span class="value">{{subType}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Dirección:</span>
+            <span class="value">{{address}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Reportado por:</span>
+            <span class="value">{{senderName}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{phoneNumber}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Oficial:</span>
+            <span class="value">{{officerName}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Tipo de Formulario:</span>
+            <span class="value">{{formType}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Relevante:</span>
+            <span class="value">{{isRelevant}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Fecha:</span>
+            <span class="value">{{date}}</span>
+        </div>
+        <hr>
+        <div class="field">
+            <span class="label">Descripción:</span>
+            <p class="value" style="background-color: #f9f9f9; padding: 10px; border-radius: 4px;">{{description}}</p>
+        </div>
+
+        {{#if detailUrl}}
+        <div class="btn-container">
+            <a href="{{detailUrl}}" class="btn-detail">Ver Detalle Completo</a>
+        </div>
+        {{/if}}
+    </div>
+    <div class="footer">
+        <p>Este es un mensaje automático del sistema de gestión de incidencias.</p>
+    </div>
+</body>
+
+</html>
