@@ -39,6 +39,11 @@
             margin-left: 10px;
         }
 
+        .priority-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
         .btn-container {
             text-align: center;
             margin: 25px 0;
@@ -53,10 +58,6 @@
             border-radius: 5px;
             font-weight: bold;
             font-size: 16px;
-        }
-
-        .btn-detail:hover {
-            background-color: #e55d00;
         }
 
         .footer {
@@ -82,8 +83,12 @@
             <span class="value">{{subType}}</span>
         </div>
         <div class="field">
-            <span class="label">Dirección:</span>
-            <span class="value">{{address}}</span>
+            <span class="label">Prioridad:</span>
+            <span class="value priority-high">{{priority}}</span>
+        </div>
+        <div class="field">
+            <span class="label">Zona:</span>
+            <span class="value">{{zone}}</span>
         </div>
         <div class="field">
             <span class="label">Reportado por:</span>
@@ -94,16 +99,8 @@
             <span class="value">{{phoneNumber}}</span>
         </div>
         <div class="field">
-            <span class="label">Oficial:</span>
-            <span class="value">{{officerName}}</span>
-        </div>
-        <div class="field">
             <span class="label">Tipo de Formulario:</span>
             <span class="value">{{formType}}</span>
-        </div>
-        <div class="field">
-            <span class="label">Relevante:</span>
-            <span class="value">{{isRelevant}}</span>
         </div>
         <div class="field">
             <span class="label">Fecha:</span>

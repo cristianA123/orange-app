@@ -2,7 +2,6 @@ import {
   IsString,
   IsNotEmpty,
   IsOptional,
-  IsNumber,
   IsBoolean,
   IsEmail,
 } from 'class-validator';
@@ -31,29 +30,7 @@ export class SendIncidentEmailDto {
 
   @IsString()
   @IsNotEmpty()
-  address: string;
-
-  @IsNumber({ maxDecimalPlaces: 6 })
-  @Type(() => Number)
-  @IsNotEmpty()
-  locationLat: number;
-
-  @IsNumber({ maxDecimalPlaces: 6 })
-  @Type(() => Number)
-  @IsNotEmpty()
-  locationLng: number;
-
-  @IsString()
-  @IsNotEmpty()
   formType: string;
-
-  @IsBoolean()
-  @Type(() => Boolean)
-  isRelevant: boolean;
-
-  @IsOptional()
-  @IsString()
-  officerName?: string;
 
   @IsOptional()
   @IsString()
@@ -62,4 +39,12 @@ export class SendIncidentEmailDto {
   @IsOptional()
   @IsString()
   senderName?: string;
+
+  @IsBoolean()
+  @Type(() => Boolean)
+  priority: boolean;
+
+  @IsOptional()
+  @IsString()
+  zone?: string;
 }

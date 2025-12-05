@@ -407,14 +407,11 @@ export class IncidentService {
       type: payload.type,
       subType: payload.subType,
       description: payload.description,
-      address: payload.address,
-      locationLat: payload.locationLat,
-      locationLng: payload.locationLng,
       formType: payload.formType,
-      isRelevant: payload.isRelevant,
-      officerName: payload.officerName,
       phoneNumber: payload.phoneNumber,
       senderName: payload.senderName,
+      priority: payload.priority,
+      zone: payload.zone,
     });
     return successResponse(null, 'Correo enviado exitosamente');
   }

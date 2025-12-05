@@ -7,14 +7,11 @@ export interface IEmailPayload {
   type: string;
   subType: string;
   description: string;
-  address: string;
-  locationLat: number;
-  locationLng: number;
   formType: string;
-  isRelevant: boolean;
-  officerName?: string;
   phoneNumber?: string;
   senderName?: string;
+  priority: boolean;
+  zone?: string;
 }
 
 @Injectable()
@@ -31,12 +28,11 @@ export class EmailService {
           type: payload.type,
           subType: payload.subType,
           description: payload.description,
-          address: payload.address,
+          formType: payload.formType,
           senderName: payload.senderName || 'N/A',
           phoneNumber: payload.phoneNumber || 'N/A',
-          officerName: payload.officerName || 'N/A',
-          formType: payload.formType,
-          isRelevant: payload.isRelevant ? 'Sí' : 'No',
+          priority: payload.priority ? 'Alta' : 'Normal',
+          zone: payload.zone || 'N/A',
           date: new Date().toLocaleString(),
           detailUrl: payload.id ? `https://atuq-system.netlify.app/#/private-security/form/${payload.id}` : null,
         },
