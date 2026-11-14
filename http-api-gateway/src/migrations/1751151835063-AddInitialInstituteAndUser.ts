@@ -1,69 +1,23 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * NO-OP: originalmente insertaba un instituto "Instituto Central" + un usuario
+ * SUPERADMIN con UUIDs generados en runtime. Los datos de desarrollo ahora
+ * viven en `src/seeds/` (ver `docs/playbooks/manage-seeds.md`), con UUIDs
+ * fijos para que Bruno los referencie de forma estable.
+ *
+ * No borrar del repo mientras entornos existentes tengan su nombre en la tabla
+ * `migrations` como "aplicada". En entornos nuevos TypeORM la registra como
+ * aplicada sin ejecutar SQL. Para poblar la DB, correr `npm run seed:dev`.
+ */
 export class AddInitialInstituteAndUser1751151835063
   implements MigrationInterface
 {
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    const instituteId = uuidv4();
-    const userId = uuidv4();
-    const hashedPassword = await bcrypt.hash('123456', 10);
-
-    await queryRunner.query(`
-      INSERT INTO institutes (
-        id,
-        name,
-        img,
-        address,
-        status,
-        created_at,
-        updated_at
-      ) VALUES (
-        '${instituteId}',
-        'Instituto Central',
-        'default.png',
-        'Calle Falsa 123',
-        '1',
-        NOW(),
-        NOW()
-      )
-    `);
-
-    await queryRunner.query(`
-      INSERT INTO users (
-        id,
-        institute_id,
-        name,
-        email,
-        password,
-        identifier,
-        status,
-        rol,
-        created_at,
-        updated_at
-      ) VALUES (
-        '${userId}',
-        '${instituteId}',
-        'David Esteban',
-        'dm7659746@gmail.com',
-        '${hashedPassword}',
-        'ID001',
-        '1',
-        'SUPERADMIN',
-        NOW(),
-        NOW()
-      )
-    `);
+  public async up(_queryRunner: QueryRunner): Promise<void> {
+    // intentionally blank (see file comment)
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      DELETE FROM users WHERE email = 'dm7659746@gmail.com'
-    `);
-
-    await queryRunner.query(`
-      DELETE FROM institutes WHERE name = 'Instituto Central'
-    `);
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // intentionally blank (see file comment)
   }
 }

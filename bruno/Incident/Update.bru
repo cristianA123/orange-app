@@ -1,0 +1,26 @@
+meta {
+  name: Update
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/incident/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: incident-uuid
+}
+
+body:json {
+  {
+    "title": "Título actualizado",
+    "description": "Descripción nueva"
+  }
+}

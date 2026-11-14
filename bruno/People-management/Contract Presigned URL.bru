@@ -1,0 +1,27 @@
+meta {
+  name: Contract Presigned URL
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{baseUrl}}/people/contract/presigned-url
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "filename": "contrato.pdf",
+    "mimetype": "application/pdf",
+    "fileType": "CONTRACT"
+  }
+}
+
+docs {
+  `fileType` acepta: `CV`, `TDR`, `CONTRACT`, `TERMINATION`, `OTHER`.
+}

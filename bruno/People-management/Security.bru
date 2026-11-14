@@ -1,0 +1,19 @@
+meta {
+  name: Security
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/people/security
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Personas con cargo de seguridad del instituto.
+}

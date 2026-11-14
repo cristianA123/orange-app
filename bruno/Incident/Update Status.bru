@@ -1,0 +1,25 @@
+meta {
+  name: Update Status
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{baseUrl}}/incident/status/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: incident-uuid
+}
+
+body:json {
+  {
+    "status": "CLOSED"
+  }
+}

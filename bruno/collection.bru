@@ -1,0 +1,24 @@
+docs {
+  # Orange Microservices API
+
+  Cada endpoint autenticado declara su bearer explícitamente:
+
+  ```
+  auth: bearer
+
+  auth:bearer {
+    token: {{token}}
+  }
+  ```
+
+  Los endpoints públicos (`Auth/Login`, `Auth/Refresh`, `Incident/PDF`,
+  `Users/Create User`) usan `auth: none`.
+
+  ## Flujo recomendado
+
+  1. Seleccionar environment (Local por defecto).
+  2. Correr `Auth/Login` → el `post-response` guarda `token`, `refreshToken`,
+     `instituteId`, `userId` automáticamente.
+  3. Correr cualquier otro request — usa el `{{token}}` ya guardado.
+  4. Si el access token expira (2 días), correr `Auth/Refresh`.
+}

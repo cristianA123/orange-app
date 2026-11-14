@@ -1,0 +1,19 @@
+meta {
+  name: List by Institute
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/user/institute
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Lista los usuarios del instituto del usuario autenticado.
+}

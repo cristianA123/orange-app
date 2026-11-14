@@ -1,0 +1,26 @@
+meta {
+  name: Associate User
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/modules/associate/user
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": "{{userId}}",
+    "modulesIds": ["{{moduleSecurityId}}", "{{moduleIncidentsId}}"]
+  }
+}
+
+docs {
+  Reemplaza la lista completa de módulos del usuario (SYNC). Devuelve 202.
+}

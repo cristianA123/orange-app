@@ -79,6 +79,16 @@ Dos opciones:
 - **Micro existente:** si el dominio es afín a alguno (ej. `incident-microservice`), ese micro agrega los `@MessagePattern` nuevos. No tienes que crear un micro nuevo.
 - **Micro nuevo:** ver [`add-microservice.md`](./add-microservice.md).
 
-## 4. Agregar endpoints
+## 4. Crear la carpeta correspondiente en Bruno
+
+Un módulo nuevo del gateway = una carpeta nueva en la colección Bruno:
+
+```bash
+mkdir bruno/Notifications
+```
+
+A medida que agregues endpoints concretos con [`add-endpoint.md`](./add-endpoint.md), los `.bru` van dentro de esa carpeta. La guía Bruno completa está en [`../reference/api-doc.md`](../reference/api-doc.md).
+
+## 5. Agregar endpoints
 
 Ir a [`add-endpoint.md`](./add-endpoint.md) por cada endpoint concreto.

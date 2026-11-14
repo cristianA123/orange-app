@@ -1,0 +1,19 @@
+meta {
+  name: Districts by Province
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/people/districts/:provinceId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  provinceId: province-id
+}

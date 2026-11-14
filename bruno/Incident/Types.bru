@@ -1,0 +1,19 @@
+meta {
+  name: Types
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/incident-type
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Catálogo de tipos de incidente (para dropdowns).
+}

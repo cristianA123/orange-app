@@ -1,0 +1,19 @@
+meta {
+  name: Summary (id/name/dni)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/user/summary
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Resumen (id, nombre, DNI) de los usuarios del instituto. Útil para selects/dropdowns en el frontend.
+}

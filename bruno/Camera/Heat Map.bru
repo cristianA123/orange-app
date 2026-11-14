@@ -1,0 +1,28 @@
+meta {
+  name: Heat Map
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/camera/maps?from=&to=
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  from:
+  to:
+}
+
+docs {
+  Devuelve datos para el heat map del instituto del usuario autenticado.
+
+  ## Query params (opcionales)
+  - `from`: fecha ISO desde la cual filtrar.
+  - `to`: fecha ISO hasta la cual filtrar.
+}

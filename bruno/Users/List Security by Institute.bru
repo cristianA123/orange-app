@@ -1,0 +1,19 @@
+meta {
+  name: List Security by Institute
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/user/institute-security
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Lista los usuarios con rol de seguridad del instituto del usuario autenticado.
+}

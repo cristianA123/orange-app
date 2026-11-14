@@ -1,0 +1,22 @@
+meta {
+  name: Confirm Contract Upload
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/people/contract/confirm-upload
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "fileId": "file-uuid",
+    "fileSize": 123456
+  }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: List by Institute
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/institute-incidents
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Lista incidentes del instituto del usuario autenticado. Nota: el path es `/institute-incidents`, no `/incident`.
+}

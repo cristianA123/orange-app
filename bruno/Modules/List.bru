@@ -1,0 +1,15 @@
+meta {
+  name: List Modules
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/modules
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

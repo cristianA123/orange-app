@@ -1,0 +1,19 @@
+meta {
+  name: Get by ID
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/incident/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: incident-uuid
+}

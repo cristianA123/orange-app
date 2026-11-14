@@ -1,0 +1,19 @@
+meta {
+  name: Delete Person
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/people/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: people-uuid
+}

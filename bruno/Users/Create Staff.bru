@@ -1,0 +1,30 @@
+meta {
+  name: Create Staff
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/user/staff
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "María",
+    "lastName": "Gómez",
+    "email": "maria@example.com",
+    "password": "password123",
+    "rol": "EMPLOYEE",
+    "status": "1"
+  }
+}
+
+docs {
+  Crea un usuario de staff bajo el instituto del usuario autenticado (inyectado por el gateway).
+}

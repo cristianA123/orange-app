@@ -1,0 +1,25 @@
+meta {
+  name: Update Person
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/people/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: people-uuid
+}
+
+body:json {
+  {
+    "name": "Pedro actualizado"
+  }
+}

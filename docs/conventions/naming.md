@@ -62,3 +62,30 @@ Microservicio típico: `src/<dominio>/`
 
 - JSON de payloads NATS: **snake_case** para IDs persistidos (`institute_id`, `people_id`, `contract_type_id`) por compat con los nombres de columna en DB, pero **camelCase** para el resto (`userId`, `instituteId`, `createdAt`). Hay inconsistencia histórica; cuando agregues un campo nuevo, sigue el estilo que ya tiene el DTO.
 - Enums en PascalCase (`UserRole`, `UserStatus`), valores en SCREAMING_SNAKE (`ACTIVE`, `INACTIVE`, `REENTRY`).
+
+## Archivos `.bru` (colección Bruno)
+
+- **Un archivo por endpoint**, dentro de `bruno/<Dominio>/`. Nombre legible en inglés sin prefijo de verbo HTTP: `Create.bru`, `Update.bru`, `List by Institute.bru`, `Change Password.bru`.
+- `meta.seq` define el orden en Bruno — número incremental dentro de la carpeta.
+- Agregar/actualizar el `.bru` es parte de agregar/actualizar el endpoint (ver [`../playbooks/add-endpoint.md`](../playbooks/add-endpoint.md)).
+
+### Auth — convención oficial
+
+**Todos los requests autenticados** usan **bearer explícito** con `{{token}}`:
+
+```
+<method> {
+  url: {{baseUrl}}/path
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+```
+
+**Nunca** usar `auth: inherit` (su comportamiento varía entre versiones de Bruno). **Nunca** declarar header `Authorization` a mano.
+
+Para endpoints `@Public()`, usar `auth: none` y omitir el bloque `auth:bearer`.
+
+El `{{token}}` se actualiza automáticamente al correr `Auth/Login` (y `Auth/Refresh`) — el usuario del `.bru` nunca lo copia a mano.

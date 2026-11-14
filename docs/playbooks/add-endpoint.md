@@ -11,7 +11,8 @@ Checklist resumido (los detalles vienen abajo):
 - [ ] (3) Micro: DTO espejo en `incident-microservice/src/incident/dto/`.
 - [ ] (4) Micro: `@MessagePattern({ cmd: 'CREATE_INCIDENT_COMMENT' })` en `incident.controller.ts`.
 - [ ] (5) Micro: método en el service.
-- [ ] (6) Probar con `curl` o Postman.
+- [ ] (6) Probar con Bruno (`bruno/Incident/`). Ver [`reference/api-doc.md`](../reference/api-doc.md).
+- [ ] (7) Agregar el `.bru` a la colección (`bruno/<Dominio>/`) en el mismo PR.
 
 ---
 
@@ -163,6 +164,77 @@ Esperado:
 ```json
 { "success": true, "message": "Comentario creado", "data": { ... } }
 ```
+
+## 7. Registrar el endpoint en Bruno (obligatorio)
+
+**Todo endpoint nuevo tiene su `.bru` en `bruno/<Dominio>/` dentro del mismo PR.** Esto mantiene la colección sincronizada con el código y el próximo dev (o agente) ve el shape real del body y la respuesta sin leer el controller.
+
+Para el ejemplo, crear `bruno/Incident/Create Comment.bru`:
+
+```
+meta {
+  name: Create Comment
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/incident/comments
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "incident_id": "incident-uuid",
+    "message": "Comentario de prueba"
+  }
+}
+
+docs {
+  Crea un comentario asociado a un incidente. El gateway inyecta `userId` e `instituteId` del token.
+
+  ## Response 200
+  ```json
+  { "success": true, "message": "Comentario creado", "data": { ... } }
+  ```
+
+  ## Errores
+  - 404: incidente no encontrado
+  - 400: validación del body
+}
+```
+
+**Reglas de la colección:**
+
+- **Un archivo por endpoint.** Nombre legible en inglés (`Create`, `Update`, `List by Institute`).
+- **`seq`**: siguiente número libre dentro de la carpeta (ordena la vista en Bruno).
+- **Auth**: `auth: bearer` + bloque `auth:bearer { token: {{token}} }` para autenticados; `auth: none` solo si tiene `@Public()`.
+- **Path params**: declararlos en `params:path`. Usa las vars del environment (`{{instituteId}}`, `{{userId}}`) cuando aplique.
+- **Query params**: en `params:query` con valor vacío por defecto.
+- **`docs`**: describe qué hace, un ejemplo de response, y los códigos de error específicos.
+
+Ver guía completa de Bruno en [`../reference/api-doc.md`](../reference/api-doc.md).
+
+## Si modificas un endpoint existente
+
+Cuando cambies el DTO, el path o el status code de un endpoint que ya existe, **también actualiza su `.bru`**:
+
+| Cambio en el código                | Qué actualizar en el `.bru`                           |
+| ---------------------------------- | ------------------------------------------------------ |
+| Nuevo campo en el DTO              | Agregar al `body:json`.                                |
+| Campo removido o renombrado        | Quitar/renombrar en el `body:json`.                    |
+| Path cambió                        | `url:` del bloque de método.                           |
+| Nuevo path param                   | Agregar a `params:path`.                               |
+| `@Public()` agregado o removido    | `auth:` del bloque de método.                          |
+| Nuevo tipo de error                | Agregar al bloque `docs`.                              |
+| Cambia el shape de la response     | Actualizar el ejemplo de `Response 200` en `docs`.     |
+
+**Regla:** si el revisor del PR tiene que preguntar "¿y cómo se llama a esto ahora?", el `.bru` no se actualizó.
 
 ## Errores típicos al hacer este flujo
 

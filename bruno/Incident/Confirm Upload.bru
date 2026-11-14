@@ -1,0 +1,26 @@
+meta {
+  name: Confirm Upload
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{baseUrl}}/incident/confirm-upload
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "fileId": "file-uuid",
+    "fileSize": 123456
+  }
+}
+
+docs {
+  Confirma que el upload a S3 terminó y actualiza el status del archivo.
+}

@@ -1,0 +1,19 @@
+meta {
+  name: My Modules
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/modules/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Devuelve los módulos del usuario autenticado.
+}

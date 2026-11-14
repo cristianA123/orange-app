@@ -24,6 +24,8 @@ Guías paso a paso. **Si tu tarea aparece acá, sigue el playbook**: captura el 
 - [add-module-in-gateway.md](./playbooks/add-module-in-gateway.md) — registrar un módulo HTTP nuevo en el gateway.
 - [add-microservice.md](./playbooks/add-microservice.md) — crear un microservicio de negocio desde cero.
 - [run-migrations.md](./playbooks/run-migrations.md) — cuándo y cómo correr migraciones.
+- [manage-seeds.md](./playbooks/manage-seeds.md) — gestionar datos de desarrollo (institutos, usuarios, módulos, asignaciones).
+- [share-via-tunnel.md](./playbooks/share-via-tunnel.md) — exponer tu gateway local por HTTPS para que otra persona lo use.
 
 ## Convenciones
 
@@ -43,6 +45,7 @@ Datos planos para consulta.
 - [nats-commands.md](./reference/nats-commands.md) — catálogo de todos los `cmd` NATS, agrupados por dominio.
 - [env-vars.md](./reference/env-vars.md) — qué variable usa cada microservicio.
 - [services-map.md](./reference/services-map.md) — qué hace cada microservicio, en una línea.
+- [api-doc.md](./reference/api-doc.md) — colección Bruno versionada en `bruno/`: cómo usarla y cómo mantenerla.
 
 ## Operaciones
 

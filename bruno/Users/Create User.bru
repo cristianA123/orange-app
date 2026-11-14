@@ -1,0 +1,37 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "institute_id": "{{instituteId}}",
+    "name": "Juan",
+    "lastName": "Pérez",
+    "email": "juan.perez@example.com",
+    "password": "password123",
+    "status": "1",
+    "rol": "USER",
+    "documentType": "DNI",
+    "documentNumber": "12345678",
+    "gender": "M"
+  }
+}
+
+docs {
+  **Public**. Crea un usuario. El controller usa el cmd legacy `createUser` (camelCase).
+
+  Status: `1=ACTIVE | 2=INACTIVE | 3=PENDING | 4=SUSPENDED | 5=DELETED`.
+  Rol: `SUPERADMIN | USER | EMPLOYEE`.
+
+  ## Errores
+  - 409: email o DNI ya existente
+  - 400: instituto no existe
+}

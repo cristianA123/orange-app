@@ -1,21 +1,50 @@
 # Ops: desarrollo local
 
-## Primera vez
+## Primera vez — opción 1 (recomendada): un solo comando
 
 ```bash
-# 1. Crear .env en la raíz (si no existe) — pide uno a tu compañero.
-cp .env.dev .env   # si hay plantilla, si no, créalo desde env-vars.md
+./scripts/setup.sh
+```
 
-# 2. (Opcional) crear .env local para incident si vas a tocar ese micro
-cp .env incident-microservice/.env
+Hace todo: copia `.env.dev` → `.env`, levanta containers, corre migraciones, corre seed. Deja el backend listo con los 7 usuarios de dev. Ver [`../../scripts/setup.sh`](../../scripts/setup.sh) y [`manage-seeds.md`](../playbooks/manage-seeds.md) para detalle.
 
-# 3. Build + up
+## Primera vez — opción 2 (paso a paso manual)
+
+```bash
+# Comunes (DB, NATS)
+cp .env.dev .env
+
+# Específicas por servicio
+cp http-api-gateway/.env.dev http-api-gateway/.env
+cp users-microservice/.env.dev users-microservice/.env
+cp incident-microservice/.env.dev incident-microservice/.env
+cp people-management-microservice/.env.dev people-management-microservice/.env
+
+# Build + up
 docker compose up --build
 ```
 
 Esto levanta: `mysql_db`, `nats`, `http-api-gateway`, y todos los microservicios. La primera vez tarda — está construyendo imágenes.
 
-**Importante:** la primera vez las migraciones **no se corren automáticamente**. Ver [`playbooks/run-migrations.md`](../playbooks/run-migrations.md).
+**Esquema de `.env`:** el `.env` raíz tiene las vars comunes (DB, NATS). Cada microservicio con necesidades propias (gateway, users, incident, people-management) tiene su propio `.env` con sus vars específicas (puertos, JWT, AWS, mail). `docker-compose.yml` carga los dos con `env_file: [./.env, ./<servicio>/.env]`. Detalle completo en [`../reference/env-vars.md`](../reference/env-vars.md).
+
+**`.env.dev` vs `.env.qa`:**
+
+- `.env.dev` — plantilla para desarrollo local con Docker (apunta a `mysql_db`, puertos locales).
+- `.env.qa` — plantilla para apuntar al RDS/S3/SMTP de QA. Solo úsalo si QA está vivo.
+- `.env` — es una **copia** de `.env.dev` o `.env.qa`. Es el que lee docker-compose.
+
+**Importante:** la primera vez tienes que correr **migraciones + seed** a mano:
+
+```bash
+docker compose exec api_gateway npm run migration:run
+docker compose exec api_gateway npm run seed:dev
+```
+
+- `migration:run` → crea el schema (ver [`playbooks/run-migrations.md`](../playbooks/run-migrations.md)).
+- `seed:dev` → inserta 3 institutos, 7 usuarios, 8 módulos con sus asignaciones y UUIDs fijos (ver [`playbooks/manage-seeds.md`](../playbooks/manage-seeds.md)).
+
+Después de esto puedes loguear en Bruno con `superadmin@orange.dev` / `password123`.
 
 ## Flujo normal
 

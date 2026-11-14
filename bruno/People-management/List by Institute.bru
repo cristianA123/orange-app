@@ -1,0 +1,15 @@
+meta {
+  name: List by Institute
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/people/institute-people
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

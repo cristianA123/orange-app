@@ -1,0 +1,46 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "superadmin@orange.dev",
+    "password": "password123"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body?.data?.accessToken) {
+    bru.setEnvVar("token", res.body.data.accessToken);
+    bru.setEnvVar("refreshToken", res.body.data.refreshToken);
+    if (res.body.data.user?.instituteId) {
+      bru.setEnvVar("instituteId", res.body.data.user.instituteId);
+    }
+    if (res.body.data.user?.id) {
+      bru.setEnvVar("userId", res.body.data.user.id);
+    }
+  }
+}
+
+docs {
+  **Public**. Login con email y password. Al 200 guarda automáticamente en las variables de environment: `token`, `refreshToken`, `instituteId`, `userId`.
+
+  ## Usuarios de dev (todos con password `password123`)
+  | Email                            | Rol        | Instituto       | Notas                    |
+  | -------------------------------- | ---------- | --------------- | ------------------------ |
+  | superadmin@orange.dev            | SUPERADMIN | Lima Centro     | acceso total             |
+  | admin.lima@orange.dev            | USER       | Lima Centro     | admin del instituto      |
+  | operador.lima@orange.dev         | EMPLOYEE   | Lima Centro     | solo incidents + heatmap |
+  | seguridad.lima@orange.dev        | EMPLOYEE   | Lima Centro     | solo incidents           |
+  | inactivo.lima@orange.dev         | USER       | Lima Centro     | status=INACTIVE          |
+  | admin.miraflores@orange.dev      | USER       | Miraflores      | otro tenant              |
+  | operador.miraflores@orange.dev   | EMPLOYEE   | Miraflores      | otro tenant              |
+}

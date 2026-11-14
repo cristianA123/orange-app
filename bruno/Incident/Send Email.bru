@@ -1,0 +1,23 @@
+meta {
+  name: Send Email
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/incident/email
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "incidentId": "incident-uuid",
+    "to": ["recipient@example.com"],
+    "subject": "Nuevo incidente"
+  }
+}

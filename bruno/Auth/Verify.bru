@@ -1,0 +1,22 @@
+meta {
+  name: Verify Token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/verify
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Verifica que el `token` actual sea válido y devuelve el user + un nuevo access token.
+
+  ## Errores
+  - 401: token inválido o expirado
+}

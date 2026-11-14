@@ -32,7 +32,7 @@ export const databaseConfig = {
   type: process.env.DB_TYPE as any,
   port: parseInt(process.env.DB_PORT, 10),
   username: process.env.DB_USERNAME,
-  password: '#!123456!#',
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 };
 

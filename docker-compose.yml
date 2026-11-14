@@ -2,20 +2,16 @@ services:
   api_gateway:
     build: ./http-api-gateway
     ports:
-      - "${PORT}:3000"
+      - "3000:3000"
     volumes:
       - ./http-api-gateway/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - PORT=${PORT}
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      # Orden importante: el último pisa al anterior.
+      # Gateway/.env tiene DB_HOST=localhost (para CLI de migraciones desde host),
+      # pero en el container queremos DB_HOST=mysql_db → raíz va al final.
+      - ./http-api-gateway/.env
+      - ./.env
     depends_on:
       - nats
 
@@ -23,16 +19,9 @@ services:
     build: ./camera-microservice
     volumes:
       - ./camera-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
     depends_on:
       - nats
       - mysql_db
@@ -41,16 +30,10 @@ services:
     build: ./users-microservice
     volumes:
       - ./users-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
+      - ./users-microservice/.env
     depends_on:
       - nats
       - mysql_db
@@ -59,16 +42,9 @@ services:
     build: ./modules-microservice
     volumes:
       - ./modules-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
     depends_on:
       - nats
       - mysql_db
@@ -77,16 +53,9 @@ services:
     build: ./institute-microservice
     volumes:
       - ./institute-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
     depends_on:
       - nats
       - mysql_db
@@ -96,25 +65,10 @@ services:
     volumes:
       - ./incident-microservice/src:/usr/src/app/src
       - ./incident-microservice/fonts:/usr/src/app/fonts
-      - ./incident-microservice/.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_USER=${MAIL_USER}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_FROM=${MAIL_FROM}
+    env_file:
+      - ./.env
+      - ./incident-microservice/.env
     depends_on:
       - nats
       - mysql_db
@@ -124,18 +78,9 @@ services:
     volumes:
       - ./people-management-microservice/src:/usr/src/app/src
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+    env_file:
+      - ./.env
+      - ./people-management-microservice/.env
     depends_on:
       - nats
       - mysql_db
@@ -144,16 +89,9 @@ services:
     build: ./dashboard-microservice
     volumes:
       - ./dashboard-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
     depends_on:
       - nats
       - mysql_db

@@ -1,0 +1,29 @@
+meta {
+  name: Upload File
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/incident/:id/upload
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: incident-uuid
+}
+
+body:multipart-form {
+  file: @file()
+}
+
+docs {
+  Sube un archivo asociado al incidente (vía multipart). Internamente va a S3.
+
+  Alternativa recomendada: usar `Presigned URL` + `Confirm Upload` para que el cliente suba directo a S3.
+}

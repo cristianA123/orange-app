@@ -1,0 +1,31 @@
+meta {
+  name: Create Person
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/people
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Pedro",
+    "lastName": "Ramírez",
+    "documentType": "DNI",
+    "documentNumber": "87654321",
+    "cargoId": "cargo-uuid",
+    "nationalityId": 1,
+    "maritalStatusId": 1
+  }
+}
+
+docs {
+  Crea una persona. El gateway inyecta `userId` e `instituteId` del token.
+}

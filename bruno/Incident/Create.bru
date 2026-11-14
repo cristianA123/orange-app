@@ -1,0 +1,33 @@
+meta {
+  name: Create Incident
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/incident
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Incidente de prueba",
+    "description": "Descripción del incidente",
+    "typeId": 1,
+    "subTypeId": 1,
+    "priority": "HIGH",
+    "zone": "Zona A",
+    "latitude": -12.046374,
+    "longitude": -77.042793,
+    "incidentDate": "2026-01-01T12:00:00.000Z"
+  }
+}
+
+docs {
+  Crea un incidente. El gateway agrega `userId` e `instituteId` del token.
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Update Institute
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/institute/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: {{instituteId}}
+}
+
+body:json {
+  {
+    "name": "Nombre actualizado",
+    "address": "Nueva dirección"
+  }
+}

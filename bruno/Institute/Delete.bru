@@ -1,0 +1,19 @@
+meta {
+  name: Delete Institute
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/institute/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: {{instituteId}}
+}

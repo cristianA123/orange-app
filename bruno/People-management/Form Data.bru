@@ -1,0 +1,19 @@
+meta {
+  name: Form Data
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/people/form-data
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Catálogos necesarios para el formulario de persona (nacionalidades, estados civiles, tipos de licencia, etc.).
+}

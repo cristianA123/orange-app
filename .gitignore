@@ -7,3 +7,6 @@ node_modules
 .env.dev
 .env.qa
 .env.prod
+
+# Bruno — environment "Shared" con URL temporal del túnel, no committear
+bruno/environments/Shared.bru

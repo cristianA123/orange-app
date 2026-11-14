@@ -1,0 +1,23 @@
+meta {
+  name: Subtypes
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/incident-type/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}
+
+docs {
+  Subtipos del tipo indicado.
+}

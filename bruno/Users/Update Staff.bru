@@ -1,0 +1,26 @@
+meta {
+  name: Update Staff
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{baseUrl}}/user/staff/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: {{userId}}
+}
+
+body:json {
+  {
+    "name": "Staff actualizado",
+    "rol": "EMPLOYEE"
+  }
+}

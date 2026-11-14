@@ -5,18 +5,10 @@ services:
       dockerfile: ./http-api-gateway/Dockerfile.prod
     image: api_gateway-prod
     ports:
-      - "${PORT}:3000"
-    volumes:
-      - ./.env:/usr/src/app/.env
-    environment:
-      - PORT=${PORT:-3000}
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+      - "3000:3000"
+    env_file:
+      - ./http-api-gateway/.env
+      - ./.env
     depends_on:
       - nats
 
@@ -24,16 +16,9 @@ services:
     build: ./camera-microservice
     volumes:
       - ./camera-microservice/src:/usr/src/app/src
-      - ./.env:/usr/src/app/.env
     command: npm run start:dev
-    environment:
-      - NATS_HOST=${NATS_HOST}
-      - DB_TYPE=${DB_TYPE}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
+    env_file:
+      - ./.env
     depends_on:
       - nats
 
@@ -42,16 +27,9 @@ services:
       context: .
       dockerfile: ./users-microservice/Dockerfile.prod
     image: users_microservice-prod
-    volumes:
-      - ./.env:/usr/src/app/.env
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    env_file:
+      - ./.env
+      - ./users-microservice/.env
     depends_on:
       - nats
 
@@ -60,16 +38,8 @@ services:
       context: .
       dockerfile: ./modules-microservice/Dockerfile.prod
     image: modules_microservice-prod
-    volumes:
-      - ./.env:/usr/src/app/.env
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    env_file:
+      - ./.env
     depends_on:
       - nats
 
@@ -78,16 +48,8 @@ services:
       context: .
       dockerfile: ./institute-microservice/Dockerfile.prod
     image: institute_microservice-prod
-    volumes:
-      - ./.env:/usr/src/app/.env
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    env_file:
+      - ./.env
     depends_on:
       - nats
 
@@ -95,27 +57,12 @@ services:
     build:
       context: .
       dockerfile: ./incident-microservice/Dockerfile.prod
-    volumes:
-      - ./.env:/usr/src/app/.env
-      - ./incident-microservice/fonts:/usr/src/app/fonts
     image: incident_microservice-prod
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
-      - MAIL_PORT=${MAIL_PORT:-587}
-      - MAIL_USER=${MAIL_USER}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_FROM=${MAIL_FROM}
+    volumes:
+      - ./incident-microservice/fonts:/usr/src/app/fonts
+    env_file:
+      - ./.env
+      - ./incident-microservice/.env
     depends_on:
       - nats
 
@@ -123,17 +70,10 @@ services:
     build:
       context: .
       dockerfile: ./people-management-microservice/Dockerfile.prod
-    volumes:
-      - ./.env:/usr/src/app/.env
     image: people-management_microservice-prod
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    env_file:
+      - ./.env
+      - ./people-management-microservice/.env
     depends_on:
       - nats
 
@@ -142,16 +82,8 @@ services:
       context: .
       dockerfile: ./dashboard-microservice/Dockerfile.prod
     image: dashboard_microservice-prod
-    volumes:
-      - ./.env:/usr/src/app/.env
-    environment:
-      - NATS_HOST=${NATS_HOST:-nats://nats:4222}
-      - DB_TYPE=${DB_TYPE:-mysql}
-      - DB_HOST=${DB_HOST:-mysql_db}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USERNAME=${DB_USERNAME:-testuser}
-      - DB_PASSWORD=${DB_PASSWORD:-testuser123}
-      - DB_DATABASE=${DB_DATABASE:-nestjs_db}
+    env_file:
+      - ./.env
     depends_on:
       - nats
 

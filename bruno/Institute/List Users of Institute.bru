@@ -1,0 +1,19 @@
+meta {
+  name: List Users of Institute
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/institute/:id/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: {{instituteId}}
+}

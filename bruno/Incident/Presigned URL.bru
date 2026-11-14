@@ -1,0 +1,37 @@
+meta {
+  name: Presigned URL
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/incident/:id/presigned-url
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: incident-uuid
+}
+
+body:json {
+  {
+    "filename": "foto.jpg",
+    "mimetype": "image/jpeg"
+  }
+}
+
+docs {
+  Genera una URL S3 firmada para subir el archivo directo desde el cliente.
+
+  ## Response 200
+  ```
+  { "url": "https://...", "fileId": "...", "key": "..." }
+  ```
+
+  Después de subir a S3, llamar `Confirm Upload` con el `fileId`.
+}

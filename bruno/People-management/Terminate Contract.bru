@@ -1,0 +1,24 @@
+meta {
+  name: Terminate Contract
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{baseUrl}}/people/contract/terminate
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "contractId": "contract-uuid",
+    "endDate": "2026-12-31",
+    "reasonForTermination": "Fin de contrato",
+    "workedTime": "12 meses"
+  }
+}

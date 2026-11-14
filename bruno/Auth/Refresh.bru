@@ -1,0 +1,31 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/refresh
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body?.data?.accessToken) {
+    bru.setEnvVar("token", res.body.data.accessToken);
+    bru.setEnvVar("refreshToken", res.body.data.refreshToken);
+  }
+}
+
+docs {
+  **Public**. Rota el access token usando el refresh token. Al 200 reemplaza `token` y `refreshToken`.
+
+  ## Errores
+  - 401: refresh token inválido o expirado
+}

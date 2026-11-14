@@ -1,0 +1,19 @@
+meta {
+  name: Provinces by Department
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/people/provinces/:departmentId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  departmentId: department-id
+}

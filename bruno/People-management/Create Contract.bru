@@ -1,0 +1,27 @@
+meta {
+  name: Create Contract
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/people/contract
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "peopleId": "people-uuid",
+    "contractTypeId": "contract-type-uuid",
+    "areaId": "area-uuid",
+    "cargoId": "cargo-uuid",
+    "startDate": "2026-01-01",
+    "endDate": null,
+    "isActive": true
+  }
+}

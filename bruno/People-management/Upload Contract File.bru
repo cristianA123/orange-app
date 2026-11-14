@@ -1,0 +1,19 @@
+meta {
+  name: Upload Contract File
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{baseUrl}}/people/contract/upload
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  file: @file()
+}

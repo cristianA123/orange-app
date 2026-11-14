@@ -1,0 +1,23 @@
+meta {
+  name: Summary
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/people/institute-people/summary?source=
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  source:
+}
+
+docs {
+  Resumen de personas del instituto, filtrable por `source` (CAMPO, VIDEOVIGILANCIA, etc.).
+}

@@ -1,0 +1,19 @@
+meta {
+  name: PDF
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/incident/:id/pdf
+  body: none
+  auth: none
+}
+
+params:path {
+  id: incident-uuid
+}
+
+docs {
+  **Public**. Devuelve el PDF del incidente con `Content-Type: application/pdf`. Puedes abrirlo directo en el navegador.
+}

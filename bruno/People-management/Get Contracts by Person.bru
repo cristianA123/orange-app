@@ -1,0 +1,19 @@
+meta {
+  name: Get Contracts by Person
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/people/:id/contracts
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: people-uuid
+}

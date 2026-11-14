@@ -1,0 +1,19 @@
+meta {
+  name: Get Contract by ID
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/people/contract/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: contract-uuid
+}

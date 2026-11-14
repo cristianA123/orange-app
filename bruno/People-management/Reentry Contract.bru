@@ -1,0 +1,29 @@
+meta {
+  name: Reentry Contract
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/people/contract/reentry
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "peopleId": "people-uuid",
+    "contractTypeId": "contract-type-uuid",
+    "areaId": "area-uuid",
+    "cargoId": "cargo-uuid",
+    "startDate": "2027-01-01"
+  }
+}
+
+docs {
+  Re-ingreso de una persona (crea un contrato nuevo tras una terminación previa).
+}

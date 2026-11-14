@@ -1,0 +1,27 @@
+meta {
+  name: Report
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/incident/report?from=&to=&status=&isRelevant=&limit=
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  from:
+  to:
+  status:
+  isRelevant:
+  limit:
+}
+
+docs {
+  Reporte agregado con filtros opcionales. `instituteId` se inyecta desde el token.
+}

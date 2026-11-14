@@ -114,3 +114,37 @@ this.incidentRepository.find({ where: { instituteId } });
 - [ ] ¿Opera sobre datos de un instituto? → recibe `user: IUser` con `@UserDecorator()`.
 - [ ] ¿Pasas `instituteId` al micro? → siempre desde `user.instituteId`, nunca del body.
 - [ ] ¿El service del micro filtra por `instituteId` en TypeORM? → obligatorio.
+
+## CORS
+
+El gateway (`http-api-gateway/src/main.ts`) aplica una política **distinta según `NODE_ENV`**:
+
+### Dev (`NODE_ENV=development`)
+
+**Refleja cualquier origen**. Compatible con `credentials: true` (no es `*`, sino el origen del request copiado al header `Access-Control-Allow-Origin`). Esto evita tener que configurar nada cuando:
+
+- Un dev corre el frontend en otro puerto (`localhost:3001`, `localhost:8080`, etc.).
+- Un dev sube el frontend a Vercel, Netlify, GitHub Pages, etc.
+- Un dev expone con un túnel que no está en los patrones.
+
+Trade-off aceptado: en dev cualquier origen puede hacer requests autenticados contra el gateway. Si tienes el gateway expuesto por túnel, el amigo puede trabajar desde donde quiera.
+
+### Prod/QA (`NODE_ENV` != `development`)
+
+Política estricta:
+
+- **Orígenes explícitos** vienen de `CORS_ORIGINS` (lista separada por comas en el `.env`).
+- **Patrones hardcoded** aceptan túneles de pruebas: `*.ngrok-free.app`, `*.ngrok.app`, `*.trycloudflare.com`, `*.loca.lt`.
+- Orígenes no permitidos **no reciben el header `Access-Control-Allow-Origin`** → el browser los bloquea. Response sigue siendo válido (no 500).
+
+### Lo que es igual en ambos modos
+
+- Requests **sin header `Origin`** (curl, Bruno, apps nativas, mobile) **pasan sin validación** — CORS es solo para browsers.
+- `credentials: true` siempre activo — por eso nunca usamos `origin: '*'`.
+- Headers permitidos: `Content-Type`, `Authorization`, `x-token`.
+
+### Para agregar algo
+
+- **Dominio real de prod** → `CORS_ORIGINS` del `.env` prod/QA.
+- **Un servicio de túnel distinto** (ej. `*.serveo.net`) → agregarlo al array `tunnelPatterns` en `main.ts`.
+- **Localhost / hosting en dev** → **nada que hacer**, ya pasa automático.

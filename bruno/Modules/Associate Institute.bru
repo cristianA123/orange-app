@@ -1,0 +1,26 @@
+meta {
+  name: Associate Institute
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/modules/associate/institute
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "instituteId": "{{instituteId}}",
+    "modulesIds": ["{{moduleSecurityId}}", "{{moduleIncidentsId}}"]
+  }
+}
+
+docs {
+  Reemplaza la lista completa de módulos del instituto (SYNC). Devuelve 202.
+}
