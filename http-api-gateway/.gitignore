@@ -37,4 +37,4 @@ lerna-debug.log*
 .env
 .env.qa
 .env.prod
-.env.dev
+# .env.dev se committea (plantilla inofensiva para dev local)

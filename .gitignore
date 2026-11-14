@@ -3,10 +3,16 @@ node_modules
 .idea/
 .idea/php.xml
 
+# Config activa (cada dev la tiene propia, nunca committear)
 .env
-.env.dev
+
+# Plantillas de ambientes con credenciales reales
 .env.qa
 .env.prod
+
+# .env.dev SÍ se committea — son valores inofensivos para dev local
+# (passwords de containers, JWT dummy, AWS/Mail vacíos).
+# Lo usa scripts/setup.sh como fuente para generar los .env.
 
 # Bruno — environment "Shared" con URL temporal del túnel, no committear
 bruno/environments/Shared.bru
