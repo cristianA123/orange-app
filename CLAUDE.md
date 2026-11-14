@@ -48,7 +48,8 @@ Los scripts npm son estándar NestJS y son iguales en cada carpeta de servicio (
 
 ```bash
 # Setup completo en un comando: envs + containers + migraciones + seed
-./scripts/setup.sh
+./scripts/setup.sh         # macOS / Linux
+# .\scripts\setup.bat      # Windows (equivalente)
 
 # (Opcional) si prefieres ir manual:
 cp .env.dev .env

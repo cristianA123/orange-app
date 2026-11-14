@@ -4,13 +4,26 @@ Backend de microservicios NestJS con NATS + MySQL. Documentación completa en [`
 
 ## Quickstart (un solo comando)
 
-**Requisito**: [Docker Desktop](https://www.docker.com/products/docker-desktop/) corriendo.
+**Requisito**: [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y corriendo.
+
+### macOS / Linux
 
 ```bash
 ./scripts/setup.sh
 ```
 
-Esto:
+### Windows
+
+Doble clic en **`scripts\setup.bat`**, o desde cmd/PowerShell:
+
+```powershell
+.\scripts\setup.bat
+```
+
+---
+
+Cualquiera de los dos scripts hace lo mismo:
+
 1. Copia los `.env.dev` → `.env`.
 2. Levanta todos los containers (`docker compose up -d --build`).
 3. Corre migraciones (crea schema).
@@ -45,7 +58,8 @@ Incluida en `bruno/` — 62+ requests autocompletados. Ver [`docs/reference/api-
 
 | Comando                           | Qué hace                                             |
 | --------------------------------- | ---------------------------------------------------- |
-| `./scripts/setup.sh`              | Setup inicial completo (envs + up + migrate + seed). |
+| `./scripts/setup.sh` (mac/linux)  | Setup inicial completo (envs + up + migrate + seed). |
+| `scripts\setup.bat` (windows)     | Equivalente del setup para Windows.                  |
 | `./scripts/share-tunnel.sh`       | Expone el gateway por HTTPS vía ngrok.              |
 | `docker compose up -d`            | Levantar sin rebuild.                                |
 | `docker compose down`             | Apagar.                                              |

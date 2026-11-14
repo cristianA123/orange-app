@@ -2,11 +2,21 @@
 
 ## Primera vez — opción 1 (recomendada): un solo comando
 
+**macOS / Linux**:
+
 ```bash
 ./scripts/setup.sh
 ```
 
-Hace todo: copia `.env.dev` → `.env`, levanta containers, corre migraciones, corre seed. Deja el backend listo con los 7 usuarios de dev. Ver [`../../scripts/setup.sh`](../../scripts/setup.sh) y [`manage-seeds.md`](../playbooks/manage-seeds.md) para detalle.
+**Windows** (doble clic o desde cmd/PowerShell):
+
+```powershell
+.\scripts\setup.bat
+```
+
+Ambos hacen lo mismo: copian `.env.dev` → `.env`, levantan containers, corren migraciones, corren seed. Dejan el backend listo con los 7 usuarios de dev.
+
+Ver [`../../scripts/`](../../scripts/) y [`manage-seeds.md`](../playbooks/manage-seeds.md) para detalle.
 
 ## Primera vez — opción 2 (paso a paso manual)
 
